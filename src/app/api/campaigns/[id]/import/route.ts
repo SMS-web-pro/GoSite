@@ -1,0 +1,296 @@
+import { NextResponse } from "next/server";
+import { getSettings } from "@/lib/settings";
+import {
+  generateVibecoderPrompt,
+  generateDefaultWhatsAppMessages,
+  detectProspectCurrency,
+} from "@/lib/prompt-generator";
+import { generateDemoSiteHtml } from "@/lib/site-generator";
+import { nanoid } from "nanoid";
+import { localStore } from "@/lib/local-store";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+type ImportedRow = {
+  name: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  website?: string;
+  category?: string;
+  rating?: string;
+  description?: string;
+};
+
+function parseCSV(text: string): string[][] {
+  const firstLine = text.split(/\r?\n/)[0] || "";
+  let delim = ",";
+  if (firstLine.includes("\t")) delim = "\t";
+  else if (firstLine.includes(";")) delim = ";";
+
+  const rows: string[][] = [];
+  const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  for (const line of lines) {
+    const row: string[] = [];
+    let cur = "";
+    let inQuotes = false;
+    let i = 0;
+    while (i < line.length) {
+      const ch = line[i];
+      if (ch === '"' && inQuotes && line[i + 1] === '"') {
+        cur += '"';
+        i += 2;
+        continue;
+      }
+      if (ch === '"') {
+        inQuotes = !inQuotes;
+        i++;
+        continue;
+      }
+      if (ch === delim && !inQuotes) {
+        row.push(cur.trim());
+        cur = "";
+        i++;
+        continue;
+      }
+      cur += ch;
+      i++;
+    }
+    row.push(cur.trim());
+    rows.push(row);
+  }
+  return rows;
+}
+
+function detectColumns(headers: string[]): Record<string, number> {
+  const map: Record<string, number> = {};
+  const patterns: Record<string, RegExp[]> = {
+    name: [/^name$/i, /nom/i, /business/i, /entreprise/i, /societe/i, /raison/i, /company/i],
+    phone: [/phone/i, /tel/i, /téléphone/i, /telephone/i, /mobile/i, /num/i],
+    email: [/^email$/i, /e-?mail/i, /courriel/i, /mail/i],
+    address: [/address/i, /adresse/i, /location/i, /lieu/i, /rue/i],
+    website: [/website/i, /site/i, /url/i, /web/i, /http/i],
+    category: [/category/i, /catégorie/i, /categorie/i, /type/i, /secteur/i, /activity/i, /activité/i],
+    rating: [/rating/i, /note/i, /stars/i, /etoile/i, /étoile/i],
+    description: [/description/i, /desc/i, /note/i, /comment/i, /commentaire/i],
+  };
+  headers.forEach((h, i) => {
+    for (const [field, regs] of Object.entries(patterns)) {
+      if (map[field] !== undefined) continue;
+      if (regs.some((r) => r.test(h))) {
+        map[field] = i;
+        break;
+      }
+    }
+  });
+  return map;
+}
+
+function normalizePhone(p: string | undefined): string | null {
+  if (!p) return null;
+  const cleaned = p.replace(/[^\d+]/g, "");
+  return cleaned || null;
+}
+
+export async function POST(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+    const campaignId = parseInt(id, 10);
+    if (Number.isNaN(campaignId)) {
+      return NextResponse.json({ error: "Invalid campaign ID" }, { status: 400 });
+    }
+    const body = await req.json();
+    const text: string = (body.text || "").trim();
+    if (!text) {
+      return NextResponse.json({ error: "Aucun contenu à importer" }, { status: 400 });
+    }
+
+    // Verify campaign exists (local-store only)
+    const campaign = localStore.getCampaignById(campaignId);
+    if (!campaign) {
+      return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
+    }
+
+    const rows = parseCSV(text);
+    if (rows.length === 0) {
+      return NextResponse.json({ error: "Aucune ligne trouvée" }, { status: 400 });
+    }
+
+    const skipHeader = body.skipHeader !== false;
+    const startIdx = skipHeader ? 1 : 0;
+    const headers = skipHeader ? rows[0] : rows[0].map((_, i) => `col${i}`);
+    const colMap = detectColumns(headers);
+
+    if (colMap.name === undefined) {
+      return NextResponse.json(
+        {
+          error:
+            "Colonne 'Nom' introuvable. Assurez-vous que votre fichier a une colonne 'Nom', 'Name', 'Entreprise' ou 'Business'.",
+          detectedColumns: colMap,
+          headers: headers,
+        },
+        { status: 400 }
+      );
+    }
+
+    const settings = await getSettings();
+
+    const imported: ImportedRow[] = [];
+    const errors: Array<{ row: number; error: string; data: string[] }> = [];
+
+    for (let i = startIdx; i < rows.length; i++) {
+      const row = rows[i];
+      const name = row[colMap.name]?.trim();
+      if (!name) {
+        errors.push({ row: i + 1, error: "Nom vide", data: row });
+        continue;
+      }
+      const phone = normalizePhone(row[colMap.phone ?? -1]);
+      if (!phone) {
+        errors.push({ row: i + 1, error: "Téléphone vide ou invalide", data: row });
+        continue;
+      }
+      imported.push({
+        name,
+        phone,
+        email: row[colMap.email ?? -1]?.trim() || undefined,
+        address: row[colMap.address ?? -1]?.trim() || undefined,
+        website: row[colMap.website ?? -1]?.trim() || undefined,
+        category: row[colMap.category ?? -1]?.trim() || undefined,
+        rating: row[colMap.rating ?? -1]?.trim() || undefined,
+        description: row[colMap.description ?? -1]?.trim() || undefined,
+      });
+    }
+
+    if (imported.length === 0) {
+      return NextResponse.json(
+        { error: "Aucun prospect valide à importer", errors },
+        { status: 400 }
+      );
+    }
+
+    // Insert into local store
+    const inserted: Array<{ id: number; name: string; phone: string }> = [];
+    for (const row of imported) {
+      const addressParts = row.address?.split(",").map((s) => s.trim()) || [];
+      const street = addressParts[0] || null;
+      const postcode = (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
+      const city = addressParts.length > 1 ? addressParts[addressParts.length - 1] : null;
+
+      // Create a synthetic search entry
+      const search = localStore.addSearch({
+        sector: row.category || "Import manuel",
+        location: city || "Import manuel",
+        status: "completed",
+        resultsCount: 1,
+      });
+
+      // Create the business
+      const business = localStore.addBusiness({
+        searchId: search.id,
+        name: row.name,
+        phone: row.phone,
+        email: row.email || null,
+        website: row.website || null,
+        address: row.address || null,
+        street,
+        city,
+        postcode,
+        country: "France",
+        category: row.category || null,
+        rating: row.rating || null,
+        description: row.description || null,
+        latitude: null,
+        longitude: null,
+        source: "manual_import",
+      });
+
+      // Generate prompts and demo site
+      const businessForPrompt = {
+        ...business,
+        subcategory: null,
+        cuisine: null,
+        openingHours: null,
+        osmType: null,
+        osmId: null,
+        wikidataId: null,
+        wikipedia: null,
+        facebook: null,
+        twitter: null,
+        instagram: null,
+        linkedin: null,
+        youtube: null,
+        housenumber: null,
+        neighbourhood: null,
+        suburb: null,
+        state: null,
+        mobile: null,
+        fax: null,
+        website_url: null,
+        opening_hours: null,
+        wheelchair: null,
+        wifi: null,
+        takeaway: null,
+        delivery: null,
+        outdoorSeating: null,
+        smoking: null,
+        reservation: null,
+        parking: null,
+        airConditioning: null,
+        paymentCash: null,
+        paymentCard: null,
+        capacity: null,
+        stars: null,
+        bingUrl: null,
+        osmUrl: null,
+        googleMapsUrl: null,
+        reviewsCount: null,
+        extraTags: null,
+        detailCount: 0,
+        popularity: null,
+      };
+      const vibecoderPrompt = generateVibecoderPrompt(businessForPrompt as any);
+      const whatsappMessages = generateDefaultWhatsAppMessages(businessForPrompt as any);
+      const demoHtml = generateDemoSiteHtml(businessForPrompt as any);
+      const demoToken = nanoid(24);
+
+      // Detect currency from business location
+      const currency = detectProspectCurrency(businessForPrompt.country || null, businessForPrompt.city || null);
+      const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
+        : currency === "USD" ? (settings.priceUSD || 0)
+        : (settings.priceMAD || 0);
+
+      // Create the prospect
+      const prospect = localStore.addProspect({
+        businessId: business.id,
+        campaignId,
+        workflowStage: "discovered",
+        vibecoderPrompt,
+        whatsappMessages,
+        demoHtml,
+        demoToken,
+        quoteAmount,
+        quoteCurrency: currency,
+      });
+
+      inserted.push({ id: prospect.id, name: row.name, phone: row.phone || "" });
+    }
+
+    return NextResponse.json({
+      ok: true,
+      imported: inserted.length,
+      errors: errors.length,
+      details: { inserted, errors },
+    });
+  } catch (err) {
+    console.error("Import error:", err);
+    return NextResponse.json(
+      { error: "Erreur lors de l'import" },
+      { status: 500 }
+    );
+  }
+}
