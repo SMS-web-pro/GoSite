@@ -305,7 +305,7 @@ export default function HomePage() {
                 <div className="relative rounded-[2rem] overflow-hidden shadow-2xl shadow-slate-200/60">
                   <img
                     src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=1000&fit=crop"
-                    interface="Agence web au travail"
+                    alt="Agence web au travail"
                     className="w-full h-[600px] object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
@@ -390,7 +390,7 @@ export default function HomePage() {
                 <div className="img-zoom rounded-[2rem] overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=700&h=900&fit=crop"
-                    interface="L'équipe GoSite"
+                    alt="L'équipe GoSite"
                     className="w-full h-[550px] object-cover"
                   />
                 </div>
@@ -476,7 +476,7 @@ export default function HomePage() {
                   <div className="img-zoom h-20 w-20 rounded-2xl overflow-hidden shrink-0 hidden sm:block">
                     <img
                       src={s.img}
-                      interface={s.title}
+                      alt={s.title}
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -553,7 +553,7 @@ export default function HomePage() {
                 <div className="img-zoom relative h-64 sm:h-72">
                   <img
                     src={c.img}
-                    interface={c.client}
+                    alt={c.client}
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -652,7 +652,7 @@ export default function HomePage() {
       <section className="relative h-[50vh] lg:h-[60vh] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&h=800&fit=crop"
-          interface="Espace de travail GoSite"
+          alt="Espace de travail GoSite"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" />
