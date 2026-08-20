@@ -10,3 +10,13 @@ services:
         sync: false
       - key: PORT
         value: 3001
+
+# Render free tier sleeps after 15min. Use Fly.io instead (always-on).
+# Deploy to Fly.io:
+#   1. Install flyctl: curl -L https://fly.io/install.sh | sh
+#   2. fly auth login
+#   3. cd whatsapp-server && fly launch
+#   4. fly secrets set DATABASE_URL="postgresql://..." --app gosite-whatsapp
+#   5. fly deploy --app gosite-whatsapp
+#
+# Fly.io free: 3 VMs shared-cpu-1x, 160GB bandwidth, always-on
