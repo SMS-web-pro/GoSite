@@ -13,13 +13,18 @@ const globalForDb = globalThis as typeof globalThis & {
 
 function createPool() {
   const isSupabase = (databaseUrl ?? "").includes("supabase");
-  return new Pool({
+  const pool = new Pool({
     connectionString: databaseUrl!,
     ssl: isSupabase ? { rejectUnauthorized: false } : undefined,
     max: 5,
     idleTimeoutMillis: 10000,
     connectionTimeoutMillis: 10000,
   });
+  // Supabase uses PgBouncer in transaction mode which does NOT support
+  // PostgreSQL prepared statements. Disable them to prevent parameterized
+  // query failures. (prepareThreshold is a valid pg option but not in TS types)
+  (pool.options as any).prepareThreshold = 0;
+  return pool;
 }
 
 export const pool = globalForDb.__arenaNextJsPostgresqlPool ?? createPool();

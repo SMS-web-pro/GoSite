@@ -13,29 +13,22 @@ export default async function CampaignDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  console.log("[campaign page] params.id =", id);
   const campaignId = parseInt(id, 10);
   if (Number.isNaN(campaignId)) notFound();
 
   let campaign;
   try {
-    console.log("[campaign page] querying DB for campaignId =", campaignId);
     const rows = await db
       .select()
       .from(campaigns)
       .where(eq(campaigns.id, campaignId))
       .limit(1);
-    console.log("[campaign page] DB returned", rows.length, "rows");
     campaign = rows[0];
   } catch (err: any) {
     console.error("[campaign page] DB error:", err?.message || err);
-    console.error("[campaign page] DB error stack:", err?.stack);
     campaign = null;
   }
-  if (!campaign) {
-    console.log("[campaign page] no campaign found, calling notFound()");
-    notFound();
-  }
+  if (!campaign) notFound();
 
   let prospectsList: Array<{ prospect: typeof prospects.$inferSelect; business: typeof businesses.$inferSelect }> = [];
   try {
