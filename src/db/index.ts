@@ -17,8 +17,6 @@ export const pool =
     connectionString: databaseUrl,
   });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForDb.__arenaNextJsPostgresqlPool = pool;
-}
+globalForDb.__arenaNextJsPostgresqlPool = pool;
 
 export const db = drizzle(pool);

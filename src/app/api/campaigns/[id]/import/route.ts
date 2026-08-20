@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import { db } from "@/db";
+import { businesses, prospects, searches, campaigns } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { getSettings } from "@/lib/settings";
 import {
   generateVibecoderPrompt,
@@ -103,16 +106,17 @@ export async function POST(
     if (Number.isNaN(campaignId)) {
       return NextResponse.json({ error: "Invalid campaign ID" }, { status: 400 });
     }
+
+    // Verify campaign exists in DB
+    const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, campaignId)).limit(1);
+    if (!campaign) {
+      return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const text: string = (body.text || "").trim();
     if (!text) {
       return NextResponse.json({ error: "Aucun contenu à importer" }, { status: 400 });
-    }
-
-    // Verify campaign exists (local-store only)
-    const campaign = localStore.getCampaignById(campaignId);
-    if (!campaign) {
-      return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
     const rows = parseCSV(text);
@@ -173,111 +177,81 @@ export async function POST(
       );
     }
 
-    // Insert into local store
+    // Insert into DB
     const inserted: Array<{ id: number; name: string; phone: string }> = [];
     for (const row of imported) {
-      const addressParts = row.address?.split(",").map((s) => s.trim()) || [];
-      const street = addressParts[0] || null;
-      const postcode = (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
-      const city = addressParts.length > 1 ? addressParts[addressParts.length - 1] : null;
+      try {
+        const addressParts = row.address?.split(",").map((s) => s.trim()) || [];
+        const street = addressParts[0] || null;
+        const postcode = (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
+        const city = addressParts.length > 1 ? addressParts[addressParts.length - 1] : null;
 
-      // Create a synthetic search entry
-      const search = localStore.addSearch({
-        sector: row.category || "Import manuel",
-        location: city || "Import manuel",
-        status: "completed",
-        resultsCount: 1,
-      });
+        // Create a search entry
+        const [search] = await db
+          .insert(searches)
+          .values({
+            sector: row.category || "Import manuel",
+            location: city || "Import manuel",
+            status: "completed",
+            resultsCount: 1,
+          })
+          .returning();
 
-      // Create the business
-      const business = localStore.addBusiness({
-        searchId: search.id,
-        name: row.name,
-        phone: row.phone,
-        email: row.email || null,
-        website: row.website || null,
-        address: row.address || null,
-        street,
-        city,
-        postcode,
-        country: "France",
-        category: row.category || null,
-        rating: row.rating || null,
-        description: row.description || null,
-        latitude: null,
-        longitude: null,
-        source: "manual_import",
-      });
+        // Create the business
+        const [business] = await db
+          .insert(businesses)
+          .values({
+            searchId: search.id,
+            name: row.name,
+            phone: row.phone || null,
+            email: row.email || null,
+            website: row.website || null,
+            address: row.address || null,
+            street,
+            city,
+            postcode,
+            country: "France",
+            category: row.category || null,
+            rating: row.rating || null,
+            description: row.description || null,
+            latitude: null,
+            longitude: null,
+            source: "manual_import",
+          })
+          .returning();
 
-      // Generate prompts and demo site
-      const businessForPrompt = {
-        ...business,
-        subcategory: null,
-        cuisine: null,
-        openingHours: null,
-        osmType: null,
-        osmId: null,
-        wikidataId: null,
-        wikipedia: null,
-        facebook: null,
-        twitter: null,
-        instagram: null,
-        linkedin: null,
-        youtube: null,
-        housenumber: null,
-        neighbourhood: null,
-        suburb: null,
-        state: null,
-        mobile: null,
-        fax: null,
-        website_url: null,
-        opening_hours: null,
-        wheelchair: null,
-        wifi: null,
-        takeaway: null,
-        delivery: null,
-        outdoorSeating: null,
-        smoking: null,
-        reservation: null,
-        parking: null,
-        airConditioning: null,
-        paymentCash: null,
-        paymentCard: null,
-        capacity: null,
-        stars: null,
-        bingUrl: null,
-        osmUrl: null,
-        googleMapsUrl: null,
-        reviewsCount: null,
-        extraTags: null,
-        detailCount: 0,
-        popularity: null,
-      };
-      const vibecoderPrompt = generateVibecoderPrompt(businessForPrompt as any);
-      const whatsappMessages = generateDefaultWhatsAppMessages(businessForPrompt as any);
-      const demoHtml = generateDemoSiteHtml(businessForPrompt as any);
-      const demoToken = nanoid(24);
+        // Generate prompts and demo site
+        const vibecoderPrompt = generateVibecoderPrompt(business as any);
+        const whatsappMessages = generateDefaultWhatsAppMessages(business as any);
+        const demoHtml = generateDemoSiteHtml(business as any);
+        const demoToken = nanoid(24);
 
-      // Detect currency from business location
-      const currency = detectProspectCurrency(businessForPrompt.country || null, businessForPrompt.city || null);
-      const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
-        : currency === "USD" ? (settings.priceUSD || 0)
-        : (settings.priceMAD || 0);
+        // Detect currency
+        const currency = detectProspectCurrency(business.country || null, business.city || null);
+        const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
+          : currency === "USD" ? (settings.priceUSD || 0)
+          : (settings.priceMAD || 0);
 
-      // Create the prospect
-      const prospect = localStore.addProspect({
-        businessId: business.id,
-        campaignId,
-        workflowStage: "discovered",
-        vibecoderPrompt,
-        whatsappMessages,
-        demoHtml,
-        demoToken,
-        quoteAmount,
-        quoteCurrency: currency,
-      });
+        // Create the prospect
+        const [prospect] = await db
+          .insert(prospects)
+          .values({
+            businessId: business.id,
+            campaignId,
+            workflowStage: "discovered",
+            vibecoderPrompt,
+            whatsappMessages,
+            demoHtml,
+            demoToken,
+            quoteAmount,
+            quoteCurrency: currency,
+          })
+          .returning();
 
-      inserted.push({ id: prospect.id, name: row.name, phone: row.phone || "" });
+        inserted.push({ id: prospect.id, name: row.name, phone: row.phone || "" });
+      } catch (e) {
+        errors.push({ row: inserted.length + 1, error: e instanceof Error ? e.message : "Erreur", data: [] });
+      }
     }
 
     return NextResponse.json({

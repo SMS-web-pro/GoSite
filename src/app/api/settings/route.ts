@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSettings, getDefaultTemplates } from "@/lib/settings";
-import { localStore } from "@/lib/local-store";
+import { getSettings, saveSettingsToDb } from "@/lib/settings";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,11 +12,6 @@ export async function GET() {
 export async function PUT(req: Request) {
   try {
     const body = await req.json();
-    const current = await getSettings();
-    const updates: any = {
-      ...current,
-      updatedAt: new Date(),
-    };
     const allowed = [
       "agencyName",
       "contactName",
@@ -38,12 +32,12 @@ export async function PUT(req: Request) {
       "logoUrl",
       "messageTemplates",
     ];
+    const updates: Record<string, any> = {};
     for (const k of allowed) {
       if (body[k] !== undefined) updates[k] = body[k];
     }
-    // Save to local-store (primary storage)
-    localStore.saveSettings(updates);
-    return NextResponse.json({ settings: updates });
+    const settings = await saveSettingsToDb(updates);
+    return NextResponse.json({ settings });
   } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || "Failed to update settings" },

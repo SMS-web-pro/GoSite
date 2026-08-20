@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import { db } from "@/db";
+import { businesses, prospects } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
@@ -18,35 +21,46 @@ export async function PATCH(
     const body = await req.json();
 
     // Find the prospect
-    const data = localStore.get();
-    const prospect = data.prospects.find((p: any) => p.id === prospectId);
+    const [prospect] = await db.select().from(prospects).where(eq(prospects.id, prospectId)).limit(1);
     if (!prospect) {
       return NextResponse.json({ error: "Prospect not found" }, { status: 404 });
     }
 
     // Separate business fields from prospect fields
-    const {
-      externalDemoUrl,
-      externalSiteUrl,
-      ...businessFields
-    } = body;
+    const { externalDemoUrl, externalSiteUrl, ...businessFields } = body;
 
-    // Update business
-    const business = localStore.updateBusiness(prospect.businessId, businessFields);
+    // Update business in DB
+    const [updatedBusiness] = await db
+      .update(businesses)
+      .set(businessFields)
+      .where(eq(businesses.id, prospect.businessId))
+      .returning();
 
     // Update prospect external URLs
-    const prospectUpdates: any = {};
-    if (externalDemoUrl !== undefined) prospectUpdates.externalDemoUrl = externalDemoUrl;
-    if (externalSiteUrl !== undefined) prospectUpdates.externalSiteUrl = externalSiteUrl;
-
     let updatedProspect = prospect;
-    if (Object.keys(prospectUpdates).length > 0) {
-      updatedProspect = localStore.updateProspect(prospectId, prospectUpdates) || prospect;
+    if (externalDemoUrl !== undefined || externalSiteUrl !== undefined) {
+      const updates: Record<string, any> = {};
+      if (externalDemoUrl !== undefined) updates.externalDemoUrl = externalDemoUrl;
+      if (externalSiteUrl !== undefined) updates.externalSiteUrl = externalSiteUrl;
+      [updatedProspect] = await db
+        .update(prospects)
+        .set(updates)
+        .where(eq(prospects.id, prospectId))
+        .returning();
+    }
+
+    // Also sync to local-store as fallback
+    localStore.updateBusiness(prospect.businessId, businessFields);
+    if (externalDemoUrl !== undefined || externalSiteUrl !== undefined) {
+      localStore.updateProspect(prospectId, {
+        ...(externalDemoUrl !== undefined && { externalDemoUrl }),
+        ...(externalSiteUrl !== undefined && { externalSiteUrl }),
+      });
     }
 
     return NextResponse.json({
       ok: true,
-      business,
+      business: updatedBusiness,
       prospect: updatedProspect,
     });
   } catch (err) {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { localStore } from "@/lib/local-store";
+import { db } from "@/db";
+import { businesses, prospects, searches } from "@/db/schema";
 import {
   generateVibecoderPrompt,
   generateDefaultWhatsAppMessages,
@@ -8,6 +9,7 @@ import {
 import { generateDemoSiteHtml } from "@/lib/site-generator";
 import { nanoid } from "nanoid";
 import { getSettings } from "@/lib/settings";
+import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +18,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const {
-      businesses,
+      businesses: bizList,
       campaignId,
       quoteTier = "pro",
     }: {
@@ -42,7 +44,7 @@ export async function POST(req: Request) {
       quoteTier?: string;
     } = body;
 
-    if (!Array.isArray(businesses) || businesses.length === 0) {
+    if (!Array.isArray(bizList) || bizList.length === 0) {
       return NextResponse.json(
         { error: "Aucune entreprise fournie" },
         { status: 400 }
@@ -53,38 +55,51 @@ export async function POST(req: Request) {
     const created: Array<{ id: number; name: string }> = [];
     const errors: Array<{ name: string; error: string }> = [];
 
-    for (const biz of businesses) {
+    for (const biz of bizList) {
       try {
         if (!biz.name) {
           errors.push({ name: "?", error: "Nom manquant" });
           continue;
         }
 
-        // Detect currency from business location
         const currency = detectProspectCurrency(biz.country || null, biz.city || null);
         const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
           : currency === "USD" ? (settings.priceUSD || 0)
           : (settings.priceMAD || 0);
 
-        // Create business in local store
-        const business = localStore.addBusiness({
-          searchId: 1,
-          name: biz.name,
-          category: biz.category || null,
-          subcategory: biz.subcategory || null,
-          address: biz.address || null,
-          phone: biz.phone || null,
-          email: biz.email || null,
-          website: biz.website || null,
-          city: biz.city || null,
-          postcode: biz.postcode || null,
-          country: biz.country || "France",
-          rating: biz.rating || null,
-          description: biz.description || null,
-          latitude: biz.latitude || null,
-          longitude: biz.longitude || null,
-          source: biz.source || "search",
-        });
+        // Create a search entry in DB
+        const [search] = await db
+          .insert(searches)
+          .values({
+            sector: biz.category || "Bulk Import",
+            location: biz.city || "Unknown",
+            status: "completed",
+            resultsCount: 1,
+          })
+          .returning();
+
+        // Create business in DB
+        const [business] = await db
+          .insert(businesses)
+          .values({
+            searchId: search.id,
+            name: biz.name,
+            category: biz.category || null,
+            subcategory: biz.subcategory || null,
+            address: biz.address || null,
+            phone: biz.phone || null,
+            email: biz.email || null,
+            website: biz.website || null,
+            city: biz.city || null,
+            postcode: biz.postcode || null,
+            country: biz.country || "France",
+            rating: biz.rating || null,
+            description: biz.description || null,
+            latitude: biz.latitude ? String(biz.latitude) : null,
+            longitude: biz.longitude ? String(biz.longitude) : null,
+            source: biz.source || "bulk_import",
+          })
+          .returning();
 
         // Generate workflow data
         const vibecoderPrompt = generateVibecoderPrompt(business as any);
@@ -92,18 +107,21 @@ export async function POST(req: Request) {
         const demoHtml = generateDemoSiteHtml(business as any);
         const demoToken = nanoid(24);
 
-        // Create prospect
-        const prospect = localStore.addProspect({
-          businessId: business.id,
-          campaignId: campaignId || null,
-          workflowStage: "discovered",
-          vibecoderPrompt,
-          whatsappMessages,
-          demoHtml,
-          demoToken,
-          quoteAmount,
-          quoteCurrency: currency,
-        });
+        // Create prospect in DB
+        const [prospect] = await db
+          .insert(prospects)
+          .values({
+            businessId: business.id,
+            campaignId: campaignId || null,
+            workflowStage: "discovered",
+            vibecoderPrompt,
+            whatsappMessages,
+            demoHtml,
+            demoToken,
+            quoteAmount,
+            quoteCurrency: currency,
+          })
+          .returning();
 
         created.push({ id: prospect.id, name: biz.name });
       } catch (e) {
