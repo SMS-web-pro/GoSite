@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
   experimental: {
     // allowBaileys dynamic modules
   },
+  async rewrites() {
+    return [
+      {
+        source: "/portfolio",
+        destination: "/portfolio.html",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

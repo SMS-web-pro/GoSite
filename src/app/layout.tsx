@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"] });
+const notoSansArabic = Noto_Sans_Arabic({ variable: "--font-noto-arabic", subsets: ["arabic"] });
 
 export const metadata: Metadata = {
-  title: "GoSite — Agence Web pour Commerces Locaux",
+  title: "GoSite Digital Agency — Web Development, Ads & AI Solutions",
   description:
-    "GoSite crée des sites web professionnels pour les artisans, commerces et PME locales. Design moderne, SEO local, réservation en ligne.",
+    "GoSite is a performance-driven digital agency offering web development, paid advertising, SEO and AI chatbot solutions that generate real ROI.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-slate-50 text-slate-900 antialiased`}>
+    <html lang="en" dir="ltr">
+      <body className={`${inter.className} ${spaceGrotesk.variable} ${notoSansArabic.variable}`} style={{ background: "#fff", color: "#0F172A", lineHeight: 1.6, overflowX: "hidden" }}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
