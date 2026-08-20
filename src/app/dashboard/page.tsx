@@ -97,47 +97,52 @@ export default async function HomePage({
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#F8FAFC" }}>
-      <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8">
+    <div className="min-h-screen" style={{ background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle,rgba(26,86,219,.04) 1px,transparent 1px)", backgroundSize: "30px 30px" }} />
+      <div className="relative z-10 mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
         {campaign && (
-          <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl border-2 border-blue-200 bg-blue-50 p-4">
+          <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-[rgba(37,99,235,.2)] bg-white p-4" style={{ boxShadow: "0 2px 7px rgba(37,99,235,.06)" }}>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-xl">📋</span>
               <div>
-                <p className="font-semibold text-blue-900">Vous prospectez pour « {campaign.name} »</p>
+                <p className="font-semibold text-[#0F172A]">Vous prospectez pour « {campaign.name} »</p>
                 {campaign.sector && campaign.location && (
-                  <p className="text-xs text-blue-700">{campaign.sector} à {campaign.location}</p>
+                  <p className="text-xs text-[#475569]">{campaign.sector} à {campaign.location}</p>
                 )}
               </div>
             </div>
-            <Link href={`/campaigns/${campaign.id}`} className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
+            <Link href={`/campaigns/${campaign.id}`} className="rounded-lg bg-[#E8622A] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#d4561f]" style={{ boxShadow: "0 6px 22px rgba(232,98,42,.35)" }}>
               Voir la campagne
             </Link>
           </div>
         )}
 
         <header className="mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/30">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <div className="mb-6 flex items-center gap-2">
+            <div className="h-[2px] w-6 rounded bg-[#E8622A]" />
+            <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#E8622A]">Dashboard</span>
+          </div>
+          <div className="flex items-center gap-4 mb-8">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl text-white" style={{ background: "linear-gradient(135deg, #2563EB, #3B82F6)", boxShadow: "0 8px 24px rgba(37,99,235,.3)" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-600">GoSite Digital Agency</p>
-              <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Trouvez · Vibecodez · Vendez</h1>
-              <p className="text-xs text-slate-500">Bing Maps + OpenStreetMap · Workflow WhatsApp automatisé</p>
+              <h1 className="text-3xl font-extrabold text-[#0F172A] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Trouvez · Vibecodez · Vendez</h1>
+              <p className="mt-1 text-sm text-[#64748B]">Bing Maps + OpenStreetMap · Workflow WhatsApp automatisé</p>
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 mb-6">
+          <div className="grid gap-4 sm:grid-cols-3 mb-8">
             <KPICard label="Prospects créés" value={totalProspectsCount} icon="🎯" tone="blue" />
-            <KPICard label="Ventes conclues" value={totalPaidCount} icon="✅" tone="emerald" subtitle={`${conversionRate}% conversion`} />
-            <KPICard label="CA généré" value={revenueDisplay} icon="💰" tone="amber" subtitle={`${totalPaidCount} vente${totalPaidCount > 1 ? "s" : ""}`} breakdown={breakdown} />
+            <KPICard label="Ventes conclues" value={totalPaidCount} icon="✅" tone="green" subtitle={`${conversionRate}% conversion`} />
+            <KPICard label="CA généré" value={revenueDisplay} icon="💰" tone="orange" subtitle={`${totalPaidCount} vente${totalPaidCount > 1 ? "s" : ""}`} breakdown={breakdown} />
           </div>
         </header>
 
-        <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.06)] sm:p-8">
+        <section className="relative overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white p-6 sm:p-8" style={{ boxShadow: "0 2px 7px rgba(0,0,0,.04)" }}>
+          <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #2563EB, #3B82F6)" }} />
           <SearchForm
             initialCampaignId={campaignId}
             initialSector={campaign?.sector || ""}

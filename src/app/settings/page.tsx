@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   const settings = await getSettings();
   return (
-      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <Link

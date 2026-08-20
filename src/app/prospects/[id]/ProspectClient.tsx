@@ -374,7 +374,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <div className="mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           {settings.whatsappConnectedAt && (

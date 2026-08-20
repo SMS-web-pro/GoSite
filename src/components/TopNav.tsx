@@ -31,13 +31,13 @@ export default function TopNav() {
   }, [pathname]);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <nav className="sticky top-0 z-50 border-b border-[#E2E8F0] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-slate-900">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-sm text-white">
+        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-[#0F172A]">
+          <span className="grid h-8 w-8 place-items-center rounded-lg text-sm text-white" style={{ background: "linear-gradient(135deg, #2563EB, #3B82F6)" }}>
             ⚡
           </span>
-          <span className="hidden sm:inline">Vibecoder Prospect</span>
+          <span className="hidden sm:inline" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>GoSite</span>
         </Link>
         <div className="flex items-center gap-2 overflow-x-auto">
           {waStatus && (
@@ -45,19 +45,19 @@ export default function TopNav() {
               href="/settings"
               className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-medium transition ${
                 waStatus === "connected"
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  ? "border-[rgba(16,185,129,.3)] bg-[rgba(16,185,129,.1)] text-[#10B981]"
                   : waStatus === "pending"
-                    ? "border-amber-200 bg-amber-50 text-amber-700"
-                    : "border-slate-200 bg-slate-50 text-slate-500"
+                    ? "border-[rgba(245,158,11,.3)] bg-[rgba(245,158,11,.1)] text-[#F59E0B]"
+                    : "border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B]"
               }`}
               title={waStatus === "connected" ? "WhatsApp connecté — envoyez vos messages" : waStatus === "pending" ? "En attente du scan QR" : "WhatsApp non connecté"}
             >
               <span className="relative flex h-1.5 w-1.5">
                 <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                  waStatus === "connected" ? "animate-ping bg-emerald-400" : waStatus === "pending" ? "animate-ping bg-amber-400" : "bg-slate-300"
+                  waStatus === "connected" ? "animate-ping bg-[#10B981]" : waStatus === "pending" ? "animate-ping bg-[#F59E0B]" : "bg-[#94A3B8]"
                 }`}></span>
                 <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${
-                  waStatus === "connected" ? "bg-emerald-500" : waStatus === "pending" ? "bg-amber-500" : "bg-slate-400"
+                  waStatus === "connected" ? "bg-[#10B981]" : waStatus === "pending" ? "bg-[#F59E0B]" : "bg-[#94A3B8]"
                 }`}></span>
               </span>
               <span>📱 {waStatus === "connected" ? "Connecté" : waStatus === "pending" ? "En attente" : "Déconnecté"}</span>
@@ -70,7 +70,7 @@ export default function TopNav() {
                 key={l.href}
                 href={l.href}
                 className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                  isActive ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  isActive ? "bg-[rgba(232,98,42,.1)] text-[#E8622A]" : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#0F172A]"
                 }`}
               >
                 <span>{l.icon}</span>
