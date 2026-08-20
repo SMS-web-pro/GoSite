@@ -1,5 +1,11 @@
-/* ── Neutralize Tailwind preflight completely ──── */
-html {
+@import "tailwindcss";
+
+@layer base {
+  svg { display: block; }
+}
+
+/* ── Neutralize Tailwind preflight for public pages only ──── */
+[data-public] html {
   font-size: 16px;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
@@ -7,7 +13,7 @@ html {
   font-family: initial;
   scroll-behavior: smooth;
 }
-body {
+[data-public] body {
   margin: 0;
   font-family: var(--font-inter, 'Inter', sans-serif);
   background: #fff;
@@ -15,16 +21,16 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
 }
-*, *::before, *::after {
+[data-public] *, [data-public] *::before, [data-public] *::after {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
 }
-h1, h2, h3, h4, h5, h6, p { margin: 0; }
-a { color: inherit; text-decoration: none; }
-img, video, svg { display: block; max-width: 100%; }
-button, input, select, textarea { font: inherit; color: inherit; background: none; border: none; outline: none; }
-ul, ol { list-style: none; margin: 0; padding: 0; }
+[data-public] h1, [data-public] h2, [data-public] h3, [data-public] h4, [data-public] h5, [data-public] h6, [data-public] p { margin: 0; }
+[data-public] a { color: inherit; text-decoration: none; }
+[data-public] img, [data-public] video { display: block; max-width: 100%; }
+[data-public] button, [data-public] input, [data-public] select, [data-public] textarea { font: inherit; color: inherit; background: none; border: none; outline: none; }
+[data-public] ul, [data-public] ol { list-style: none; margin: 0; padding: 0; }
 
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0A1628}::-webkit-scrollbar-thumb{background:#2563EB;border-radius:10px}
 
