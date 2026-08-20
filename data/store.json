@@ -50631,18 +50631,7 @@
     }
   ],
   "prospects": [],
-  "campaigns": [
-    {
-      "id": 25,
-      "status": "active",
-      "createdAt": "2026-08-20T19:28:23.143Z",
-      "updatedAt": "2026-08-20T19:28:23.143Z",
-      "name": "test",
-      "sector": "coiffeur",
-      "location": "paris",
-      "description": null
-    }
-  ],
+  "campaigns": [],
   "messageLogs": [
     {
       "id": 1786835795903.2224,
