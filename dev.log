@@ -1029,3 +1029,99 @@ params: 1
  GET /api/whatsapp/session 200 in 15ms (next.js: 4ms, application-code: 11ms)
  GET /api/whatsapp/session 200 in 16ms (next.js: 4ms, application-code: 12ms)
  GET /api/stats 200 in 34ms (next.js: 4ms, application-code: 30ms)
+ GET /api/whatsapp/session 200 in 26ms (next.js: 8ms, application-code: 18ms)
+ GET /api/whatsapp/session 200 in 23ms (next.js: 7ms, application-code: 16ms)
+ GET /api/stats 200 in 63ms (next.js: 5ms, application-code: 58ms)
+ GET /api/whatsapp/session 200 in 28ms (next.js: 8ms, application-code: 20ms)
+ GET /api/stats 200 in 65ms (next.js: 6ms, application-code: 59ms)
+ GET /api/whatsapp/session 200 in 24ms (next.js: 6ms, application-code: 17ms)
+ GET /api/stats 200 in 68ms (next.js: 5ms, application-code: 63ms)
+ GET /api/whatsapp/session 200 in 33ms (next.js: 17ms, application-code: 16ms)
+ GET /api/stats 200 in 74ms (next.js: 6ms, application-code: 68ms)
+ GET /api/whatsapp/session 200 in 23ms (next.js: 6ms, application-code: 16ms)
+ GET /api/stats 200 in 55ms (next.js: 6ms, application-code: 49ms)
+ GET /api/whatsapp/session 200 in 26ms (next.js: 6ms, application-code: 20ms)
+ GET /api/whatsapp/session 200 in 19ms (next.js: 4ms, application-code: 15ms)
+ GET /api/stats 200 in 55ms (next.js: 5ms, application-code: 50ms)
+ GET /api/whatsapp/session 200 in 28ms (next.js: 7ms, application-code: 21ms)
+ GET /api/whatsapp/session 200 in 27ms (next.js: 7ms, application-code: 20ms)
+ GET /api/whatsapp/session 200 in 18ms (next.js: 4ms, application-code: 14ms)
+ GET /api/stats 200 in 362ms (next.js: 4ms, application-code: 358ms)
+ GET /api/whatsapp/session 200 in 45ms (next.js: 15ms, application-code: 30ms)
+ GET /api/whatsapp/session 200 in 19ms (next.js: 6ms, application-code: 13ms)
+ GET /api/stats 200 in 41ms (next.js: 4ms, application-code: 37ms)
+ GET /api/whatsapp/session 200 in 24ms (next.js: 6ms, application-code: 18ms)
+ GET /api/stats 200 in 45ms (next.js: 5ms, application-code: 40ms)
+ GET /api/whatsapp/session 200 in 23ms (next.js: 9ms, application-code: 15ms)
+ GET /api/stats 200 in 43ms (next.js: 5ms, application-code: 38ms)
+ GET /api/whatsapp/session 200 in 24ms (next.js: 6ms, application-code: 18ms)
+ GET /api/stats 200 in 63ms (next.js: 6ms, application-code: 57ms)
+[wa] [16:26:38.869] Credentials updated, saving…
+ GET /api/whatsapp/session 200 in 17ms (next.js: 5ms, application-code: 12ms)
+ GET /api/stats 200 in 41ms (next.js: 6ms, application-code: 35ms)
+ GET /api/whatsapp/session 200 in 21ms (next.js: 9ms, application-code: 13ms)
+ GET /api/stats 200 in 42ms (next.js: 4ms, application-code: 38ms)
+ GET /api/whatsapp/session 200 in 31ms (next.js: 16ms, application-code: 14ms)
+ GET /api/stats 200 in 58ms (next.js: 4ms, application-code: 53ms)
+ GET /api/whatsapp/session 200 in 24ms (next.js: 9ms, application-code: 15ms)
+ GET /api/stats 200 in 57ms (next.js: 5ms, application-code: 52ms)
+ GET /api/whatsapp/session 200 in 20ms (next.js: 7ms, application-code: 14ms)
+ GET /api/stats 200 in 44ms (next.js: 5ms, application-code: 39ms)
+ GET /api/whatsapp/session 200 in 29ms (next.js: 5ms, application-code: 24ms)
+ GET /api/stats 200 in 59ms (next.js: 6ms, application-code: 54ms)
+ GET /api/whatsapp/session 200 in 19ms (next.js: 5ms, application-code: 15ms)
+ GET /api/stats 200 in 76ms (next.js: 8ms, application-code: 68ms)
+ GET /api/whatsapp/session 200 in 25ms (next.js: 6ms, application-code: 18ms)
+ GET /api/stats 200 in 62ms (next.js: 5ms, application-code: 57ms)
+ GET /api/whatsapp/session 200 in 21ms (next.js: 6ms, application-code: 15ms)
+ GET /api/stats 200 in 57ms (next.js: 5ms, application-code: 51ms)
+ GET /api/whatsapp/session 200 in 22ms (next.js: 6ms, application-code: 16ms)
+ GET /api/stats 200 in 53ms (next.js: 5ms, application-code: 48ms)
+[wa] [16:36:39.005] Credentials updated, saving…
+ GET /api/whatsapp/session 200 in 21ms (next.js: 5ms, application-code: 15ms)
+ GET /api/stats 200 in 54ms (next.js: 6ms, application-code: 47ms)
+ GET /api/whatsapp/session 200 in 18ms (next.js: 5ms, application-code: 13ms)
+ GET /api/stats 200 in 61ms (next.js: 5ms, application-code: 56ms)
+ GET /api/whatsapp/session 200 in 21ms (next.js: 6ms, application-code: 16ms)
+ GET /api/stats 200 in 53ms (next.js: 6ms, application-code: 47ms)
+ GET /api/whatsapp/session 200 in 24ms (next.js: 13ms, application-code: 12ms)
+ GET /api/stats 200 in 37ms (next.js: 3ms, application-code: 34ms)
+ GET /api/whatsapp/session 200 in 29ms (next.js: 10ms, application-code: 19ms)
+ GET /api/stats 200 in 58ms (next.js: 5ms, application-code: 54ms)
+ GET /api/whatsapp/session 200 in 32ms (next.js: 9ms, application-code: 22ms)
+ GET /api/stats 200 in 176ms (next.js: 10ms, application-code: 166ms)
+ GET /api/whatsapp/session 200 in 28ms (next.js: 9ms, application-code: 19ms)
+ GET /api/stats 200 in 44ms (next.js: 4ms, application-code: 40ms)
+[wa] [16:46:39.194] Credentials updated, saving…
+{"level":30,"time":1787244747113,"pid":7356,"hostname":"DESKTOP-3JGJHGJ","trace":"Error: Connection Terminated\n    at WebSocketClient.<anonymous> (file:///C:/Users/hp/Documents/GitHub/GoSite/node_modules/@whiskeysockets/baileys/lib/Socket/socket.js:690:35)\n    at WebSocketClient.emit (node:events:518:28)\n    at WebSocket.<anonymous> (file:///C:/Users/hp/Documents/GitHub/GoSite/node_modules/@whiskeysockets/baileys/lib/Socket/Client/websocket.js:35:54)\n    at WebSocket.emit (node:events:518:28)\n    at WebSocket.emitClose (C:\\Users\\hp\\Documents\\GitHub\\GoSite\\node_modules\\ws\\lib\\websocket.js:279:10)\n    at TLSSocket.socketOnClose (C:\\Users\\hp\\Documents\\GitHub\\GoSite\\node_modules\\ws\\lib\\websocket.js:1360:15)\n    at TLSSocket.emit (node:events:530:35)\n    at node:net:351:12\n    at TCP.done (node:_tls_wrap:650:7)\n    at TCP.callbackTrampoline (node:internal/async_hooks:130:17)","msg":"connection errored"}
+[wa] [16:52:27.119] connection.update: connection=close hasQR=false err=Connection Terminated
+[wa] [16:52:27.120] Connection closed: reason=428 msg=Connection Terminated
+[wa] Failed to persist session to DB: Error: Failed query: select "id", "agency_name", "contact_name", "contact_email", "contact_phone", "website_url", "portfolio_url", "whatsapp_number", "whatsapp_session_id", "whatsapp_session_phone", "whatsapp_session_name", "whatsapp_connected_at", "whatsapp_cloud_phone_id", "whatsapp_cloud_access_token", "whatsapp_cloud_business_id", "message_language", "payment_link", "pricing_tiers", "message_templates", "brand_color", "logo_url", "updated_at" from "settings" limit $1
+params: 1
+    at async persistSessionToDb (src\lib\whatsapp-session.ts:89:17)
+  87 | ) {
+  88 |   try {
+> 89 |     const [s] = await db.select().from(settings).limit(1);
+     |                 ^
+  90 |     if (!s) return;
+  91 |     await db
+  92 |       .update(settings) {
+  query: 'select "id", "agency_name", "contact_name", "contact_email", "contact_phone", "website_url", "portfolio_url", "whatsapp_number", "whatsapp_session_id", "whatsapp_session_phone", "whatsapp_session_name", "whatsapp_connected_at", "whatsapp_cloud_phone_id", "whatsapp_cloud_access_token", "whatsapp_cloud_business_id", "message_language", "payment_link", "pricing_tiers", "message_templates", "brand_color", "logo_url", "updated_at" from "settings" limit $1',
+  params: [ 1 ],
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:5432
+      at <unknown> (Error: connect ECONNREFUSED 127.0.0.1:5432)
+      at async persistSessionToDb (src\lib\whatsapp-session.ts:89:17)
+    87 | ) {
+    88 |   try {
+  > 89 |     const [s] = await db.select().from(settings).limit(1);
+       |                 ^
+    90 |     if (!s) return;
+    91 |     await db
+    92 |       .update(settings) {
+    errno: -4078,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 5432
+  }
+}
