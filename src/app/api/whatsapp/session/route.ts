@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import {
   initiateSession,
-  getSessionStatus,
   getSessionStatusAsync,
   disconnectSession,
   qrCodeToDataUrl,
@@ -10,14 +9,20 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/**
- * Initiate a real WhatsApp session via Baileys.
- *
- * Returns the QR code (as a base64 data URL) that the user must scan
- * with their phone. The QR payload is the actual WhatsApp Web
- * multi-device link refusal signature.
- */
+function isServerless() {
+  return process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined;
+}
+
 export async function POST() {
+  if (isServerless()) {
+    return NextResponse.json(
+      {
+        error: "WhatsApp Baileys n'est pas disponible sur Vercel (serverless). Utilisez WhatsApp Cloud API (Meta) ou un serveur dédié.",
+        status: "unavailable",
+      },
+      { status: 503 }
+    );
+  }
   try {
     const result = await initiateSession();
     let qrDataUrl: string | null = null;
@@ -28,7 +33,6 @@ export async function POST() {
       status: result.status,
       sessionId: result.sessionId,
       qrCode: qrDataUrl,
-      // The raw payload for advanced clients
       rawQrPayload: result.qrCode,
     });
   } catch (e) {
@@ -42,11 +46,14 @@ export async function POST() {
   }
 }
 
-/**
- * Get the current WhatsApp session status. If the server was restarted
- * but the credentials + DB indicate a connected session, we auto-recover.
- */
 export async function GET() {
+  if (isServerless()) {
+    return NextResponse.json({
+      status: "unavailable",
+      connected: false,
+      error: "WhatsApp Baileys n'est pas disponible sur Vercel. Utilisez WhatsApp Cloud API.",
+    });
+  }
   const status = await getSessionStatusAsync();
   const payload: Record<string, unknown> = {
     status: status.status,
@@ -63,10 +70,10 @@ export async function GET() {
   return NextResponse.json(payload);
 }
 
-/**
- * Disconnect the active WhatsApp session.
- */
 export async function DELETE() {
+  if (isServerless()) {
+    return NextResponse.json({ status: "unavailable" });
+  }
   await disconnectSession();
   return NextResponse.json({ status: "disconnected" });
 }

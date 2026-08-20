@@ -11,11 +11,18 @@ const globalForDb = globalThis as typeof globalThis & {
   __arenaNextJsPostgresqlPool?: Pool;
 };
 
-export const pool =
-  globalForDb.__arenaNextJsPostgresqlPool ??
-  new Pool({
-    connectionString: databaseUrl,
+function createPool() {
+  const isSupabase = (databaseUrl ?? "").includes("supabase");
+  return new Pool({
+    connectionString: databaseUrl!,
+    ssl: isSupabase ? { rejectUnauthorized: false } : undefined,
+    max: 5,
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 10000,
   });
+}
+
+export const pool = globalForDb.__arenaNextJsPostgresqlPool ?? createPool();
 
 globalForDb.__arenaNextJsPostgresqlPool = pool;
 

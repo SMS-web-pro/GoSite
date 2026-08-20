@@ -31,8 +31,8 @@ export async function POST(req: Request) {
         status: "active",
       })
       .returning();
-  } catch (dbErr) {
-    console.warn("DB unavailable for campaign creation, using local store:", dbErr);
+  } catch (dbErr: any) {
+    console.error("[campaigns POST] DB insert failed:", dbErr?.message || dbErr);
     created = localStore.addCampaign({
       name,
       sector: body.sector || null,
@@ -52,8 +52,8 @@ export async function GET() {
       .orderBy(desc(campaigns.createdAt))
       .limit(50);
     return NextResponse.json({ campaigns: rows });
-  } catch (dbErr) {
-    console.warn("DB unavailable for campaigns list, using local store:", dbErr);
+  } catch (dbErr: any) {
+    console.error("[campaigns GET] DB query failed:", dbErr?.message || dbErr);
     const rows = localStore.getCampaigns();
     return NextResponse.json({ campaigns: rows });
   }

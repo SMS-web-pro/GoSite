@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { campaigns, prospects, businesses } from "@/db/schema";
+import { campaigns, prospects, businesses, messageLogs } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import CampaignDetail from "./CampaignDetail";
-import { localStore } from "@/lib/local-store";
 import { getSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -27,12 +26,6 @@ export default async function CampaignDetailPage({
   } catch {
     campaign = null;
   }
-
-  if (!campaign) {
-    // Try local store
-    const data = localStore.get();
-    campaign = data.campaigns.find((c: any) => c.id === campaignId) || null;
-  }
   if (!campaign) notFound();
 
   let prospectsList: Array<{ prospect: typeof prospects.$inferSelect; business: typeof businesses.$inferSelect }> = [];
@@ -47,12 +40,17 @@ export default async function CampaignDetailPage({
     prospectsList = [];
   }
 
-  if (prospectsList.length === 0) {
-    const localProspects = localStore.getProspects();
-    prospectsList = localProspects.filter((p: any) => p.prospect?.campaignId === campaignId);
+  let campaignLogs: any[] = [];
+  try {
+    campaignLogs = await db
+      .select()
+      .from(messageLogs)
+      .where(eq(messageLogs.campaignId, campaignId))
+      .orderBy(desc(messageLogs.sentAt));
+  } catch {
+    campaignLogs = [];
   }
 
-  const campaignLogs = localStore.getMessageLogsByCampaignId(campaignId);
   const settings = await getSettings();
 
   return <CampaignDetail campaign={campaign} items={prospectsList} messageLogs={campaignLogs} settings={settings} />;
