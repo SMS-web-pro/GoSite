@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSessionStatusAsync, sendMessage } from "@/lib/whatsapp-session";
+import { db } from "@/db";
+import { prospects, messageLogs } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
@@ -51,9 +54,22 @@ export async function POST(req: Request) {
     );
   }
 
-  // Find prospect in local store (no DB dependency)
-  const data = localStore.get();
-  const prospect = data.prospects.find((p: any) => p.id === prospectId);
+  // Find prospect — DB first, local-store fallback
+  let campaignId: number | null = null;
+  try {
+    const [prospect] = await db
+      .select({ campaignId: prospects.campaignId })
+      .from(prospects)
+      .where(eq(prospects.id, prospectId))
+      .limit(1);
+    if (prospect) {
+      campaignId = prospect.campaignId;
+    }
+  } catch {
+    const data = localStore.get();
+    const prospect = data.prospects.find((p: any) => p.id === prospectId);
+    campaignId = prospect?.campaignId || null;
+  }
 
   const result = await sendMessage(phone, message);
   if (!result.ok) {
@@ -63,19 +79,31 @@ export async function POST(req: Request) {
     );
   }
 
-  // Log the message in local store
-  localStore.addMessageLog({
-    prospectId,
-    campaignId: prospect?.campaignId || null,
-    messageStage,
-    status: "sent",
-    method: "baileys_session",
-    messageId: result.messageId,
-    fromPhone: status.phoneNumber,
-    toPhone: phone,
-    toName: name,
-    messageLength: message.length,
-  });
+  // Log the message — DB first, local-store fallback
+  try {
+    await db.insert(messageLogs).values({
+      prospectId,
+      campaignId,
+      messageStage,
+      status: "sent",
+      phone,
+      language: null,
+      messageBody: message,
+    });
+  } catch {
+    localStore.addMessageLog({
+      prospectId,
+      campaignId,
+      messageStage,
+      status: "sent",
+      method: "baileys_session",
+      messageId: result.messageId,
+      fromPhone: status.phoneNumber,
+      toPhone: phone,
+      toName: name,
+      messageLength: message.length,
+    });
+  }
 
   return NextResponse.json({
     ok: true,
