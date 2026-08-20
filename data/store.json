@@ -2,7 +2,7 @@
   "nextSearchId": 2317,
   "nextBusinessId": 2529,
   "nextProspectId": 2529,
-  "nextCampaignId": 25,
+  "nextCampaignId": 26,
   "searches": [
     {
       "id": 1,
@@ -50631,7 +50631,18 @@
     }
   ],
   "prospects": [],
-  "campaigns": [],
+  "campaigns": [
+    {
+      "id": 25,
+      "status": "active",
+      "createdAt": "2026-08-20T19:28:23.143Z",
+      "updatedAt": "2026-08-20T19:28:23.143Z",
+      "name": "test",
+      "sector": "coiffeur",
+      "location": "paris",
+      "description": null
+    }
+  ],
   "messageLogs": [
     {
       "id": 1786835795903.2224,
