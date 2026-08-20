@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isExternalServerConfigured, callServer } from "@/lib/whatsapp-client";
 import { getSessionStatusAsync, sendMessage } from "@/lib/whatsapp-session";
 import { db } from "@/db";
 import { prospects, messageLogs } from "@/db/schema";
@@ -35,22 +36,50 @@ export async function POST(req: Request) {
     );
   }
 
-  let status;
-  try {
-    status = await getSessionStatusAsync();
-  } catch {
-    return NextResponse.json(
-      { error: "Échec de la récupération du statut de session" },
-      { status: 500 }
-    );
+  let result: { ok: boolean; messageId?: string; error?: string; sentFrom?: string; sentFromName?: string };
+
+  if (isExternalServerConfigured()) {
+    // Use external Baileys server
+    try {
+      const data = await callServer("/send", {
+        method: "POST",
+        body: JSON.stringify({ phone, message }),
+      });
+      result = { ok: true, messageId: data.messageId, sentFrom: data.sentFrom, sentFromName: data.sentFromName };
+    } catch (err: any) {
+      return NextResponse.json(
+        { error: err.message || "Échec d'envoi via serveur WhatsApp" },
+        { status: 500 }
+      );
+    }
+  } else {
+    // Fallback: local Baileys (non-serverless only)
+    let status;
+    try {
+      status = await getSessionStatusAsync();
+    } catch {
+      return NextResponse.json(
+        { error: "Échec de la récupération du statut de session" },
+        { status: 500 }
+      );
+    }
+    if (status.status !== "connected") {
+      return NextResponse.json(
+        {
+          error: "WhatsApp n'est pas connecté. Scannez le QR code dans Paramètres → WhatsApp.",
+          status: status.status,
+        },
+        { status: 400 }
+      );
+    }
+    const sendResult = await sendMessage(phone, message);
+    result = { ok: sendResult.ok, messageId: sendResult.messageId, error: sendResult.error, sentFrom: status.phoneNumber ?? undefined, sentFromName: status.profileName ?? undefined };
   }
-  if (status.status !== "connected") {
+
+  if (!result.ok) {
     return NextResponse.json(
-      {
-        error: "WhatsApp n'est pas connecté. Scannez le QR code dans Paramètres → WhatsApp.",
-        status: status.status,
-      },
-      { status: 400 }
+      { error: result.error || "Échec d'envoi du message" },
+      { status: 500 }
     );
   }
 
@@ -71,14 +100,6 @@ export async function POST(req: Request) {
     campaignId = prospect?.campaignId || null;
   }
 
-  const result = await sendMessage(phone, message);
-  if (!result.ok) {
-    return NextResponse.json(
-      { error: result.error || "Échec d'envoi du message" },
-      { status: 500 }
-    );
-  }
-
   // Log the message — DB first, local-store fallback
   try {
     await db.insert(messageLogs).values({
@@ -96,9 +117,9 @@ export async function POST(req: Request) {
       campaignId,
       messageStage,
       status: "sent",
-      method: "baileys_session",
+      method: isExternalServerConfigured() ? "whatsapp_server" : "baileys_local",
       messageId: result.messageId,
-      fromPhone: status.phoneNumber,
+      fromPhone: result.sentFrom,
       toPhone: phone,
       toName: name,
       messageLength: message.length,
@@ -108,8 +129,8 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     messageId: result.messageId,
-    sentFrom: status.phoneNumber,
-    sentFromName: status.profileName,
+    sentFrom: result.sentFrom,
+    sentFromName: result.sentFromName,
     sentTo: phone,
   });
 }

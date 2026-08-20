@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  initiateSession,
-  getSessionStatusAsync,
-  disconnectSession,
-  qrCodeToDataUrl,
-} from "@/lib/whatsapp-session";
+import { isExternalServerConfigured, callServer } from "@/lib/whatsapp-client";
+import { getSessionStatusAsync, disconnectSession, initiateSession, qrCodeToDataUrl } from "@/lib/whatsapp-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,15 +10,30 @@ function isServerless() {
 }
 
 export async function POST() {
+  // If external server is configured, use it
+  if (isExternalServerConfigured()) {
+    try {
+      const data = await callServer("/session", { method: "POST" });
+      return NextResponse.json(data);
+    } catch (err: any) {
+      return NextResponse.json(
+        { error: err.message || "Erreur serveur WhatsApp", status: "failed" },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Fallback: Baileys local (only works on non-serverless)
   if (isServerless()) {
     return NextResponse.json(
       {
-        error: "WhatsApp Baileys n'est pas disponible sur Vercel (serverless). Utilisez WhatsApp Cloud API (Meta) ou un serveur dédié.",
+        error: "WhatsApp n'est pas configuré. Ajoutez WHATSAPP_SERVER_URL ou configurez Baileys en local.",
         status: "unavailable",
       },
       { status: 503 }
     );
   }
+
   try {
     const result = await initiateSession();
     let qrDataUrl: string | null = null;
@@ -47,13 +58,28 @@ export async function POST() {
 }
 
 export async function GET() {
+  // If external server is configured, use it
+  if (isExternalServerConfigured()) {
+    try {
+      const data = await callServer("/session");
+      return NextResponse.json(data);
+    } catch (err: any) {
+      return NextResponse.json(
+        { status: "failed", connected: false, error: err.message },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Fallback: Baileys local
   if (isServerless()) {
     return NextResponse.json({
       status: "unavailable",
       connected: false,
-      error: "WhatsApp Baileys n'est pas disponible sur Vercel. Utilisez WhatsApp Cloud API.",
+      error: "WhatsApp n'est pas configuré.",
     });
   }
+
   const status = await getSessionStatusAsync();
   const payload: Record<string, unknown> = {
     status: status.status,
@@ -71,6 +97,17 @@ export async function GET() {
 }
 
 export async function DELETE() {
+  // If external server is configured, use it
+  if (isExternalServerConfigured()) {
+    try {
+      const data = await callServer("/session", { method: "DELETE" });
+      return NextResponse.json(data);
+    } catch (err: any) {
+      return NextResponse.json({ status: "error", error: err.message }, { status: 500 });
+    }
+  }
+
+  // Fallback: Baileys local
   if (isServerless()) {
     return NextResponse.json({ status: "unavailable" });
   }

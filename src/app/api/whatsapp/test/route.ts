@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
+import { isExternalServerConfigured, callServer } from "@/lib/whatsapp-client";
 import { getSessionStatusAsync, sendMessage } from "@/lib/whatsapp-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/**
- * Send a test WhatsApp message to verify the Baileys session is
- * working correctly. The user can choose any phone number to send to.
- *
- * Returns detailed feedback about success/failure so the user can
- * verify everything is working end-to-end.
- */
 export async function POST(req: Request) {
   let body: { phone?: string; message?: string };
   try {
@@ -29,7 +23,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // Normalize phone (remove + and spaces, keep only digits)
   const phoneClean = phone.replace(/[^0-9]/g, "");
   if (!phoneClean || phoneClean.length < 8) {
     return NextResponse.json(
@@ -38,7 +31,39 @@ export async function POST(req: Request) {
     );
   }
 
-  // Check session status (with auto-recovery from disk)
+  const message =
+    customMessage ||
+    `✅ Test GoSite\n\nBonjour ! Ceci est un message de test envoyé depuis la plateforme GoSite à ${new Date().toLocaleString(
+      "fr-FR"
+    )}.\n\nSi vous voyez ce message, la connexion WhatsApp fonctionne correctement ! 🎉`;
+
+  if (isExternalServerConfigured()) {
+    // Use external Baileys server
+    try {
+      const data = await callServer("/send", {
+        method: "POST",
+        body: JSON.stringify({ phone: phoneClean, message }),
+      });
+      return NextResponse.json({
+        ok: true,
+        messageId: data.messageId,
+        sentFrom: data.sentFrom,
+        sentFromName: data.sentFromName,
+        sentTo: phoneClean,
+        sentToFormatted: `+${phoneClean}`,
+        messageLength: message.length,
+        messagePreview: message.slice(0, 100) + (message.length > 100 ? "..." : ""),
+        sentAt: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      return NextResponse.json(
+        { ok: false, error: err.message || "Échec de l'envoi" },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Fallback: local Baileys
   let status;
   try {
     status = await getSessionStatusAsync();
@@ -59,29 +84,13 @@ export async function POST(req: Request) {
     );
   }
 
-  // Default test message if not provided
-  const message =
-    customMessage ||
-    `✅ Test Vibecoder Prospect\n\nBonjour ! Ceci est un message de test envoyé depuis la plateforme Vibecoder Prospect à ${new Date().toLocaleString(
-      "fr-FR"
-    )}.\n\nSi vous voyez ce message, la connexion WhatsApp fonctionne correctement ! 🎉`;
-
-  // Send via Baileys
   const result = await sendMessage(phoneClean, message);
   if (!result.ok) {
     return NextResponse.json(
-      {
-        ok: false,
-        error: result.error || "Échec de l'envoi",
-      },
+      { ok: false, error: result.error || "Échec de l'envoi" },
       { status: 500 }
     );
   }
-
-  // We don't log test messages to message_logs because the table has a
-  // foreign key to prospects.id (notNull). Test messages don't belong
-  // to any prospect, so we skip the DB log here. The result is returned
-  // directly to the user with full details.
 
   return NextResponse.json({
     ok: true,
@@ -96,11 +105,21 @@ export async function POST(req: Request) {
   });
 }
 
-/**
- * GET — returns the current status (for the test panel UI to know
- * if a real test can be sent).
- */
 export async function GET() {
+  if (isExternalServerConfigured()) {
+    try {
+      const data = await callServer("/session");
+      return NextResponse.json({
+        status: data.status,
+        phoneNumber: data.phoneNumber,
+        profileName: data.profileName,
+        ready: data.status === "connected",
+      });
+    } catch (err: any) {
+      return NextResponse.json({ status: "error", ready: false, error: err.message });
+    }
+  }
+
   const status = await getSessionStatusAsync();
   return NextResponse.json({
     status: status.status,
