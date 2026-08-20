@@ -13,11 +13,13 @@ export default async function ProspectPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  console.log("[prospect page] params.id =", id);
   const prospectId = parseInt(id, 10);
   if (Number.isNaN(prospectId)) notFound();
 
   let row;
   try {
+    console.log("[prospect page] querying DB for prospectId =", prospectId);
     row = await db
       .select({ prospect: prospects, business: businesses })
       .from(prospects)
@@ -25,11 +27,17 @@ export default async function ProspectPage({
       .where(eq(prospects.id, prospectId))
       .limit(1)
       .then((res) => res[0]);
-  } catch {
+    console.log("[prospect page] DB returned:", row ? "found" : "null");
+  } catch (err: any) {
+    console.error("[prospect page] DB error:", err?.message || err);
+    console.error("[prospect page] DB error stack:", err?.stack);
     row = null;
   }
 
-  if (!row) notFound();
+  if (!row) {
+    console.log("[prospect page] no prospect found, calling notFound()");
+    notFound();
+  }
 
   const settings = await getSettings();
   return <ProspectClient prospect={row.prospect as any} business={row.business} settings={settings} />;
