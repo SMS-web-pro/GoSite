@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { campaigns, prospects, businesses, messageLogs } from "@/db/schema";
@@ -18,12 +19,14 @@ export default async function CampaignDetailPage({
 
   let campaign;
   try {
-    [campaign] = await db
+    const rows = await db
       .select()
       .from(campaigns)
       .where(eq(campaigns.id, campaignId))
       .limit(1);
-  } catch {
+    campaign = rows[0];
+  } catch (err: any) {
+    console.error("[campaign page] DB error:", err?.message || err);
     campaign = null;
   }
   if (!campaign) notFound();
