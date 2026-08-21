@@ -99,19 +99,8 @@
   overflow:visible;
 }
 
-/* Nav right */
-.gs-nav-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-shrink:0;
-}
-
 /* Hide on mobile */
 .gs-hide-mob{display:flex!important;flex-shrink:0}
-
-/* Mobile actions (shown in dropdown on mobile) */
-.gs-nav-mobile-actions{display:none!important}
 
 /* ═══════════════════════════════════════════════
    TABLET: max-width 1024px
@@ -119,11 +108,9 @@
 @media(max-width:1024px){
   .gs-nav-toggle{display:flex!important}
   .gs-hide-mob{display:none!important}
-  .gs-nav-mobile-actions{display:flex!important}
 
   /* NAV */
   .gs-nav{padding:0 20px!important}
-  .gs-nav-right{gap:8px!important}
   .gs-nav-links{
     display:none!important;
     position:fixed;top:56px;left:0;right:0;

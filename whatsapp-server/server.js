@@ -100,35 +100,12 @@ async function clearSessionFromDb() {
 }
 
 // --- Phone number helpers ---
-// All known country codes sorted by length descending
-const ALL_COUNTRY_CODES = ["971", "966", "965", "974", "973", "968", "961", "962", "964", "216", "213", "218", "249",
-  "237", "225", "223", "227", "226", "261", "222", "241", "242", "243", "234", "233",
-  "420", "44", "212", "33", "32", "49", "34", "39", "351", "31", "41", "46", "47", "45", "48", "40", "36", "90", "20", "1"];
-
 function cleanPhone(raw) {
   if (!raw) return null;
   let cleaned = raw.replace(/[^0-9]/g, "");
   if (!cleaned || cleaned.length < 8) return null;
-
-  // Already starts with a known country code → international format
-  for (const cc of ALL_COUNTRY_CODES) {
-    if (cleaned.startsWith(cc)) {
-      return cleaned;
-    }
-  }
-
-  // Has leading 0 → strip it (local format)
-  if (cleaned.startsWith("0") && cleaned.length >= 9) {
-    const without0 = cleaned.substring(1);
-    // Check if the rest starts with a known country code
-    for (const cc of ALL_COUNTRY_CODES) {
-      if (without0.startsWith(cc)) {
-        return without0;
-      }
-    }
-    return without0;
-  }
-
+  // If starts with 0 and looks like a local number, keep as-is (Baileys needs country code)
+  // The caller should ensure international format
   return cleaned;
 }
 
@@ -236,10 +213,7 @@ async function startSession() {
 
     if (connection === "open") {
       log("Connected to WhatsApp!");
-      // Extract clean numeric phone from JID
-      // JID formats: "212669549933:12@s.whatsapp.net" or "212669549933@s.whatsapp.net"
-      const rawId = socket.user?.id || "";
-      const phone = rawId.split(":")[0].split("@")[0].replace(/[^0-9]/g, "");
+      const phone = socket.user?.id?.replace(/:.*$/, "").replace(/@s\.whatsapp\.net$/, "").replace(/[^0-9]/g, "");
       const name = socket.user?.name || null;
       const sessionId = `wa_${Date.now()}`;
 
@@ -367,11 +341,10 @@ async function sendMessage(to, text) {
 
   const phoneClean = cleanPhone(to);
   if (!phoneClean) {
-    return { ok: false, error: `Numéro de téléphone invalide: "${to}"` };
+    return { ok: false, error: "Numéro de téléphone invalide" };
   }
 
   const jid = phoneClean + "@s.whatsapp.net";
-  log(`Sending message to ${phoneClean} (raw: "${to}")`);
 
   try {
     // Send with timeout
@@ -383,7 +356,7 @@ async function sendMessage(to, text) {
     const result = await Promise.race([sendPromise, timeoutPromise]);
 
     sessionState.lastActivity = Date.now();
-    log(`Message sent to ${phoneClean} — key.id: ${result?.key?.id || "none"}`);
+    log(`Message sent to ${phoneClean} (${result?.key?.id || "no-id"})`);
 
     return {
       ok: true,
@@ -393,7 +366,7 @@ async function sendMessage(to, text) {
       sentTo: phoneClean,
     };
   } catch (err) {
-    log(`Send FAILED to ${phoneClean}: ${err.message}`);
+    log(`Send failed to ${phoneClean}:`, err.message);
 
     // If the error suggests the connection is dead, trigger reconnect
     if (
@@ -445,28 +418,6 @@ app.get("/health", (req, res) => {
 // Start session / get QR
 app.post("/session", async (req, res) => {
   try {
-    // If already connected, return success
-    if (sessionState.status === "connected" && sessionState.socket) {
-      return res.json({
-        status: "connected",
-        connected: true,
-        phoneNumber: sessionState.phoneNumber,
-        profileName: sessionState.profileName,
-        sessionId: sessionState.sessionId,
-      });
-    }
-
-    // If in qr_ready or failed state, restart the session
-    if (sessionState.status === "qr_ready" || sessionState.status === "failed" || sessionState.status === "disconnected") {
-      log("POST /session: restarting session from state " + sessionState.status);
-      // Clear old socket
-      if (sessionState.socket) {
-        try { sessionState.socket.end(); } catch {}
-        sessionState.socket = null;
-      }
-      sessionState.status = "disconnected";
-    }
-
     const result = await startSession();
     res.json(result);
   } catch (err) {
@@ -504,13 +455,6 @@ app.post("/send", async (req, res) => {
   const { phone, message } = req.body || {};
   if (!phone || !message) {
     return res.status(400).json({ error: "phone and message required" });
-  }
-  if (sessionState.status !== "connected" || !sessionState.socket) {
-    log(`Send failed: session not connected (status=${sessionState.status})`);
-    return res.status(500).json({
-      ok: false,
-      error: `WhatsApp n'est pas connecté (statut: ${sessionState.status}). Reconnectez depuis les paramètres.`,
-    });
   }
   const result = await sendMessage(phone, message);
   if (!result.ok) {
