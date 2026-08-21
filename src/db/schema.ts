@@ -212,6 +212,14 @@ export const settings = pgTable("settings", {
   whatsappCloudBusinessId: varchar("whatsapp_cloud_business_id", { length: 64 }),
   // Default message language for WhatsApp outreach
   messageLanguage: varchar("message_language", { length: 8 }).default("fr"),
+  // Default pricing (stored in cents to avoid floating point)
+  priceEUR: integer("price_eur").default(89900),
+  priceUSD: integer("price_usd").default(99900),
+  priceMAD: integer("price_mad").default(99900),
+  // Payment links per currency
+  paymentLinkEUR: text("payment_link_eur"),
+  paymentLinkUSD: text("payment_link_usd"),
+  paymentLinkMAD: text("payment_link_mad"),
   // Payment link (used in messages as {{payment_url}})
   paymentLink: text("payment_link"),
   // Default pricing tiers
