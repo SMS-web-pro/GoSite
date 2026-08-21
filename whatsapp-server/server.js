@@ -142,7 +142,7 @@ async function startSession() {
 
     if (connection === "open") {
       console.log("[WA] Connected!");
-      const phone = socket.user?.id?.replace(/:.*@/, "").replace("@s.whatsapp.net", "");
+      const phone = socket.user?.id?.replace(/:.*$/, "").replace(/@s\.whatsapp\.net$/, "").replace(/[^0-9]/g, "");
       const name = socket.user?.name || null;
       const sessionId = `wa_${Date.now()}`;
 
