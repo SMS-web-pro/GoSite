@@ -121,6 +121,7 @@ export default function SearchClient({
   const [showOnlyWithDescription, setShowOnlyWithDescription] = useState(false);
   const [showOnlyWithSocial, setShowOnlyWithSocial] = useState(false);
   const [showOnlyWithCuisine, setShowOnlyWithCuisine] = useState(false);
+  const [showOnlyWithValidWhatsapp, setShowOnlyWithValidWhatsapp] = useState(false);
   const [excludeNoWebsite, setExcludeNoWebsite] = useState(false);
   const [onlyNoWebsite, setOnlyNoWebsite] = useState(true); // DEFAULT: prospects only
   const [minPopularity, setMinPopularity] = useState(0);
@@ -243,6 +244,7 @@ export default function SearchClient({
         if (showOnlyWithDescription && !r.description) return false;
         if (showOnlyWithSocial && !r.facebook && !r.instagram && !r.twitter && !r.linkedin) return false;
         if (showOnlyWithCuisine && !r.cuisine) return false;
+        if (showOnlyWithValidWhatsapp && whatsappStatus.get(r.phone || "") !== true) return false;
         if (excludeNoWebsite && !r.website) return false;
         if (onlyNoWebsite && r.website) return false;
         if (minPopularity > 0 && (r.popularity || 0) < minPopularity) return false;
@@ -269,7 +271,7 @@ export default function SearchClient({
         }
         return (b.popularity || 0) - (a.popularity || 0);
       });
-  }, [results, query, sourceFilter, sort, showOnlyWithPhone, showOnlyWithWebsite, showOnlyWithHours, showOnlyWithEmail, showOnlyWithReviews, showOnlyWithDescription, showOnlyWithSocial, showOnlyWithCuisine, excludeNoWebsite, onlyNoWebsite, minPopularity]);
+  }, [results, query, sourceFilter, sort, showOnlyWithPhone, showOnlyWithWebsite, showOnlyWithHours, showOnlyWithEmail, showOnlyWithReviews, showOnlyWithDescription, showOnlyWithSocial, showOnlyWithCuisine, showOnlyWithValidWhatsapp, whatsappStatus, excludeNoWebsite, onlyNoWebsite, minPopularity]);
 
   const stats = useMemo(() => {
     const s = {
@@ -606,6 +608,7 @@ export default function SearchClient({
                       <FilterToggle icon="⭐" label="Avec note/avis" checked={showOnlyWithReviews} onChange={setShowOnlyWithReviews} />
                       <FilterToggle icon="📱" label="Avec réseaux sociaux" checked={showOnlyWithSocial} onChange={setShowOnlyWithSocial} />
                       <FilterToggle icon="🍽️" label="Avec type de cuisine" checked={showOnlyWithCuisine} onChange={setShowOnlyWithCuisine} />
+                      <FilterToggle icon="✅" label="WhatsApp valide" checked={showOnlyWithValidWhatsapp} onChange={setShowOnlyWithValidWhatsapp} />
                     </div>
                     <div className="mt-4">
                       <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-slate-700">
