@@ -162,6 +162,7 @@ export default function ProspectsList({ items }: { items: Item[] }) {
   const [confirmingBulk, setConfirmingBulk] = useState(false);
   const [whatsappStatus, setWhatsappStatus] = useState<Map<string, boolean>>(new Map());
   const [checkingWhatsapp, setCheckingWhatsapp] = useState(false);
+  const [waError, setWaError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [filterWhatsapp, setFilterWhatsapp] = useState<"all" | "yes" | "no">("all");
   const [filterWebsite, setFilterWebsite] = useState<"all" | "yes" | "no">("all");
@@ -180,6 +181,7 @@ export default function ProspectsList({ items }: { items: Item[] }) {
     }
     (async () => {
       const newMap = new Map<string, boolean>();
+      let errorMsg: string | null = null;
       for (const chunk of chunks) {
         try {
           const res = await fetch("/api/whatsapp/check-numbers", {
@@ -188,14 +190,21 @@ export default function ProspectsList({ items }: { items: Item[] }) {
             body: JSON.stringify({ numbers: chunk }),
           });
           const data = await res.json();
+          if (data.error) {
+            errorMsg = data.error;
+            break;
+          }
           if (data.results) {
             for (const r of data.results) {
               newMap.set(r.phone, r.exists);
             }
           }
-        } catch {}
+        } catch {
+          errorMsg = "Erreur réseau";
+        }
       }
       setWhatsappStatus(newMap);
+      setWaError(errorMsg);
       setCheckingWhatsapp(false);
     })();
   }, [items]);
@@ -380,7 +389,10 @@ export default function ProspectsList({ items }: { items: Item[] }) {
         {checkingWhatsapp && (
           <span className="ml-auto text-xs text-blue-500">⏳ Vérification WhatsApp...</span>
         )}
-        {!checkingWhatsapp && whatsappStatus.size > 0 && (
+        {!checkingWhatsapp && waError && (
+          <span className="ml-auto text-xs text-red-500">⚠ {waError}</span>
+        )}
+        {!checkingWhatsapp && !waError && whatsappStatus.size > 0 && (
           <span className="ml-auto text-xs">
             <span className="font-semibold text-green-600">{Array.from(whatsappStatus.values()).filter(Boolean).length} WA ✓</span>
             <span className="text-slate-400 mx-1">·</span>

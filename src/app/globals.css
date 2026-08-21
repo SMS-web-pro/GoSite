@@ -66,9 +66,11 @@
 [data-card-process]:hover .proc-num{background:var(--gs-blue2);color:white;box-shadow:0 0 0 6px rgba(37,99,235,.2)}
 [data-card-contact]:hover{background:rgba(255,255,255,.08);border-color:rgba(37,99,235,.3)}
 
-/* Mobile Menu Toggle */
-.mobile-menu-toggle{
-  display:none;
+/* ═══════════════════════════════════════════════
+   MOBILE MENU TOGGLE
+   ═══════════════════════════════════════════════ */
+.gs-nav-toggle{
+  display:none!important;
   flex-direction:column;
   gap:5px;
   cursor:pointer;
@@ -77,7 +79,7 @@
   border:none;
   z-index:1001;
 }
-.mobile-menu-toggle span{
+.gs-nav-toggle span{
   display:block;
   width:22px;
   height:2px;
@@ -86,244 +88,182 @@
   transition:all .3s;
 }
 
-/* Nav Links Container */
-.nav-links-container{
+/* Nav links container */
+.gs-nav-links{
   display:flex;
   gap:2px;
+  align-items:center;
 }
 
-/* Hide on Mobile */
-.hide-mobile{
-  display:block;
-}
+/* Hide on mobile */
+.gs-hide-mob{display:block!important}
 
+/* ═══════════════════════════════════════════════
+   TABLET: max-width 1024px
+   ═══════════════════════════════════════════════ */
 @media(max-width:1024px){
-  .mobile-menu-toggle{
-    display:flex;
-  }
-  .hide-mobile{
-    display:none;
-  }
-  .nav-links-container{
-    display:none;
-    position:fixed;
-    top:62px;
-    left:0;
-    right:0;
-    background:rgba(10,22,40,0.98);
-    backdrop-filter:blur(20px);
-    padding:16px 20px;
-    flex-direction:column;
-    gap:4px;
-    border-bottom:1px solid rgba(255,255,255,0.06);
+  .gs-nav-toggle{display:flex!important}
+  .gs-hide-mob{display:none!important}
+
+  /* NAV */
+  .gs-nav{padding:0 20px!important}
+  .gs-nav-links{
+    display:none!important;
+    position:fixed;top:56px;left:0;right:0;
+    background:rgba(10,22,40,.98)!important;
+    backdrop-filter:blur(20px)!important;
+    padding:12px 16px!important;
+    flex-direction:column!important;
+    gap:2px!important;
+    border-bottom:1px solid rgba(255,255,255,.06)!important;
     z-index:999;
+    max-height:calc(100vh - 56px);
+    overflow-y:auto;
   }
-  .nav-links-container.open{
-    display:flex;
-  }
-  .nav-links-container a{
-    padding:12px 16px;
-    font-size:14px;
+  .gs-nav-links.gs-open{display:flex!important}
+  .gs-nav-links a{
+    padding:12px 16px!important;
+    font-size:15px!important;
     border-radius:8px;
+    width:100%;
+    text-align:left;
   }
-  .nav-links-container a:hover{
-    background:rgba(255,255,255,0.07);
-  }
+  .gs-nav-links a:hover{background:rgba(255,255,255,.07)}
+
+  /* HERO */
+  .gs-hero{padding:72px 20px 48px!important;min-height:auto!important}
+  .gs-hero-grid{grid-template-columns:1fr!important;gap:36px!important}
+  .hero-card-wrap{display:none!important}
+
+  /* SECTIONS通用 */
+  .gs-section{padding-left:20px!important;padding-right:20px!important}
+
+  /* SERVICES */
+  .gs-srv-grid{grid-template-columns:repeat(2,1fr)!important}
+
+  /* RESULTS */
+  .gs-results-grid{grid-template-columns:repeat(2,1fr)!important}
+
+  /* WHY */
+  .gs-why-grid{grid-template-columns:1fr!important;gap:32px!important}
+
+  /* PROCESS */
+  .gs-process-grid{grid-template-columns:repeat(3,1fr)!important;gap:16px!important}
+
+  /* TESTIMONIALS */
+  .gs-testi-grid{grid-template-columns:1fr!important}
+  .gs-testi-grid-2{grid-template-columns:1fr!important}
+
+  /* CONTACT */
+  .gs-contact-grid{grid-template-columns:1fr!important;gap:32px!important}
+
+  /* FOOTER */
+  .gs-footer-grid{grid-template-columns:1fr 1fr!important;gap:24px!important}
 }
 
-/* Mobile Responsive Styles */
-@media(max-width:1024px){
-  nav{
-    padding:0 20px!important;
-  }
-  nav>div:nth-child(2){
-    display:none;
-  }
-  .hero-card-wrap{
-    display:none;
-  }
-  section{
-    padding-left:20px!important;
-    padding-right:20px!important;
-  }
-  section>div:first-child{
-    grid-template-columns:1fr!important;
-  }
-}
-
+/* ═══════════════════════════════════════════════
+   MOBILE: max-width 768px
+   ═══════════════════════════════════════════════ */
 @media(max-width:768px){
-  nav{
-    padding:0 16px!important;
-    height:56px;
-  }
-  nav>a:first-child>div:last-child{
-    display:none;
-  }
-  nav>div:last-child{
-    gap:6px;
-  }
-  nav>div:last-child a:not([href="#contact"]){
-    padding:6px 10px;
-    font-size:12px;
-  }
-  nav>div:last-child a[href="#contact"]{
-    padding:7px 14px;
-    font-size:13px;
-  }
-  section{
-    padding-left:16px!important;
-    padding-right:16px!important;
-  }
-  section>div:first-child{
-    gap:32px!important;
-  }
-  section h2{
-    font-size:clamp(24px,6vw,36px)!important;
-  }
-  section p{
-    font-size:14px!important;
-  }
-  section>div:first-child>div:last-child{
-    grid-template-columns:1fr!important;
-    gap:12px!important;
-  }
-  [data-card-srv]{
-    padding:20px!important;
-  }
-  [data-card-srv] h3{
-    font-size:14px!important;
-  }
-  [data-card-srv] p{
-    font-size:12px!important;
-  }
-  [data-card-hover]{
-    padding:20px!important;
-  }
-  [data-card-hover] h3{
-    font-size:13px!important;
-  }
-  [data-card-dark]{
-    padding:16px!important;
-  }
-  [data-card-process]{
-    padding:16px!important;
-  }
-  .proc-num{
-    width:36px!important;
-    height:36px!important;
-    font-size:14px!important;
-  }
-  [data-card-testi]{
-    padding:18px!important;
-  }
-  [data-card-testi] p{
-    font-size:12px!important;
-  }
-  [data-card-contact]{
-    padding:20px!important;
-  }
-  form>div:first-child{
-    grid-template-columns:1fr!important;
-  }
-  form>div:nth-child(2){
-    grid-template-columns:1fr!important;
-  }
-  footer{
-    padding:24px 16px!important;
-    grid-template-columns:1fr!important;
-    text-align:center;
-  }
-  footer>div:first-child{
-    justify-content:center;
-  }
-  footer>div:nth-child(2){
-    justify-content:center;
-    gap:14px;
-    flex-wrap:wrap;
-  }
+  /* NAV */
+  .gs-nav{height:56px!important;padding:0 16px!important}
+  .gs-nav-logo-text{display:none!important}
+
+  /* HERO */
+  .gs-hero{padding:64px 16px 36px!important}
+  .gs-hero-grid{gap:28px!important}
+  .gs-hero h1{font-size:clamp(26px,7vw,40px)!important;letter-spacing:-1.5px!important;line-height:1.1!important;margin-bottom:16px!important}
+  .gs-hero p{font-size:14px!important;line-height:1.75!important;max-width:100%!important;margin-bottom:24px!important}
+  .gs-hero-btns{gap:8px!important;margin-bottom:24px!important}
+  .gs-hero-btns a{width:100%!important;justify-content:center!important;padding:13px 20px!important;font-size:13px!important}
+  .gs-hero-tags{gap:6px!important}
+  .gs-hero-tags span{font-size:11px!important}
+
+  /* SECTIONS通用 */
+  .gs-section{padding:48px 16px!important}
+  .gs-section-header{text-align:center!important;margin-bottom:36px!important}
+  .gs-section-header h2{font-size:clamp(22px,6vw,34px)!important;margin-bottom:10px!important}
+  .gs-section-header p{font-size:14px!important;max-width:100%!important;margin:0 auto!important}
+
+  /* SERVICES */
+  .gs-srv-grid{grid-template-columns:1fr!important;gap:12px!important}
+  [data-card-srv]{padding:20px!important}
+  [data-card-srv] h3{font-size:14px!important}
+  [data-card-srv] p{font-size:12px!important;line-height:1.65!important}
+
+  /* RESULTS */
+  .gs-results-header{grid-template-columns:1fr!important;gap:24px!important;text-align:center!important}
+  .gs-results-header p{margin:0 auto!important}
+  .gs-results-grid{grid-template-columns:1fr!important;gap:12px!important;padding:0 0 48px!important}
+  [data-card-hover]{padding:20px!important}
+  [data-card-hover] h3{font-size:13px!important}
+
+  /* WHY */
+  .gs-why-grid{gap:24px!important}
+  .gs-why-num{width:36px!important;height:36px!important;font-size:15px!important}
+
+  /* PROCESS */
+  .gs-process-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px!important}
+  .gs-process-num{width:48px!important;height:48px!important;font-size:18px!important}
+  .gs-process-step{padding:0 8px!important}
+  .gs-process-step h4{font-size:12px!important}
+  .gs-process-step p{font-size:11px!important}
+
+  /* TESTIMONIALS */
+  .gs-testi-wrap{padding:48px 16px!important}
+  [data-card-testi]{padding:20px!important}
+  [data-card-testi] p{font-size:12px!important}
+
+  /* CTA */
+  .gs-cta{padding:48px 16px!important}
+  .gs-cta h2{font-size:clamp(22px,6vw,34px)!important;margin-bottom:14px!important}
+  .gs-cta p{font-size:15px!important;margin-bottom:28px!important}
+  .gs-cta-btns{gap:8px!important}
+  .gs-cta-btns a{padding:13px 24px!important;font-size:13px!important}
+
+  /* CONTACT */
+  .gs-contact{padding:48px 16px!important}
+  .gs-contact-grid{gap:24px!important}
+  [data-card-contact]{padding:20px!important}
+  .gs-contact-form{padding:20px!important}
+  .gs-contact-form-grid{grid-template-columns:1fr!important}
+
+  /* FOOTER */
+  .gs-footer{padding:32px 16px 24px!important}
+  .gs-footer-grid{grid-template-columns:1fr!important;gap:20px!important}
+  .gs-footer-bottom{flex-direction:column!important;text-align:center!important;gap:10px!important}
 }
 
+/* ═══════════════════════════════════════════════
+   SMALL MOBILE: max-width 480px
+   ═══════════════════════════════════════════════ */
 @media(max-width:480px){
-  nav{
-    padding:0 12px!important;
-    height:52px;
-  }
-  nav>div:last-child{
-    gap:4px;
-  }
-  nav>div:last-child a:not([href="#contact"]){
-    padding:5px 8px;
-    font-size:11px;
-  }
-  nav>div:last-child a[href="#contact"]{
-    padding:6px 12px;
-    font-size:12px;
-  }
-  section{
-    padding-left:12px!important;
-    padding-right:12px!important;
-  }
-  section>div:first-child{
-    gap:24px!important;
-  }
-  section h2{
-    font-size:clamp(20px,7vw,32px)!important;
-  }
-  section p{
-    font-size:13px!important;
-  }
-  [data-card-srv]{
-    padding:16px!important;
-  }
-  [data-card-srv] h3{
-    font-size:13px!important;
-  }
-  [data-card-srv] p{
-    font-size:11px!important;
-    line-height:1.6!important;
-  }
-  [data-card-srv] span{
-    font-size:9px!important;
-    padding:2px 6px!important;
-  }
-  [data-card-hover]{
-    padding:16px!important;
-  }
-  [data-card-hover] h3{
-    font-size:12px!important;
-  }
-  [data-card-hover] p{
-    font-size:11px!important;
-  }
-  [data-card-dark]{
-    padding:14px!important;
-  }
-  [data-card-process]{
-    padding:14px!important;
-  }
-  .proc-num{
-    width:32px!important;
-    height:32px!important;
-    font-size:13px!important;
-    border-radius:10px!important;
-  }
-  [data-card-testi]{
-    padding:14px!important;
-  }
-  [data-card-testi] p{
-    font-size:11px!important;
-  }
-  [data-card-contact]{
-    padding:16px!important;
-  }
-  footer{
-    padding:20px 12px!important;
-  }
-  footer>div:nth-child(2){
-    gap:10px;
-    flex-direction:column;
-  }
-  footer>div:nth-child(2) a{
-    font-size:10px;
-  }
+  .gs-nav{height:52px!important;padding:0 12px!important}
+  .gs-hero{padding:56px 12px 28px!important}
+  .gs-hero h1{font-size:clamp(22px,8vw,34px)!important;letter-spacing:-1px!important}
+  .gs-hero p{font-size:13px!important}
+  .gs-hero-btns a{padding:12px 16px!important;font-size:12px!important}
+  .gs-section{padding:40px 12px!important}
+  .gs-section-header h2{font-size:clamp(20px,7vw,30px)!important}
+  .gs-section-header p{font-size:13px!important}
+  [data-card-srv]{padding:16px!important}
+  [data-card-srv] h3{font-size:13px!important}
+  [data-card-srv] p{font-size:11px!important;line-height:1.6!important}
+  [data-card-srv] span{font-size:9px!important;padding:2px 6px!important}
+  [data-card-hover]{padding:16px!important}
+  .gs-process-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}
+  .gs-process-num{width:40px!important;height:40px!important;font-size:16px!important;border-radius:12px!important}
+  .gs-process-step h4{font-size:11px!important}
+  .gs-process-step p{font-size:10px!important}
+  [data-card-testi]{padding:16px!important}
+  .gs-cta{padding:40px 12px!important}
+  .gs-cta h2{font-size:clamp(20px,7vw,30px)!important}
+  .gs-cta p{font-size:13px!important}
+  .gs-cta-btns{flex-direction:column!important}
+  .gs-cta-btns a{width:100%!important;justify-content:center!important}
+  .gs-contact{padding:40px 12px!important}
+  [data-card-contact]{padding:16px!important}
+  .gs-contact-form{padding:16px!important}
+  .gs-footer{padding:24px 12px 20px!important}
+  .gs-footer-grid{gap:16px!important}
 }

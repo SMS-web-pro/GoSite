@@ -411,18 +411,18 @@ export default function HomePage() {
   return (
     <div style={{ "--muted": "#64748B", "--muted2": "#94A3B8", "--gs-blue2": "#2563EB", "--gs-blue3": "#3B82F6", "--gs-cyan": "#06B6D4", "--orange": "#E8622A", "--green": "#10B981" } as React.CSSProperties}>
       {/* NAV */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 44px", background: "rgba(10,22,40,.97)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,.06)" }}>
+      <nav className="gs-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 44px", background: "rgba(10,22,40,.97)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,.06)" }}>
         <a href="#home" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 0 }}>
             <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "white", letterSpacing: -1 }}>Go</span>
             <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--gs-blue3)", letterSpacing: -1 }}>Site</span>
             <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--orange)" }}>.</span>
           </div>
-          <div style={{ fontSize: 11, color: "var(--muted2)", fontWeight: 500, letterSpacing: 0.5, marginLeft: 2, marginTop: 2 }} className="hide-mobile">DIGITAL AGENCY</div>
+          <div style={{ fontSize: 11, color: "var(--muted2)", fontWeight: 500, letterSpacing: 0.5, marginLeft: 2, marginTop: 2 }} className="gs-hide-mob gs-nav-logo-text">DIGITAL AGENCY</div>
         </a>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="mobile-menu-toggle"
+          className="gs-nav-toggle"
           style={{ display: "none", flexDirection: "column", gap: 5, cursor: "pointer", padding: 8, background: "none", border: "none", zIndex: 1001 }}
           aria-label="Toggle menu"
         >
@@ -430,7 +430,7 @@ export default function HomePage() {
           <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", opacity: mobileMenuOpen ? 0 : 1 }} />
           <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", transform: mobileMenuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
         </button>
-        <div className={`nav-links-container ${mobileMenuOpen ? "open" : ""}`} style={{ display: "flex", gap: 2 }}>
+        <div className={`gs-nav-links ${mobileMenuOpen ? "gs-open" : ""}`} style={{ display: "flex", gap: 2 }}>
           {t.navLinks.map((label, i) => (
             <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 12, fontWeight: 500, color: "var(--muted2)", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
               {label}
@@ -440,7 +440,7 @@ export default function HomePage() {
             Youssef&apos;s Portfolio
           </a>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="hide-mobile">
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="gs-hide-mob">
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--green)", fontWeight: 600 }}>
             <div className="pulse-dot" style={{ width: 7, height: 7, background: "var(--green)", borderRadius: "50%", animation: "pulsedot 2s infinite", flexShrink: 0 }} />
             {t.available}
@@ -459,12 +459,12 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section id="home" style={{ minHeight: "100vh", background: "#0A1628", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", padding: "78px 44px 60px" }}>
+      <section id="home" className="gs-hero" style={{ minHeight: "100vh", background: "#0A1628", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", padding: "78px 44px 60px" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px)", backgroundSize: "64px 64px", maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", width: 700, height: 700, background: "rgba(26,86,219,.12)", top: -200, left: -200 }} className="orb1" />
         <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", width: 500, height: 500, background: "rgba(6,182,212,.08)", top: 100, right: -100 }} className="orb2" />
         <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", width: 400, height: 400, background: "rgba(124,58,237,.07)", bottom: -80, left: "40%" }} className="orb3" />
-        <div style={{ maxWidth: 1180, margin: "0 auto", width: "100%", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 480px", gap: 72, alignItems: "center" }}>
+        <div className="gs-hero-grid" style={{ maxWidth: 1180, margin: "0 auto", width: "100%", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 480px", gap: 72, alignItems: "center" }}>
           <div>
             <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(26,86,219,.15)", border: "1px solid rgba(37,99,235,.35)", borderRadius: 100, padding: "7px 18px", marginBottom: 26, fontSize: 13, fontWeight: 700, color: "var(--gs-blue3)", letterSpacing: 1, textTransform: "uppercase" }}>
               <div className="pulse-dot" style={{ width: 7, height: 7, background: "var(--green)", borderRadius: "50%", animation: "pulsedot 2s infinite" }} />
@@ -476,7 +476,7 @@ export default function HomePage() {
             <p className="reveal" style={{ fontSize: 16, color: "var(--muted2)", lineHeight: 1.8, maxWidth: 500, marginBottom: 34 }}>
               {t.heroP}
             </p>
-            <div className="reveal" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 36 }}>
+            <div className="reveal gs-hero-btns" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 36 }}>
               <a href="#contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--gs-blue2)", color: "white", padding: "14px 28px", borderRadius: 10, fontSize: 14, fontWeight: 700, textDecoration: "none", transition: "all .25s" }}>
                 <SendIcon /> {t.getFreeQuote}
               </a>
@@ -487,7 +487,7 @@ export default function HomePage() {
                 <WhatsAppIcon /> WhatsApp
               </a>
             </div>
-            <div className="reveal" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            <div className="reveal gs-hero-tags" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {[t.freeAudit, t.reply24h, t.noCommit, t.remote100].map((item) => (
                 <span key={item} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,.5)", fontWeight: 500 }}>
                   <span style={{ color: "var(--green)", fontWeight: 800, fontSize: 12.5 }}>✓</span> {item}
@@ -532,9 +532,9 @@ export default function HomePage() {
       </section>
 
       {/* SERVICES */}
-      <section id="services" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
+      <section id="services" className="gs-section" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(26,86,219,.05) 1px,transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div className="gs-section-header" style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue2)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue2)", borderRadius: 2 }} />
             {lang === "en" ? "What we do" : lang === "fr" ? "Ce que nous faisons" : "ما نقدمه"}
@@ -547,7 +547,7 @@ export default function HomePage() {
           </p>
         </div>
         <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }}>
+          <div className="gs-srv-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }}>
             {SERVICES_DATA.map((s, i) => (
               <div key={i} className="reveal" data-card-srv data-d={String((i % 4) + 1)} style={{ background: "white", border: "1px solid #E2E8F0", borderRadius: 18, padding: 26, position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: s.color }} />
@@ -571,10 +571,10 @@ export default function HomePage() {
       </section>
 
       {/* RESULTS */}
-      <section id="results" style={{ background: "#0A1628", position: "relative", overflow: "hidden" }}>
+      <section id="results" className="gs-section" style={{ background: "#0A1628", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -150, left: -150, width: 600, height: 600, background: "radial-gradient(ellipse,rgba(26,86,219,.12) 0%,transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -100, right: -100, width: 500, height: 500, background: "radial-gradient(ellipse,rgba(6,182,212,.08) 0%,transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div className="gs-results-header" style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue3)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue3)", borderRadius: 2 }} />
             {lang === "en" ? "Proven results" : lang === "fr" ? "Résultats prouvés" : "نتائج مثبتة"}
@@ -587,7 +587,7 @@ export default function HomePage() {
           </p>
         </div>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 44px 88px", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>
+          <div className="gs-results-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>
             {RESULTS_DATA.map((r, i) => (
               <div key={i} className="reveal" data-card-hover style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26, position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: r.color }} />
@@ -603,9 +603,9 @@ export default function HomePage() {
       </section>
 
       {/* WHY US */}
-      <section id="why" style={{ background: "white", position: "relative", overflow: "hidden" }}>
+      <section id="why" className="gs-section" style={{ background: "white", position: "relative", overflow: "hidden" }}>
         <div style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 52, alignItems: "center" }}>
+          <div className="gs-why-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 52, alignItems: "center" }}>
             <div>
               <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue2)", textTransform: "uppercase", marginBottom: 12 }}>
                 <div style={{ width: 26, height: 2, background: "var(--gs-blue2)", borderRadius: 2 }} />
@@ -620,7 +620,7 @@ export default function HomePage() {
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {WHY_DATA.map((w, i) => (
                   <div key={i} className="reveal" style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    <div style={{ width: 42, height: 42, borderRadius: 12, background: "var(--gs-blue2)", color: "white", fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</div>
+                    <div className="gs-why-num" style={{ width: 42, height: 42, borderRadius: 12, background: "var(--gs-blue2)", color: "white", fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</div>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>{w[lang === "ar" ? "ar" : lang]}</div>
                       <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{getLocalized(w, "desc")}</div>
@@ -654,9 +654,9 @@ export default function HomePage() {
       </section>
 
       {/* PROCESS */}
-      <section id="process" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
+      <section id="process" className="gs-section" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(26,86,219,.05) 1px,transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div className="gs-section-header" style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue2)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue2)", borderRadius: 2 }} />
             {lang === "en" ? "How we work" : lang === "fr" ? "Comment nous travaillons" : "كيف نعمل"}
@@ -669,13 +669,13 @@ export default function HomePage() {
           </p>
         </div>
         <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 0, position: "relative" }}>
+          <div className="gs-process-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 0, position: "relative" }}>
             <div style={{ position: "absolute", top: 30, left: "10%", right: "10%", height: 2, background: "linear-gradient(90deg,var(--gs-blue2),var(--gs-cyan),var(--gs-blue2))", zIndex: 0 }} />
             {STEPS_DATA.map((s, i) => (
               <div key={i} className="reveal" data-card-process style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", position: "relative", zIndex: 1, padding: "0 12px" }}>
-                <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#0A1628", border: "3px solid var(--gs-blue2)", color: "var(--gs-blue3)", fontFamily: "'Space Grotesk',sans-serif", fontSize: 23, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>{i + 1}</div>
-                <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>{s[lang === "ar" ? "ar" : lang]}</div>
-                <div style={{ fontSize: 11.5, color: "#475569", lineHeight: 1.6 }}>{getLocalized(s, "desc")}</div>
+                <div className="gs-process-num" style={{ width: 60, height: 60, borderRadius: "50%", background: "#0A1628", border: "3px solid var(--gs-blue2)", color: "var(--gs-blue3)", fontFamily: "'Space Grotesk',sans-serif", fontSize: 23, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>{i + 1}</div>
+                <div className="gs-process-step" style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>{s[lang === "ar" ? "ar" : lang]}</div>
+                <div className="gs-process-step" style={{ fontSize: 11.5, color: "#475569", lineHeight: 1.6 }}>{getLocalized(s, "desc")}</div>
               </div>
             ))}
           </div>
@@ -683,9 +683,9 @@ export default function HomePage() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section id="testimonials" style={{ background: "linear-gradient(135deg,#0A1628,#0f1f38)", position: "relative", overflow: "hidden" }}>
+      <section id="testimonials" className="gs-section" style={{ background: "linear-gradient(135deg,#0A1628,#0f1f38)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(255,255,255,.02) 1px,transparent 1px)", backgroundSize: "40px 40px", pointerEvents: "none" }} />
-        <div style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div className="gs-section-header gs-testi-wrap" style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue3)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue3)", borderRadius: 2 }} />
             {lang === "en" ? "Client reviews" : lang === "fr" ? "Avis clients" : "آراء العملاء"}
@@ -695,7 +695,7 @@ export default function HomePage() {
           </h2>
         </div>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 44px 88px", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18, marginBottom: 18 }}>
+          <div className="gs-testi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18, marginBottom: 18 }}>
             {TESTIMONIALS_DATA.slice(0, 3).map((tc, i) => (
               <div key={i} className="reveal" data-card-testi style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26 }}>
                 <div style={{ color: "#F59E0B", fontSize: 15, letterSpacing: 3, marginBottom: 12 }}>★★★★★</div>
@@ -710,7 +710,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+          <div className="gs-testi-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
             {TESTIMONIALS_DATA.slice(3).map((tc, i) => (
               <div key={i} className="reveal" data-card-testi style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26 }}>
                 <div style={{ color: "#F59E0B", fontSize: 15, letterSpacing: 3, marginBottom: 12 }}>★★★★★</div>
@@ -729,7 +729,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <div style={{ background: "linear-gradient(135deg,var(--gs-blue2) 0%,#1e40af 50%,#7C3AED 100%)", position: "relative", overflow: "hidden" }}>
+      <div className="gs-cta gs-section" style={{ background: "linear-gradient(135deg,var(--gs-blue2) 0%,#1e40af 50%,#7C3AED 100%)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px)", backgroundSize: "36px 36px", pointerEvents: "none" }} />
         <div style={{ textAlign: "center", padding: "80px 44px", position: "relative", zIndex: 1 }}>
           <h2 className="reveal" style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(32px,4.2vw,52px)", fontWeight: 800, color: "white", letterSpacing: -1.5, marginBottom: 18 }}>
@@ -738,7 +738,7 @@ export default function HomePage() {
           <p className="reveal" style={{ fontSize: 18, color: "rgba(255,255,255,.8)", lineHeight: 1.75, maxWidth: 560, margin: "0 auto 36px" }}>
             {t.ctaP}
           </p>
-          <div className="reveal" style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+          <div className="reveal gs-cta-btns" style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <a href="#contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "white", color: "var(--gs-blue2)", padding: "15px 32px", borderRadius: 10, fontSize: 14.5, fontWeight: 800, textDecoration: "none", transition: "all .25s" }}>
               <SendIcon /> {lang === "en" ? "Get Free Audit" : lang === "fr" ? "Audit Gratuit" : "احصل على تدقيق مجاني"}
             </a>
@@ -757,10 +757,10 @@ export default function HomePage() {
       </div>
 
       {/* CONTACT */}
-      <section id="contact" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
+      <section id="contact" className="gs-section gs-contact" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(26,86,219,.05) 1px,transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }} />
         <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 52, alignItems: "start" }}>
+          <div className="gs-contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 52, alignItems: "start" }}>
             <div data-card-contact style={{ background: "#0A1628", borderRadius: 18, padding: 32, border: "1px solid rgba(255,255,255,.1)" }}>
               <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 22, fontWeight: 800, color: "white", marginBottom: 8, letterSpacing: -0.5, whiteSpace: "pre-line" }}>{t.contactTitle}</div>
               <div style={{ fontSize: 13.5, color: "var(--muted2)", marginBottom: 24, lineHeight: 1.7 }}>{t.contactSub}</div>
@@ -786,9 +786,9 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div style={{ background: "white", border: "1px solid #E2E8F0", borderRadius: 18, padding: 32 }}>
+            <div className="gs-contact-form" style={{ background: "white", border: "1px solid #E2E8F0", borderRadius: 18, padding: 32 }}>
               <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 20, fontWeight: 800, color: "#0F172A", marginBottom: 22, letterSpacing: -0.5 }}>{t.sendMessage}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 0 }}>
+              <div className="gs-contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 0 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.fullName}</label>
                   <input id="gs-name" type="text" placeholder="Your name" required suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }} />
@@ -798,7 +798,7 @@ export default function HomePage() {
                   <input id="gs-email" type="email" placeholder="your@email.com" required suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }} />
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 14 }}>
+              <div className="gs-contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 14 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.serviceName}</label>
                   <select id="gs-service" suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }}>
@@ -838,8 +838,8 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: "#040d18", padding: "48px 44px 32px", borderTop: "1px solid rgba(255,255,255,.05)" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
+      <footer className="gs-footer" style={{ background: "#040d18", padding: "48px 44px 32px", borderTop: "1px solid rgba(255,255,255,.05)" }}>
+          <div className="gs-footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
             <div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 0, marginBottom: 14 }}>
                 <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "white", letterSpacing: -1 }}>Go</span>
@@ -879,7 +879,7 @@ export default function HomePage() {
               <a href="mailto:sahabyoussef@gmail.com" style={{ display: "block", fontSize: 14.5, color: "#64748B", textDecoration: "none", marginBottom: 8 }}>sahabyoussef@gmail.com</a>
             </div>
           </div>
-          <div style={{ borderTop: "1px solid rgba(255,255,255,.05)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+          <div className="gs-footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,.05)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
             <div style={{ fontSize: 11.5, color: "#64748B" }}>© 2026 GoSite Digital Agency · {lang === "en" ? "All rights reserved · International" : lang === "fr" ? "Tous droits réservés · International" : "جميع الحقوق محفوظة · دولي"}</div>
             <div style={{ display: "flex", gap: 18 }}>
               <a href="#" onClick={(e) => { e.preventDefault(); setModal("privacy"); }} style={{ fontSize: 11.5, color: "#64748B", textDecoration: "none", transition: "color .2s", cursor: "pointer" }}>Privacy</a>

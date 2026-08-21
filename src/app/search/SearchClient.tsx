@@ -131,6 +131,7 @@ export default function SearchClient({
   const [showFilters, setShowFilters] = useState(false);
   const [whatsappStatus, setWhatsappStatus] = useState<Map<string, boolean>>(new Map());
   const [checkingWhatsapp, setCheckingWhatsapp] = useState(false);
+  const [waError, setWaError] = useState<string | null>(null);
   const startedRef = useRef(false);
   const [progress, setProgress] = useState(0);
   const [campaign, setCampaign] = useState<{ id: number; name: string } | null>(initialCampaign || null);
@@ -211,6 +212,7 @@ export default function SearchClient({
     }
     (async () => {
       const newMap = new Map<string, boolean>();
+      let errorMsg: string | null = null;
       for (const chunk of chunks) {
         try {
           const res = await fetch("/api/whatsapp/check-numbers", {
@@ -219,14 +221,21 @@ export default function SearchClient({
             body: JSON.stringify({ numbers: chunk }),
           });
           const data = await res.json();
+          if (data.error) {
+            errorMsg = data.error;
+            break;
+          }
           if (data.results) {
             for (const r of data.results) {
               newMap.set(r.phone, r.exists);
             }
           }
-        } catch {}
+        } catch {
+          errorMsg = "Erreur réseau";
+        }
       }
       setWhatsappStatus(newMap);
+      setWaError(errorMsg);
       setCheckingWhatsapp(false);
     })();
   }, [results]);
@@ -637,7 +646,8 @@ export default function SearchClient({
                 <p className="text-xs text-slate-500">
                   {filtered.length} résultat{filtered.length > 1 ? "s" : ""} affiché{filtered.length > 1 ? "s" : ""} sur {results.length}
                   {checkingWhatsapp && <span className="ml-2 text-blue-500">⏳ Vérification WhatsApp...</span>}
-                  {!checkingWhatsapp && whatsappStatus.size > 0 && (
+                  {!checkingWhatsapp && waError && <span className="ml-2 text-red-500">⚠ {waError}</span>}
+                  {!checkingWhatsapp && !waError && whatsappStatus.size > 0 && (
                     <span className="ml-2">
                       <span className="text-green-600 font-semibold">{Array.from(whatsappStatus.values()).filter(Boolean).length} WA ✓</span>
                       <span className="text-slate-400 mx-1">·</span>

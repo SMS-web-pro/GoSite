@@ -25,6 +25,9 @@ export async function POST(req: Request) {
           method: "POST",
           body: JSON.stringify({ phones: normalized.map((n) => n.normalized) }),
         });
+        if (data.error) {
+          return NextResponse.json({ error: data.error });
+        }
         const mapped = (data.results || []).map((r: any, i: number) => ({
           phone: normalized[i].raw,
           normalized: r.phone || normalized[i].normalized,
