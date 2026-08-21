@@ -433,14 +433,14 @@ export default function HomePage() {
   return (
     <div style={{ "--muted": "#64748B", "--muted2": "#94A3B8", "--gs-blue2": "#2563EB", "--gs-blue3": "#3B82F6", "--gs-cyan": "#06B6D4", "--orange": "#E8622A", "--green": "#10B981" } as React.CSSProperties}>
       {/* NAV */}
-      <nav className="gs-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 44px", background: "rgba(10,22,40,.97)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,.06)" }}>
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 44px", background: "rgba(10,22,40,.97)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,.06)" }}>
         <a href="#home" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 0 }}>
             <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "white", letterSpacing: -1 }}>Go</span>
-            <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--gs-blue3)", letterSpacing: -1 }}>Site</span>
-            <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--orange)" }}>.</span>
+            <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "#3B82F6", letterSpacing: -1 }}>Site</span>
+            <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "#E8622A" }}>.</span>
           </div>
-          <div style={{ fontSize: 11, color: "var(--muted2)", fontWeight: 500, letterSpacing: 0.5, marginLeft: 2, marginTop: 2 }} className="gs-hide-mob gs-nav-logo-text">DIGITAL AGENCY</div>
+          <span className="gs-hide-mob gs-nav-logo-text" style={{ fontSize: 11, color: "#94A3B8", fontWeight: 500, letterSpacing: 0.5, marginLeft: 2, marginTop: 2 }}>DIGITAL AGENCY</span>
         </a>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -452,31 +452,43 @@ export default function HomePage() {
           <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", opacity: mobileMenuOpen ? 0 : 1 }} />
           <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", transform: mobileMenuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
         </button>
-        <div className={`gs-nav-links ${mobileMenuOpen ? "gs-open" : ""}`} style={{ display: "flex", gap: 2 }}>
+        <div className={`gs-nav-links ${mobileMenuOpen ? "gs-open" : ""}`} style={{ display: "flex", gap: 2, alignItems: "center" }}>
           {t.navLinks.map((label, i) => (
-            <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 12, fontWeight: 500, color: "var(--muted2)", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
+            <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 12, fontWeight: 500, color: "#94A3B8", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
               {label}
             </a>
           ))}
-          <a href="/portfolio" onClick={() => setMobileMenuOpen(false)} style={{ color: "#E8622A", fontWeight: 700, fontSize: 12, textDecoration: "none", padding: "7px 12px", borderRadius: 7 }}>
+          <a href="/portfolio" onClick={() => setMobileMenuOpen(false)} style={{ color: "#E8622A", fontWeight: 700, fontSize: 12, textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s", whiteSpace: "nowrap" }}>
             Youssef&apos;s Portfolio
           </a>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="gs-hide-mob">
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--green)", fontWeight: 600 }}>
-            <div className="pulse-dot" style={{ width: 7, height: 7, background: "var(--green)", borderRadius: "50%", animation: "pulsedot 2s infinite", flexShrink: 0 }} />
+        <div className="gs-nav-right" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="gs-hide-mob" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "#10B981", fontWeight: 600 }}>
+            <div className="pulse-dot" style={{ width: 7, height: 7, background: "#10B981", borderRadius: "50%", animation: "pulsedot 2s infinite", flexShrink: 0 }} />
             {t.available}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 2, background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.12)", borderRadius: 9, padding: 3 }}>
+          <div className="gs-hide-mob" style={{ display: "flex", alignItems: "center", gap: 2, background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.12)", borderRadius: 10, padding: 3 }}>
             {(["en", "fr", "ar"] as Lang[]).map((l) => (
-              <button key={l} onClick={() => setLanguage(l)} style={{ padding: "5px 10px", borderRadius: 6, border: "none", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all .2s", background: lang === l ? "var(--gs-blue2)" : "transparent", color: lang === l ? "white" : "var(--muted2)", boxShadow: lang === l ? "0 2px 8px rgba(37,99,235,.4)" : "none" }}>
+              <button key={l} onClick={() => setLanguage(l)} style={{ padding: "5px 10px", borderRadius: 7, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all .2s", background: lang === l ? "#E8622A" : "transparent", color: lang === l ? "white" : "#94A3B8", boxShadow: lang === l ? "0 2px 8px rgba(232,98,42,.4)" : "none", letterSpacing: 0.5 }}>
                 {l === "en" ? "EN" : l === "fr" ? "FR" : "ع"}
               </button>
             ))}
           </div>
-          <a href="#contact" style={{ display: "flex", alignItems: "center", gap: 7, background: "var(--gs-blue2)", color: "white", padding: "8px 18px", borderRadius: 8, fontSize: 14.5, fontWeight: 700, textDecoration: "none", transition: "all .22s" }}>
+          <a href="#contact" className="gs-hide-mob" style={{ display: "flex", alignItems: "center", gap: 7, background: "#E8622A", color: "white", padding: "8px 18px", borderRadius: 8, fontSize: 12.5, fontWeight: 700, textDecoration: "none", transition: "all .22s" }}>
             <SendIcon /> {t.getQuote}
           </a>
+          <div className="gs-nav-mobile-actions" style={{ display: "none", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 2, background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.12)", borderRadius: 10, padding: 3 }}>
+              {(["en", "fr", "ar"] as Lang[]).map((l) => (
+                <button key={l} onClick={() => setLanguage(l)} style={{ padding: "5px 10px", borderRadius: 7, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all .2s", background: lang === l ? "#E8622A" : "transparent", color: lang === l ? "white" : "#94A3B8", boxShadow: lang === l ? "0 2px 8px rgba(232,98,42,.4)" : "none", letterSpacing: 0.5 }}>
+                  {l === "en" ? "EN" : l === "fr" ? "FR" : "ع"}
+                </button>
+              ))}
+            </div>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)} style={{ display: "flex", alignItems: "center", gap: 7, background: "#E8622A", color: "white", padding: "8px 18px", borderRadius: 8, fontSize: 12.5, fontWeight: 700, textDecoration: "none", transition: "all .22s", flex: 1, justifyContent: "center" }}>
+              {t.getQuote}
+            </a>
+          </div>
         </div>
       </nav>
 

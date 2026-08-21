@@ -213,7 +213,10 @@ async function startSession() {
 
     if (connection === "open") {
       log("Connected to WhatsApp!");
-      const phone = socket.user?.id?.replace(/:.*$/, "").replace(/@s\.whatsapp\.net$/, "").replace(/[^0-9]/g, "");
+      // Extract clean numeric phone from JID
+      // JID formats: "212669549933:12@s.whatsapp.net" or "212669549933@s.whatsapp.net"
+      const rawId = socket.user?.id || "";
+      const phone = rawId.split(":")[0].split("@")[0].replace(/[^0-9]/g, "");
       const name = socket.user?.name || null;
       const sessionId = `wa_${Date.now()}`;
 
@@ -418,6 +421,28 @@ app.get("/health", (req, res) => {
 // Start session / get QR
 app.post("/session", async (req, res) => {
   try {
+    // If already connected, return success
+    if (sessionState.status === "connected" && sessionState.socket) {
+      return res.json({
+        status: "connected",
+        connected: true,
+        phoneNumber: sessionState.phoneNumber,
+        profileName: sessionState.profileName,
+        sessionId: sessionState.sessionId,
+      });
+    }
+
+    // If in qr_ready or failed state, restart the session
+    if (sessionState.status === "qr_ready" || sessionState.status === "failed" || sessionState.status === "disconnected") {
+      log("POST /session: restarting session from state " + sessionState.status);
+      // Clear old socket
+      if (sessionState.socket) {
+        try { sessionState.socket.end(); } catch {}
+        sessionState.socket = null;
+      }
+      sessionState.status = "disconnected";
+    }
+
     const result = await startSession();
     res.json(result);
   } catch (err) {
@@ -455,6 +480,13 @@ app.post("/send", async (req, res) => {
   const { phone, message } = req.body || {};
   if (!phone || !message) {
     return res.status(400).json({ error: "phone and message required" });
+  }
+  if (sessionState.status !== "connected" || !sessionState.socket) {
+    log(`Send failed: session not connected (status=${sessionState.status})`);
+    return res.status(500).json({
+      ok: false,
+      error: `WhatsApp n'est pas connecté (statut: ${sessionState.status}). Reconnectez depuis les paramètres.`,
+    });
   }
   const result = await sendMessage(phone, message);
   if (!result.ok) {

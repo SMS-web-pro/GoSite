@@ -60,6 +60,7 @@ export async function POST(req: Request) {
       };
     } catch (err: any) {
       console.error("[Send] External server error:", err.message);
+      // Surface the exact error from Railway
       return NextResponse.json(
         { error: err.message || "Échec d'envoi via serveur WhatsApp" },
         { status: 500 }
