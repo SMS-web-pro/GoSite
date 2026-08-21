@@ -4,3 +4,5 @@ node_modules/
 *.log
 .whatsapp-session/
 scripts/
+
+.env.local
