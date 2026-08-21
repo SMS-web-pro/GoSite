@@ -4,7 +4,8 @@
  * Set WHATSAPP_SERVER_URL in Vercel env vars (e.g. https://gosite-whatsapp.onrender.com)
  */
 
-const SERVER_URL = process.env.WHATSAPP_SERVER_URL;
+const RAW_URL = process.env.WHATSAPP_SERVER_URL;
+const SERVER_URL = RAW_URL && !RAW_URL.startsWith("http") ? `https://${RAW_URL}` : RAW_URL;
 
 export function isExternalServerConfigured(): boolean {
   return !!SERVER_URL;
