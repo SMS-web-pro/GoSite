@@ -1158,15 +1158,35 @@ function sendForm() {
   var btn = document.getElementById('form-btn');
   btn.disabled = true;
   btn.textContent = 'Sending...';
-  var body = 'Name: ' + name + '\nEmail: ' + email + '\nSubject: ' + (subject||'Not specified') + '\nBudget: ' + (budget||'Not specified') + '\n\nMessage:\n' + message;
-  var mailto = 'mailto:contact@gosite.digital?subject=' + encodeURIComponent('Portfolio Contact: ' + (subject||'New Project')) + '&body=' + encodeURIComponent(body);
-  window.location.href = mailto;
-  setTimeout(function() {
-    document.getElementById('form-success').style.display = 'block';
-    document.getElementById('contact-form-wrap').style.opacity = '0.4';
+
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, email: email, service: subject, budget: budget, message: message })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if(data.ok) {
+      document.getElementById('form-success').style.display = 'block';
+      document.getElementById('contact-form-wrap').style.opacity = '0.4';
+      document.getElementById('cf-name').value = '';
+      document.getElementById('cf-email').value = '';
+      document.getElementById('cf-subject').value = '';
+      document.getElementById('cf-budget').value = '';
+      document.getElementById('cf-message').value = '';
+    } else {
+      errEl.textContent = data.error || 'Failed to send. Please try again.';
+      errEl.style.display = 'block';
+    }
     btn.disabled = false;
     btn.innerHTML = '<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><line x1=\"22\" y1=\"2\" x2=\"11\" y2=\"13\"/><polygon points=\"22,2 15,22 11,13 2,9\"/></svg> <span class=\"en\">Send Message</span><span class=\"fr\" style=\"display:none\">Envoyer</span><span class=\"ar\" style=\"display:none\">إرسال الرسالة</span>';
-  }, 1500);
+  })
+  .catch(function() {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><line x1=\"22\" y1=\"2\" x2=\"11\" y2=\"13\"/><polygon points=\"22,2 15,22 11,13 2,9\"/></svg> <span class=\"en\">Send Message</span><span class=\"fr\" style=\"display:none\">Envoyer</span><span class=\"ar\" style=\"display:none\">إرسال الرسالة</span>';
+  });
 }</script>
 </body>
 </html>

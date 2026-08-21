@@ -385,7 +385,9 @@ export default function HomePage() {
     });
   }, [lang]);
 
-  const handleSendForm = () => {
+  const [sending, setSending] = useState(false);
+
+  const handleSendForm = async () => {
     const nameEl = document.getElementById("gs-name") as HTMLInputElement | null;
     const emailEl = document.getElementById("gs-email") as HTMLInputElement | null;
     const svcEl = document.getElementById("gs-service") as HTMLSelectElement | null;
@@ -398,12 +400,32 @@ export default function HomePage() {
     const budget = budgetEl?.value || "";
     const msg = msgEl.value.trim();
     if (!name || !email || !msg) {
-      alert("Please fill name, email and message.");
+      alert(lang === "fr" ? "Veuillez remplir le nom, l'email et le message." : lang === "ar" ? "يرجى ملء الاسم والبريد الإلكتروني والرسالة." : "Please fill name, email and message.");
       return;
     }
-    const body = `Name: ${name}\nEmail: ${email}\nService: ${svc || "Not specified"}\nBudget: ${budget || "Not specified"}\n\nMessage:\n${msg}`;
-    window.location.href = `mailto:contact@gosite.digital?subject=${encodeURIComponent("GoSite Inquiry: " + (svc || "New Project"))}&body=${encodeURIComponent(body)}`;
-    setTimeout(() => setSuccess(true), 1200);
+    setSending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, service: svc, budget, message: msg }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setSuccess(true);
+        nameEl.value = "";
+        emailEl.value = "";
+        if (svcEl) svcEl.value = "";
+        if (budgetEl) budgetEl.value = "";
+        msgEl.value = "";
+      } else {
+        alert(data.error || "Failed to send. Try again.");
+      }
+    } catch {
+      alert("Network error. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const getLocalized = (item: Record<string, unknown>, key: string) => String((item as Record<string, string>)[key + "_" + lang] || item[key + "_en"]);
@@ -824,8 +846,8 @@ export default function HomePage() {
                 <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.tellProject}</label>
                 <textarea id="gs-message" placeholder="Describe your goals, current situation and what you need..." suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 15.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none", resize: "none", minHeight: 110 }} />
               </div>
-              <button onClick={handleSendForm} style={{ width: "100%", padding: 13, borderRadius: 9, background: "var(--gs-blue2)", color: "white", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all .25s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6 }}>
-                <SendIcon /> {t.sendBtn}
+              <button onClick={handleSendForm} disabled={sending} style={{ width: "100%", padding: 13, borderRadius: 9, background: sending ? "#94A3B8" : "var(--gs-blue2)", color: "white", fontSize: 14, fontWeight: 700, border: "none", cursor: sending ? "not-allowed" : "pointer", fontFamily: "inherit", transition: "all .25s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6, opacity: sending ? 0.7 : 1 }}>
+                <SendIcon /> {sending ? (lang === "fr" ? "Envoi..." : lang === "ar" ? "إرسال..." : "Sending...") : t.sendBtn}
               </button>
               {success && (
                 <div style={{ background: "rgba(16,185,129,.12)", border: "1px solid rgba(16,185,129,.3)", borderRadius: 9, padding: 16, textAlign: "center", fontSize: 16, fontWeight: 600, color: "var(--green)", marginTop: 12 }}>
