@@ -17,28 +17,22 @@ export async function POST(req: Request) {
   const customMessage = (body.message || "").trim();
 
   if (!phone) {
-    return NextResponse.json(
-      { error: "Numéro de téléphone requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Numéro de téléphone requis" }, { status: 400 });
   }
 
   const phoneClean = phone.replace(/[^0-9]/g, "");
-  if (!phoneClean || phoneClean.length < 8) {
+  if (!phoneClean || phoneClean.length < 8 || phoneClean.length > 15) {
     return NextResponse.json(
-      { error: "Numéro de téléphone invalide. Format attendu : +33 6 12 34 56 78" },
+      { error: `Numéro de téléphone invalide: "${phone}"` },
       { status: 400 }
     );
   }
 
   const message =
     customMessage ||
-    `✅ Test GoSite\n\nBonjour ! Ceci est un message de test envoyé depuis la plateforme GoSite à ${new Date().toLocaleString(
-      "fr-FR"
-    )}.\n\nSi vous voyez ce message, la connexion WhatsApp fonctionne correctement ! 🎉`;
+    `✅ Test GoSite\n\nBonjour ! Ceci est un message de test envoyé depuis la plateforme GoSite à ${new Date().toLocaleString("fr-FR")}.\n\nSi vous voyez ce message, la connexion WhatsApp fonctionne correctement ! 🎉`;
 
   if (isExternalServerConfigured()) {
-    // Use external Baileys server
     try {
       const data = await callServer("/send", {
         method: "POST",
@@ -68,28 +62,18 @@ export async function POST(req: Request) {
   try {
     status = await getSessionStatusAsync();
   } catch {
-    return NextResponse.json(
-      { error: "Échec de la récupération du statut de session" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Échec de la récupération du statut de session" }, { status: 500 });
   }
   if (status.status !== "connected") {
     return NextResponse.json(
-      {
-        ok: false,
-        error: "WhatsApp n'est pas connecté. Scannez le QR code dans Paramètres.",
-        status: status.status,
-      },
+      { ok: false, error: "WhatsApp n'est pas connecté. Scannez le QR code dans Paramètres.", status: status.status },
       { status: 400 }
     );
   }
 
   const result = await sendMessage(phoneClean, message);
   if (!result.ok) {
-    return NextResponse.json(
-      { ok: false, error: result.error || "Échec de l'envoi" },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: result.error || "Échec de l'envoi" }, { status: 500 });
   }
 
   return NextResponse.json({

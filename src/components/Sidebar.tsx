@@ -122,14 +122,14 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
                 WhatsApp {waConnected ? "connecté" : "déconnecté"}
               </span>
               {waConnected && waPhone && (
-                <span className="text-[11px] text-[rgba(255,255,255,.4)]">{waPhone}</span>
+                <span className="text-[11px] text-[rgba(255,255,255,.4)]">+{waPhone}</span>
               )}
               {waConnected && waProfileName && (
                 <span className="text-[11px] text-[rgba(255,255,255,.4)]">{waProfileName}</span>
               )}
               {!waConnected && (
-                <Link href="/settings" className="text-[11px] text-[#E8622A] hover:underline">
-                  → Paramètres
+                <Link href="/settings" className="text-[11px] text-[#E8622A] hover:underline mt-0.5">
+                  → Reconnecter
                 </Link>
               )}
             </div>

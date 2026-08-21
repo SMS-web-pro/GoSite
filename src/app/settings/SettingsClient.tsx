@@ -801,7 +801,7 @@ function WhatsAppTab({
                 <h3 className="text-sm font-bold text-emerald-900">✅ WhatsApp connecté</h3>
                 <p className="mt-1 text-sm text-emerald-800">
                   <strong>{profileName || "Votre compte"}</strong>
-                  {phoneNumber && <> · <span className="font-mono">{phoneNumber}</span></>}
+                  {phoneNumber && <> · <span className="font-mono">+{phoneNumber}</span></>}
                 </p>
                 <p className="mt-1 text-xs text-emerald-700">
                   Connecté via Baileys (protocole WebSocket WhatsApp officiel).

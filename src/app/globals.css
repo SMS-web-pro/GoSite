@@ -271,3 +271,15 @@
   .gs-footer{padding:24px 12px 20px!important}
   .gs-footer-grid{gap:16px!important}
 }
+
+/* ═══════════════════════════════════════════════
+   RTL SUPPORT
+   ═══════════════════════════════════════════════ */
+html[dir="rtl"] .gs-nav-links{text-align:right}
+html[dir="rtl"] .gs-nav-links a{text-align:right}
+html[dir="rtl"] .gs-hero h1{font-family:'Noto Sans Arabic','Space Grotesk',sans-serif}
+html[dir="rtl"] .gs-hero p,html[dir="rtl"] .gs-section p{font-family:'Noto Sans Arabic',sans-serif}
+html[dir="rtl"] .gs-section-header{text-align:right}
+html[dir="rtl"] .gs-section-header p{margin:0 auto 0 0}
+html[dir="rtl"] .gs-contact-grid{direction:rtl}
+html[dir="rtl"] .gs-footer-grid{direction:rtl;text-align:right}

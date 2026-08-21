@@ -9,6 +9,10 @@ import { localStore } from "@/lib/local-store";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+function cleanPhoneForSend(phone: string): string {
+  return phone.replace(/[^0-9]/g, "");
+}
+
 export async function POST(req: Request) {
   let body: { prospectId?: number; messageStage?: string; message?: string; phone?: string; name?: string };
   try {
@@ -17,36 +21,45 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   const { prospectId, messageStage, message, phone, name } = body || {};
+
   if (!prospectId || !messageStage) {
-    return NextResponse.json(
-      { error: "prospectId and messageStage required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "prospectId and messageStage required" }, { status: 400 });
   }
   if (!phone) {
-    return NextResponse.json(
-      { error: "phone required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "phone required" }, { status: 400 });
   }
   if (typeof message !== "string" || !message) {
+    return NextResponse.json({ error: "message required" }, { status: 400 });
+  }
+
+  // Validate phone number
+  const phoneClean = cleanPhoneForSend(phone);
+  if (!phoneClean || phoneClean.length < 8 || phoneClean.length > 15) {
     return NextResponse.json(
-      { error: "message required" },
+      { error: `Numéro de téléphone invalide: "${phone}" (nettoyé: "${phoneClean}")` },
       { status: 400 }
     );
   }
 
-  let result: { ok: boolean; messageId?: string; error?: string; sentFrom?: string; sentFromName?: string };
+  let result: { ok: boolean; messageId?: string; error?: string; sentFrom?: string; sentFromName?: string; sentTo?: string };
 
   if (isExternalServerConfigured()) {
     // Use external Baileys server
     try {
       const data = await callServer("/send", {
         method: "POST",
-        body: JSON.stringify({ phone, message }),
+        body: JSON.stringify({ phone: phoneClean, message }),
       });
-      result = { ok: true, messageId: data.messageId, sentFrom: data.sentFrom, sentFromName: data.sentFromName };
+      // Railway server returns { ok: true, messageId, sentFrom, sentFromName, sentTo }
+      result = {
+        ok: data.ok !== false,
+        messageId: data.messageId,
+        sentFrom: data.sentFrom,
+        sentFromName: data.sentFromName,
+        sentTo: data.sentTo,
+      };
     } catch (err: any) {
+      console.error("[Send] External server error:", err.message);
       return NextResponse.json(
         { error: err.message || "Échec d'envoi via serveur WhatsApp" },
         { status: 500 }
@@ -72,8 +85,14 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const sendResult = await sendMessage(phone, message);
-    result = { ok: sendResult.ok, messageId: sendResult.messageId, error: sendResult.error, sentFrom: status.phoneNumber ?? undefined, sentFromName: status.profileName ?? undefined };
+    const sendResult = await sendMessage(phoneClean, message);
+    result = {
+      ok: sendResult.ok,
+      messageId: sendResult.messageId,
+      error: sendResult.error,
+      sentFrom: status.phoneNumber ?? undefined,
+      sentFromName: status.profileName ?? undefined,
+    };
   }
 
   if (!result.ok) {
@@ -107,7 +126,7 @@ export async function POST(req: Request) {
       campaignId,
       messageStage,
       status: "sent",
-      phone,
+      phone: phoneClean,
       language: null,
       messageBody: message,
     });
@@ -120,7 +139,7 @@ export async function POST(req: Request) {
       method: isExternalServerConfigured() ? "whatsapp_server" : "baileys_local",
       messageId: result.messageId,
       fromPhone: result.sentFrom,
-      toPhone: phone,
+      toPhone: phoneClean,
       toName: name,
       messageLength: message.length,
     });
@@ -131,6 +150,6 @@ export async function POST(req: Request) {
     messageId: result.messageId,
     sentFrom: result.sentFrom,
     sentFromName: result.sentFromName,
-    sentTo: phone,
+    sentTo: phoneClean,
   });
 }
