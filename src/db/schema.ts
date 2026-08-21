@@ -234,13 +234,13 @@ export const settings = pgTable("settings", {
   >(),
   // Message templates (overridable)
   messageTemplates: jsonb("message_templates").$type<{
-    intro: string;
-    demo: string;
-    quote: string;
-    payment_received: string;
-    delivery: string;
-    thanks: string;
-    followup: string;
+    intro: string | { fr: string; en: string; ar: string };
+    demo: string | { fr: string; en: string; ar: string };
+    quote: string | { fr: string; en: string; ar: string };
+    payment_received: string | { fr: string; en: string; ar: string };
+    delivery: string | { fr: string; en: string; ar: string };
+    thanks: string | { fr: string; en: string; ar: string };
+    followup: string | { fr: string; en: string; ar: string };
   }>(),
   // Custom branding
   brandColor: varchar("brand_color", { length: 16 }).default("#2563eb"),

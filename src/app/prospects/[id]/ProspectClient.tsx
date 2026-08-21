@@ -54,13 +54,13 @@ type Prospect = {
   quoteCurrency: string | null;
   paymentAmount: number | null;
   whatsappMessages: {
-    intro: string;
-    demo: string;
-    quote: string;
-    payment_received: string;
-    delivery: string;
-    thanks: string;
-    followup: string;
+    intro: string | { fr: string; en: string; ar: string };
+    demo: string | { fr: string; en: string; ar: string };
+    quote: string | { fr: string; en: string; ar: string };
+    payment_received: string | { fr: string; en: string; ar: string };
+    delivery: string | { fr: string; en: string; ar: string };
+    thanks: string | { fr: string; en: string; ar: string };
+    followup: string | { fr: string; en: string; ar: string };
   } | null;
   paymentStatus: string | null;
   paymentDate: Date | string | null;
@@ -241,7 +241,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
   };
 
   // Send via the linked WhatsApp session (if connected) or via wa.me
-  const openWhatsApp = async (messageStage: string, template: string) => {
+  const openWhatsApp = async (messageStage: string, template: string | { fr: string; en: string; ar?: string } | null | undefined) => {
     const { phone, text } = prepareMessage(template);
     if (!phone) {
       alert("Pas de numéro de téléphone pour ce business");
@@ -291,7 +291,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
   // Copy a clickable wa.me link to the clipboard. Useful when
   // api.whatsapp.com / wa.me redirects are blocked in the browser.
-  const copyMessageWithLink = async (messageStage: string, template: string) => {
+  const copyMessageWithLink = async (messageStage: string, template: string | { fr: string; en: string; ar?: string } | null | undefined) => {
     const { phone, text } = prepareMessage(template);
     if (!phone) return;
     logMessage(messageStage);
@@ -330,7 +330,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
   // Copy the message body text (no URL, no phone) — for cases where
   // the user wants to paste the text into a different messenger.
-  const copyMessageOnly = async (messageStage: string, template: string) => {
+  const copyMessageOnly = async (messageStage: string, template: string | { fr: string; en: string; ar?: string } | null | undefined) => {
     const { text } = prepareMessage(template);
     try {
       await navigator.clipboard.writeText(text);
@@ -341,7 +341,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
   // Open WhatsApp on the user's phone via the whatsapp:// scheme.
   // Works on mobile when wa.me is blocked.
-  const openOnMobile = (messageStage: string, template: string) => {
+  const openOnMobile = (messageStage: string, template: string | { fr: string; en: string; ar?: string } | null | undefined) => {
     const { phone, text } = prepareMessage(template);
     if (!phone) return;
     logMessage(messageStage);
@@ -705,10 +705,10 @@ function WhatsAppTab({
   business: Business;
   settings: Settings;
   onUpdate: (u: any) => Promise<void>;
-  openWhatsApp: (stage: string, tpl: string) => void;
-  openOnMobile: (stage: string, tpl: string) => void;
-  copyMessageWithLink: (stage: string, tpl: string) => Promise<void>;
-  copyMessageOnly: (stage: string, tpl: string) => Promise<void>;
+  openWhatsApp: (stage: string, tpl: string | { fr: string; en: string; ar?: string } | null | undefined) => void;
+  openOnMobile: (stage: string, tpl: string | { fr: string; en: string; ar?: string } | null | undefined) => void;
+  copyMessageWithLink: (stage: string, tpl: string | { fr: string; en: string; ar?: string } | null | undefined) => Promise<void>;
+  copyMessageOnly: (stage: string, tpl: string | { fr: string; en: string; ar?: string } | null | undefined) => Promise<void>;
   copyPhone: () => Promise<void>;
   copy: (t: string, f: string) => void;
   copiedField: string | null;
@@ -840,7 +840,7 @@ function WhatsAppTab({
                   {copiedField === `${s.id}_link` ? "✓ Lien copié" : "🔗 Copier lien wa.me"}
                 </button>
                 <button
-                  onClick={() => copy(value, s.id)}
+                  onClick={() => copy(getStageText(value), s.id)}
                   className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
                   title="Copie le texte du message"
                 >
@@ -855,9 +855,9 @@ function WhatsAppTab({
                 onChange={(e) =>
                   setValues((prev) => {
                     if (!prev) return prev;
-                    const settingsLang = (settings as any).messageLanguage;
                     const detectedLang = detectProspectLanguage(business.country, business.city);
-                    const lang = settingsLang || detectedLang;
+                    const settingsLang = (settings as any).messageLanguage;
+                    const lang = detectedLang || settingsLang || "fr";
                     const cur = prev[s.id as keyof typeof prev];
                     const curObj =
                       cur && typeof cur === "object" && cur !== null

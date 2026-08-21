@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { generateDefaultWhatsAppMessages } from "@/lib/prompt-generator";
 
 type Settings = {
   id: number;
@@ -20,96 +21,20 @@ type Settings = {
   messageLanguage?: string;
   paymentLink: string | null;
   messageTemplates: {
-    intro: string;
-    demo: string;
-    quote: string;
-    payment_received: string;
-    delivery: string;
-    thanks: string;
-    followup: string;
+    intro: string | { fr: string; en: string; ar: string };
+    demo: string | { fr: string; en: string; ar: string };
+    quote: string | { fr: string; en: string; ar: string };
+    payment_received: string | { fr: string; en: string; ar: string };
+    delivery: string | { fr: string; en: string; ar: string };
+    thanks: string | { fr: string; en: string; ar: string };
+    followup: string | { fr: string; en: string; ar: string };
   } | null;
   brandColor: string;
   logoUrl: string | null;
   updatedAt: Date;
 };
 
-const DEFAULT_TEMPLATES = {
-  intro: `Bonjour {{firstName}} 👋
-
-Je me permets de vous contacter car je suis tombé(e) sur votre {{sector}} à {{city}} et j'ai été vraiment impressionné(e) par ce que vous proposez{{#if rating}} (note {{rating}}/5 sur Google — bravo !){{/if}}{{#if cuisine}}, notamment votre cuisine {{cuisine}}{{/if}}.
-
-J'ai remarqué que vous n'avez pas encore de site web, et c'est un vrai manque aujourd'hui : la majorité de vos futurs clients vous cherchent sur Google avant de venir.
-
-👉 J'ai préparé **gratuitement** une démo personnalisée de ce que pourrait être votre site web professionnel. Vous la trouverez ici :
-{{demo_url}}
-
-Hâte d'avoir votre avis 😊
-{{#if phone}}Si vous préférez qu'on en parle de vive voix : {{phone}}{{/if}}`,
-  demo: `Comme promis, voici la démo personnalisée pour **{{name}}** :
-🌐 {{demo_url}}
-
-✨ Ce que j'ai mis en avant :
-• Votre {{sector}} situé à {{city}}{{#if cuisine}}
-• Votre spécialité {{cuisine}}{{/if}}{{#if rating}}
-• Votre note {{rating}}/5 sur Google{{/if}}
-• Un design moderne adapté à votre image
-• Un bouton pour vous appeler en 1 clic{{#if openingHours}}
-• Vos horaires : {{openingHours}}{{/if}}
-• Une carte Google Maps intégrée
-
-Le site est responsive (parfait sur mobile) et optimisé pour Google. Vous voyez ce que ça donnerait concrètement ?`,
-  quote: `Suite à votre intérêt pour le site, voici ma proposition :
-
-📦 **{{name}} — Site web professionnel clé en main**
-
-💰 **Tarif : {{price}}**
-{{features}}
-
-Pour accepter et démarrer aujourd'hui :
-💳 {{payment_url}}
-
-⚠️ Cette offre est valable 7 jours. Au plaisir de travailler ensemble !`,
-  delivery: `🎉 **Votre site est en ligne !**
-
-Bonjour {{firstName}}, votre site web professionnel est désormais accessible à l'adresse :
-🌐 {{final_site_url}}
-
-✅ Hébergement inclus pour 1 an
-✅ Domaine personnalisé
-✅ Certificat SSL (sécurisé HTTPS)
-✅ Optimisé pour Google
-
-📊 Un petit guide PDF avec toutes les instructions pour le modifier vous-même est en pièce jointe.
-
-N'hésitez pas si vous avez la moindre question, je reste disponible !
-Belle continuation à {{name}} 🚀`,
-  thanks: `Un grand merci {{firstName}} 🙏
-
-Votre confiance me touche sincèrement. Quelques infos pour la suite :
-
-📅 Je vous recontacte dans 3 mois pour voir comment se passe le site et s'il y a des ajustements à faire.
-
-💌 Si dans votre entourage un commerce a besoin d'un site, n'hésitez pas à me recommander — je vous offrirai une réduction sur votre abonnement annuel en guise de remerciement.
-
-Au plaisir, et encore merci !
-Belle journée ☀️`,
-  payment_received: `Bonjour {{firstName}} 👋
-
-Bien reçu votre paiement, un grand merci pour votre confiance ! 🎉
-
-Le développement et la mise en ligne du site web pour *{{name}}* sont désormais lancés.
-
-Vous recevrez le lien final de votre site internet ici même sous *24h*.
-
-Si vous avez la moindre question d'ici là, n'hésitez pas à me contacter.`,
-  followup: `Bonjour {{firstName}} 👋
-
-Je me permets de revenir vers vous au sujet de la démo de site web que je vous avais envoyée pour *{{name}}*.
-
-Avez-vous eu le temps de la regarder ? Si ce n'est pas le bon moment, pas de souci — je peux aussi simplement vous appeler pour en discuter en 5 minutes.
-
-Sinon, dites-moi ce qui vous ferait hésiter (budget, délais, fonctionnalités...) et j'adapte la proposition.`,
-};
+const DEFAULT_TEMPLATES = generateDefaultWhatsAppMessages({});
 
 export default function SettingsClient({ initialSettings }: { initialSettings: Settings }) {
   const router = useRouter();
@@ -137,9 +62,21 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
   const [paymentLinkUSD, setPaymentLinkUSD] = useState((initialSettings as any).paymentLinkUSD || "");
   const [paymentLinkMAD, setPaymentLinkMAD] = useState((initialSettings as any).paymentLinkMAD || "");
 
-  const [templates, setTemplates] = useState(
-    initialSettings.messageTemplates || DEFAULT_TEMPLATES
-  );
+  const [templates, setTemplates] = useState(() => {
+    const raw = initialSettings.messageTemplates || DEFAULT_TEMPLATES;
+    // Normalize: ensure every template is { fr, en, ar } object
+    const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
+    for (const [key, val] of Object.entries(raw)) {
+      if (typeof val === "string") {
+        normalized[key] = { fr: val, en: val, ar: val };
+      } else if (val && typeof val === "object" && "fr" in val) {
+        normalized[key] = val as { fr: string; en: string; ar: string };
+      } else {
+        normalized[key] = { fr: "", en: "", ar: "" };
+      }
+    }
+    return normalized as Record<string, { fr: string; en: string; ar: string }>;
+  });
 
   const [messageLanguage, setMessageLanguage] = useState<string>(
     (initialSettings as any).messageLanguage || "fr"
@@ -397,10 +334,17 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
                    stage === "delivery" ? "Message 5 — Livraison du site" :
                    stage === "thanks" ? "Message 6 — Remerciement" :
                    "Message 7 — Relance"}
+                  <span className="ml-2 text-[10px] text-slate-400 font-normal">(langue: {messageLanguage.toUpperCase()})</span>
                 </label>
                 <textarea
-                  value={templates[stage]}
-                  onChange={(e) => setTemplates({ ...templates, [stage]: e.target.value })}
+                  value={templates[stage]?.[messageLanguage as "fr" | "en" | "ar"] || templates[stage]?.fr || ""}
+                  onChange={(e) => {
+                    const lang = messageLanguage as "fr" | "en" | "ar";
+                    setTemplates({
+                      ...templates,
+                      [stage]: { ...templates[stage], [lang]: e.target.value },
+                    });
+                  }}
                   rows={8}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs outline-none focus:border-blue-500"
                 />
