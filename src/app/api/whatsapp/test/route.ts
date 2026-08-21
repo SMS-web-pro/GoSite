@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isExternalServerConfigured, callServer } from "@/lib/whatsapp-client";
 import { getSessionStatusAsync, sendMessage } from "@/lib/whatsapp-session";
+import { normalizePhone } from "@/lib/phone-normalizer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,13 +21,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Numéro de téléphone requis" }, { status: 400 });
   }
 
-  const phoneClean = phone.replace(/[^0-9]/g, "");
+  const phoneClean = normalizePhone(phone) || phone.replace(/[^0-9]/g, "");
   if (!phoneClean || phoneClean.length < 8 || phoneClean.length > 15) {
     return NextResponse.json(
-      { error: `Numéro de téléphone invalide: "${phone}"` },
+      { error: `Numéro de téléphone invalide: "${phone}" → "${phoneClean}"` },
       { status: 400 }
     );
   }
+
+  console.log(`[Test] Phone: "${phone}" → normalized: "${phoneClean}"`);
 
   const message =
     customMessage ||

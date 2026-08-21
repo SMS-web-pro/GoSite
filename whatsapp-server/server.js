@@ -100,12 +100,35 @@ async function clearSessionFromDb() {
 }
 
 // --- Phone number helpers ---
+// All known country codes sorted by length descending
+const ALL_COUNTRY_CODES = ["971", "966", "965", "974", "973", "968", "961", "962", "964", "216", "213", "218", "249",
+  "237", "225", "223", "227", "226", "261", "222", "241", "242", "243", "234", "233",
+  "420", "44", "212", "33", "32", "49", "34", "39", "351", "31", "41", "46", "47", "45", "48", "40", "36", "90", "20", "1"];
+
 function cleanPhone(raw) {
   if (!raw) return null;
   let cleaned = raw.replace(/[^0-9]/g, "");
   if (!cleaned || cleaned.length < 8) return null;
-  // If starts with 0 and looks like a local number, keep as-is (Baileys needs country code)
-  // The caller should ensure international format
+
+  // Already starts with a known country code → international format
+  for (const cc of ALL_COUNTRY_CODES) {
+    if (cleaned.startsWith(cc)) {
+      return cleaned;
+    }
+  }
+
+  // Has leading 0 → strip it (local format)
+  if (cleaned.startsWith("0") && cleaned.length >= 9) {
+    const without0 = cleaned.substring(1);
+    // Check if the rest starts with a known country code
+    for (const cc of ALL_COUNTRY_CODES) {
+      if (without0.startsWith(cc)) {
+        return without0;
+      }
+    }
+    return without0;
+  }
+
   return cleaned;
 }
 
@@ -344,10 +367,11 @@ async function sendMessage(to, text) {
 
   const phoneClean = cleanPhone(to);
   if (!phoneClean) {
-    return { ok: false, error: "Numéro de téléphone invalide" };
+    return { ok: false, error: `Numéro de téléphone invalide: "${to}"` };
   }
 
   const jid = phoneClean + "@s.whatsapp.net";
+  log(`Sending message to ${phoneClean} (raw: "${to}")`);
 
   try {
     // Send with timeout
@@ -359,7 +383,7 @@ async function sendMessage(to, text) {
     const result = await Promise.race([sendPromise, timeoutPromise]);
 
     sessionState.lastActivity = Date.now();
-    log(`Message sent to ${phoneClean} (${result?.key?.id || "no-id"})`);
+    log(`Message sent to ${phoneClean} — key.id: ${result?.key?.id || "none"}`);
 
     return {
       ok: true,
@@ -369,7 +393,7 @@ async function sendMessage(to, text) {
       sentTo: phoneClean,
     };
   } catch (err) {
-    log(`Send failed to ${phoneClean}:`, err.message);
+    log(`Send FAILED to ${phoneClean}: ${err.message}`);
 
     // If the error suggests the connection is dead, trigger reconnect
     if (

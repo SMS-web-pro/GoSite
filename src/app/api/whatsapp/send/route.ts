@@ -1,15 +1,45 @@
 import { NextResponse } from "next/server";
 import { isExternalServerConfigured, callServer } from "@/lib/whatsapp-client";
 import { getSessionStatusAsync, sendMessage } from "@/lib/whatsapp-session";
+import { normalizePhone } from "@/lib/phone-normalizer";
 import { db } from "@/db";
-import { prospects, messageLogs } from "@/db/schema";
+import { prospects, messageLogs, businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function cleanPhoneForSend(phone: string): string {
+/**
+ * Normalize a phone number to international format (digits only, no +).
+ * This is the LAST防线 before sending to Baileys — wrong format = silent failure.
+ */
+async function normalizePhoneForSend(prospectId: number, phone: string): Promise<string> {
+  // Try to get the prospect's country from the database
+  let countryCode: string | null = null;
+  try {
+    const [row] = await db
+      .select({ country: businesses.country })
+      .from(prospects)
+      .innerJoin(businesses, eq(prospects.businessId, businesses.id))
+      .where(eq(prospects.id, prospectId))
+      .limit(1);
+    if (row?.country) {
+      countryCode = row.country;
+    }
+  } catch {
+    // Fallback to local store
+    const data = localStore.get();
+    const prospect = data.prospects.find((p: any) => p.id === prospectId);
+    if (prospect?.business?.country) {
+      countryCode = prospect.business.country;
+    }
+  }
+
+  const normalized = normalizePhone(phone, countryCode);
+  if (normalized) return normalized;
+
+  // Last resort: just strip non-digits
   return phone.replace(/[^0-9]/g, "");
 }
 
@@ -32,25 +62,25 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "message required" }, { status: 400 });
   }
 
-  // Validate phone number
-  const phoneClean = cleanPhoneForSend(phone);
+  // Normalize phone to international format
+  const phoneClean = await normalizePhoneForSend(prospectId, phone);
   if (!phoneClean || phoneClean.length < 8 || phoneClean.length > 15) {
     return NextResponse.json(
-      { error: `Numéro de téléphone invalide: "${phone}" (nettoyé: "${phoneClean}")` },
+      { error: `Numéro de téléphone invalide: "${phone}" → normalisé: "${phoneClean}"` },
       { status: 400 }
     );
   }
 
+  console.log(`[Send] Phone: "${phone}" → normalized: "${phoneClean}" (prospectId: ${prospectId})`);
+
   let result: { ok: boolean; messageId?: string; error?: string; sentFrom?: string; sentFromName?: string; sentTo?: string };
 
   if (isExternalServerConfigured()) {
-    // Use external Baileys server
     try {
       const data = await callServer("/send", {
         method: "POST",
         body: JSON.stringify({ phone: phoneClean, message }),
       });
-      // Railway server returns { ok: true, messageId, sentFrom, sentFromName, sentTo }
       result = {
         ok: data.ok !== false,
         messageId: data.messageId,
@@ -60,14 +90,12 @@ export async function POST(req: Request) {
       };
     } catch (err: any) {
       console.error("[Send] External server error:", err.message);
-      // Surface the exact error from Railway
       return NextResponse.json(
         { error: err.message || "Échec d'envoi via serveur WhatsApp" },
         { status: 500 }
       );
     }
   } else {
-    // Fallback: local Baileys (non-serverless only)
     let status;
     try {
       status = await getSessionStatusAsync();
@@ -79,10 +107,7 @@ export async function POST(req: Request) {
     }
     if (status.status !== "connected") {
       return NextResponse.json(
-        {
-          error: "WhatsApp n'est pas connecté. Scannez le QR code dans Paramètres → WhatsApp.",
-          status: status.status,
-        },
+        { error: "WhatsApp n'est pas connecté. Scannez le QR code dans Paramètres → WhatsApp.", status: status.status },
         { status: 400 }
       );
     }
@@ -120,7 +145,7 @@ export async function POST(req: Request) {
     campaignId = prospect?.campaignId || null;
   }
 
-  // Log the message — DB first, local-store fallback
+  // Log the message
   try {
     await db.insert(messageLogs).values({
       prospectId,
