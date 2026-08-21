@@ -68,7 +68,7 @@
 [data-card-contact]:hover{background:rgba(255,255,255,.08);border-color:rgba(37,99,235,.3)}
 
 /* ═══════════════════════════════════════════════
-   HOME NAV - DESKTOP BASE
+   MOBILE MENU TOGGLE
    ═══════════════════════════════════════════════ */
 .gs-nav-toggle{
   display:none!important;
@@ -89,67 +89,57 @@
   transition:all .3s;
 }
 
-/* Nav links container - desktop */
+/* Nav links container */
 .gs-nav-links{
   display:flex;
   gap:2px;
   align-items:center;
-  flex:1 1 auto;
+  flex-shrink:1;
   min-width:0;
   overflow:visible;
-  justify-content:center;
 }
 
-/* Right section - desktop */
-.gs-hide-mob{display:flex!important;flex-shrink:0;gap:10px;align-items:center}
+/* Hide on mobile */
+.gs-hide-mob{display:flex!important;flex-shrink:0}
 
 /* ═══════════════════════════════════════════════
    TABLET: max-width 1024px
    ═══════════════════════════════════════════════ */
 @media(max-width:1024px){
-  /* Show hamburger, hide right section */
   .gs-nav-toggle{display:flex!important}
   .gs-hide-mob{display:none!important}
 
   /* NAV */
   .gs-nav{padding:0 20px!important}
-
-  /* Nav links - full screen dropdown */
   .gs-nav-links{
     display:none!important;
-    position:fixed!important;
-    top:56px!important;
-    left:0!important;
-    right:0!important;
-    bottom:0!important;
+    position:fixed;top:56px;left:0;right:0;
     background:rgba(10,22,40,.98)!important;
     backdrop-filter:blur(20px)!important;
-    padding:16px!important;
+    padding:12px 16px!important;
     flex-direction:column!important;
-    align-items:stretch!important;
-    gap:4px!important;
+    gap:2px!important;
     border-bottom:1px solid rgba(255,255,255,.06)!important;
     z-index:999;
+    max-height:calc(100vh - 56px);
     overflow-y:auto;
-    justify-content:flex-start!important;
   }
   .gs-nav-links.gs-open{display:flex!important}
   .gs-nav-links a{
-    padding:14px 16px!important;
-    font-size:16px!important;
+    padding:12px 16px!important;
+    font-size:15px!important;
     border-radius:8px;
     width:100%;
     text-align:left;
-    color:rgba(255,255,255,.7)!important;
   }
-  .gs-nav-links a:hover{background:rgba(255,255,255,.07);color:white!important}
+  .gs-nav-links a:hover{background:rgba(255,255,255,.07)}
 
   /* HERO */
   .gs-hero{padding:72px 20px 48px!important;min-height:auto!important}
   .gs-hero-grid{grid-template-columns:1fr!important;gap:36px!important}
   .hero-card-wrap{display:none!important}
 
-  /* SECTIONS */
+  /* SECTIONS通用 */
   .gs-section{padding-left:20px!important;padding-right:20px!important}
 
   /* SERVICES */
@@ -193,7 +183,7 @@
   .gs-hero-tags{gap:6px!important}
   .gs-hero-tags span{font-size:11px!important}
 
-  /* SECTIONS */
+  /* SECTIONS通用 */
   .gs-section{padding:48px 16px!important}
   .gs-section-header{text-align:center!important;margin-bottom:36px!important}
   .gs-section-header h2{font-size:clamp(22px,6vw,34px)!important;margin-bottom:10px!important}
