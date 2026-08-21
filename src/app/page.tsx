@@ -341,6 +341,7 @@ export default function HomePage() {
   const [lang, setLang] = useState<Lang>("en");
   const [success, setSuccess] = useState(false);
   const [modal, setModal] = useState<"privacy" | "terms" | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const revealRefs = useRef<IntersectionObserver | null>(null);
   const t = T[lang];
 
@@ -417,19 +418,29 @@ export default function HomePage() {
             <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--gs-blue3)", letterSpacing: -1 }}>Site</span>
             <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--orange)" }}>.</span>
           </div>
-          <div style={{ fontSize: 11, color: "var(--muted2)", fontWeight: 500, letterSpacing: 0.5, marginLeft: 2, marginTop: 2 }}>DIGITAL AGENCY</div>
+          <div style={{ fontSize: 11, color: "var(--muted2)", fontWeight: 500, letterSpacing: 0.5, marginLeft: 2, marginTop: 2 }} className="hide-mobile">DIGITAL AGENCY</div>
         </a>
-        <div style={{ display: "flex", gap: 2 }}>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="mobile-menu-toggle"
+          style={{ display: "none", flexDirection: "column", gap: 5, cursor: "pointer", padding: 8, background: "none", border: "none", zIndex: 1001 }}
+          aria-label="Toggle menu"
+        >
+          <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", transform: mobileMenuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", opacity: mobileMenuOpen ? 0 : 1 }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "white", borderRadius: 2, transition: "all .3s", transform: mobileMenuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
+        </button>
+        <div className={`nav-links-container ${mobileMenuOpen ? "open" : ""}`} style={{ display: "flex", gap: 2 }}>
           {t.navLinks.map((label, i) => (
-            <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} style={{ fontSize: 12, fontWeight: 500, color: "var(--muted2)", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
+            <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 12, fontWeight: 500, color: "var(--muted2)", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
               {label}
             </a>
           ))}
-          <a href="/portfolio" style={{ color: "#E8622A", fontWeight: 700, fontSize: 12, textDecoration: "none", padding: "7px 12px", borderRadius: 7 }}>
+          <a href="/portfolio" onClick={() => setMobileMenuOpen(false)} style={{ color: "#E8622A", fontWeight: 700, fontSize: 12, textDecoration: "none", padding: "7px 12px", borderRadius: 7 }}>
             Youssef&apos;s Portfolio
           </a>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="hide-mobile">
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--green)", fontWeight: 600 }}>
             <div className="pulse-dot" style={{ width: 7, height: 7, background: "var(--green)", borderRadius: "50%", animation: "pulsedot 2s infinite", flexShrink: 0 }} />
             {t.available}
