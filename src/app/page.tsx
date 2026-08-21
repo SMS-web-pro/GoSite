@@ -691,13 +691,12 @@ export default function HomePage() {
           </p>
         </div>
         <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div className="gs-process-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 0, position: "relative" }}>
-            <div style={{ position: "absolute", top: 30, left: "10%", right: "10%", height: 2, background: "linear-gradient(90deg,var(--gs-blue2),var(--gs-cyan),var(--gs-blue2))", zIndex: 0 }} />
+          <div className="gs-process-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 20, position: "relative" }}>
             {STEPS_DATA.map((s, i) => (
-              <div key={i} className="reveal" data-card-process style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", position: "relative", zIndex: 1, padding: "0 12px" }}>
-                <div className="gs-process-num" style={{ width: 60, height: 60, borderRadius: "50%", background: "#0A1628", border: "3px solid var(--gs-blue2)", color: "var(--gs-blue3)", fontFamily: "'Space Grotesk',sans-serif", fontSize: 23, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>{i + 1}</div>
-                <div className="gs-process-step" style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>{s[lang === "ar" ? "ar" : lang]}</div>
-                <div className="gs-process-step" style={{ fontSize: 11.5, color: "#475569", lineHeight: 1.6 }}>{getLocalized(s, "desc")}</div>
+              <div key={i} className="reveal" data-card-process style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", position: "relative", padding: "24px 16px", background: "white", borderRadius: 16, border: "1px solid rgba(0,0,0,.06)", boxShadow: "0 2px 8px rgba(0,0,0,.04)" }}>
+                <div className="gs-process-num" style={{ width: 52, height: 52, borderRadius: "14px", background: "linear-gradient(135deg,var(--gs-blue2),var(--gs-cyan))", color: "white", fontFamily: "'Space Grotesk',sans-serif", fontSize: 20, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16, boxShadow: "0 4px 12px rgba(37,99,235,.25)" }}>{i + 1}</div>
+                <div className="gs-process-step" style={{ fontSize: 14, fontWeight: 700, color: "#0F172A", marginBottom: 8 }}>{s[lang === "ar" ? "ar" : lang]}</div>
+                <div className="gs-process-step" style={{ fontSize: 12, color: "#475569", lineHeight: 1.65 }}>{getLocalized(s, "desc")}</div>
               </div>
             ))}
           </div>

@@ -63,6 +63,7 @@
 [data-card-srv]:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.09);border-color:transparent}
 [data-card-srv]:hover::after{transform:scaleX(1)}
 [data-card-process]{transition:all .3s}
+[data-card-process]:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.1)!important}
 [data-card-process]:hover .proc-num{background:var(--gs-blue2);color:white;box-shadow:0 0 0 6px rgba(37,99,235,.2)}
 [data-card-contact]:hover{background:rgba(255,255,255,.08);border-color:rgba(37,99,235,.3)}
 
