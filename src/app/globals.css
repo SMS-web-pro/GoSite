@@ -93,10 +93,13 @@
   display:flex;
   gap:2px;
   align-items:center;
+  flex-shrink:1;
+  min-width:0;
+  overflow:visible;
 }
 
 /* Hide on mobile */
-.gs-hide-mob{display:block!important}
+.gs-hide-mob{display:flex!important;flex-shrink:0}
 
 /* ═══════════════════════════════════════════════
    TABLET: max-width 1024px

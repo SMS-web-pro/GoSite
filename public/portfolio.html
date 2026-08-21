@@ -305,10 +305,16 @@ section,div.sec-alt{position:relative;overflow:hidden}
 .faq-item.open .faq-a{max-height:350px;padding:0 20px 16px}
 
 /* CERTS */
-.certs-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-.cert-card{display:flex;align-items:center;gap:11px;background:white;border:1px solid var(--rule);border-radius:13px;padding:13px 18px;box-shadow:0 2px 7px rgba(0,0,0,.04);transition:all .2s}
-.cert-card:hover{border-color:var(--orange);box-shadow:0 5px 18px rgba(232,98,42,.12);transform:translateY(-2px)}
-.cert-icon{font-size:22px;flex-shrink:0}.cert-name{font-size:12.5px;font-weight:700;color:var(--text)}.cert-org{font-size:10.5px;color:var(--muted);margin-top:2px}
+.certs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.certs-group{background:white;border:1px solid var(--rule);border-radius:16px;padding:20px;box-shadow:0 2px 7px rgba(0,0,0,.04)}
+.certs-group-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.certs-group-icon{font-size:18px}
+.certs-items{display:flex;flex-direction:column;gap:10px}
+.cert-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;transition:all .2s}
+.cert-item:hover{background:rgba(232,98,42,.06)}
+.cert-icon{font-size:20px;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(232,98,42,.08);border-radius:10px}
+.cert-name{font-size:12px;font-weight:700;color:var(--text)}
+.cert-org{font-size:10px;color:var(--muted);margin-top:1px}
 
 /* CONTACT */
 .contact-layout{display:grid;grid-template-columns:1fr 460px;gap:52px;align-items:start}
@@ -528,8 +534,8 @@ footer{background:#040d18;padding:32px 44px;display:grid;grid-template-columns:a
   .cta-card h3{font-size:20px}
   .cta-card p{font-size:12px}
   .cta-wa{padding:14px 28px;font-size:13px}
-  .certs-row{gap:8px}
-  .cert-card{padding:10px 14px}
+  .certs-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .certs-group{padding:16px}
   .cert-name{font-size:11px}
   .cert-org{font-size:9px}
   footer{padding:24px 16px}
@@ -591,8 +597,9 @@ footer{background:#040d18;padding:32px 44px;display:grid;grid-template-columns:a
   .cta-card{padding:24px 20px}
   .cta-card h3{font-size:18px}
   .cta-wa{padding:12px 24px;font-size:12px}
-  .cert-card{padding:8px 12px;gap:8px}
-  .cert-icon{font-size:18px}
+  .certs-grid{grid-template-columns:1fr;gap:12px}
+  .certs-group{padding:14px}
+  .cert-icon{width:32px;height:32px;font-size:18px}
   .cert-name{font-size:10px}
   footer{padding:20px 12px}
   .f-links{gap:10px;flex-direction:column}
