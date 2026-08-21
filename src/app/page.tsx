@@ -421,11 +421,11 @@ export default function HomePage() {
         </a>
         <div style={{ display: "flex", gap: 2 }}>
           {t.navLinks.map((label, i) => (
-            <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} style={{ fontSize: 14, fontWeight: 500, color: "var(--muted2)", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
+            <a key={label} href={`#${["services", "results", "why", "process", "testimonials", "contact"][i]}`} style={{ fontSize: 12, fontWeight: 500, color: "var(--muted2)", textDecoration: "none", padding: "7px 12px", borderRadius: 7, transition: "all .2s" }}>
               {label}
             </a>
           ))}
-          <a href="/portfolio" style={{ color: "#E8622A", fontWeight: 700, fontSize: 14, textDecoration: "none", padding: "7px 12px", borderRadius: 7 }}>
+          <a href="/portfolio" style={{ color: "#E8622A", fontWeight: 700, fontSize: 12, textDecoration: "none", padding: "7px 12px", borderRadius: 7 }}>
             Youssef&apos;s Portfolio
           </a>
         </div>
@@ -453,32 +453,32 @@ export default function HomePage() {
         <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", width: 700, height: 700, background: "rgba(26,86,219,.12)", top: -200, left: -200 }} className="orb1" />
         <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", width: 500, height: 500, background: "rgba(6,182,212,.08)", top: 100, right: -100 }} className="orb2" />
         <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", width: 400, height: 400, background: "rgba(124,58,237,.07)", bottom: -80, left: "40%" }} className="orb3" />
-        <div style={{ maxWidth: 1380, margin: "0 auto", width: "100%", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 480px", gap: 72, alignItems: "center" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", width: "100%", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1fr 480px", gap: 72, alignItems: "center" }}>
           <div>
             <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(26,86,219,.15)", border: "1px solid rgba(37,99,235,.35)", borderRadius: 100, padding: "7px 18px", marginBottom: 26, fontSize: 13, fontWeight: 700, color: "var(--gs-blue3)", letterSpacing: 1, textTransform: "uppercase" }}>
               <div className="pulse-dot" style={{ width: 7, height: 7, background: "var(--green)", borderRadius: "50%", animation: "pulsedot 2s infinite" }} />
               {t.badge}
             </div>
-            <h1 className="reveal" style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(42px,5vw,72px)", fontWeight: 800, color: "white", letterSpacing: -2, lineHeight: 1.05, marginBottom: 22 }}>
+            <h1 className="reveal" style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(36px,4.5vw,62px)", fontWeight: 800, color: "white", letterSpacing: -2, lineHeight: 1.05, marginBottom: 22 }}>
               {t.heroH1}
             </h1>
-            <p className="reveal" style={{ fontSize: 18, color: "var(--muted2)", lineHeight: 1.8, maxWidth: 500, marginBottom: 34 }}>
+            <p className="reveal" style={{ fontSize: 16, color: "var(--muted2)", lineHeight: 1.8, maxWidth: 500, marginBottom: 34 }}>
               {t.heroP}
             </p>
             <div className="reveal" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 36 }}>
-              <a href="#contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--gs-blue2)", color: "white", padding: "14px 28px", borderRadius: 10, fontSize: 16, fontWeight: 700, textDecoration: "none", transition: "all .25s" }}>
+              <a href="#contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--gs-blue2)", color: "white", padding: "14px 28px", borderRadius: 10, fontSize: 14, fontWeight: 700, textDecoration: "none", transition: "all .25s" }}>
                 <SendIcon /> {t.getFreeQuote}
               </a>
-              <a href="/portfolio" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,.07)", color: "white", padding: "14px 22px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", fontSize: 16, fontWeight: 600, textDecoration: "none", transition: "all .25s" }}>
+              <a href="/portfolio" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,.07)", color: "white", padding: "14px 22px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all .25s" }}>
                 <EyeIcon /> {t.viewPortfolio}
               </a>
-              <a href="https://wa.me/212751134318" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,.07)", color: "white", padding: "14px 22px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", fontSize: 16, fontWeight: 600, textDecoration: "none", transition: "all .25s" }}>
+              <a href="https://wa.me/212751134318" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,.07)", color: "white", padding: "14px 22px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all .25s" }}>
                 <WhatsAppIcon /> WhatsApp
               </a>
             </div>
             <div className="reveal" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {[t.freeAudit, t.reply24h, t.noCommit, t.remote100].map((item) => (
-                <span key={item} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "rgba(255,255,255,.5)", fontWeight: 500 }}>
+                <span key={item} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,.5)", fontWeight: 500 }}>
                   <span style={{ color: "var(--green)", fontWeight: 800, fontSize: 12.5 }}>✓</span> {item}
                 </span>
               ))}
@@ -523,7 +523,7 @@ export default function HomePage() {
       {/* SERVICES */}
       <section id="services" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(26,86,219,.05) 1px,transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue2)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue2)", borderRadius: 2 }} />
             {lang === "en" ? "What we do" : lang === "fr" ? "Ce que nous faisons" : "ما نقدمه"}
@@ -535,22 +535,22 @@ export default function HomePage() {
             {t.servicesSub}
           </p>
         </div>
-        <div style={{ maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }}>
             {SERVICES_DATA.map((s, i) => (
-              <div key={i} className="reveal" data-d={String((i % 4) + 1)} style={{ background: "white", border: "1px solid #E2E8F0", borderRadius: 18, padding: 26, transition: "all .3s", position: "relative", overflow: "hidden" }}>
+              <div key={i} className="reveal" data-card-srv data-d={String((i % 4) + 1)} style={{ background: "white", border: "1px solid #E2E8F0", borderRadius: 18, padding: 26, position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: s.color }} />
                 <div style={{ width: 52, height: 52, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18, background: s.color + "1a" }}>
                   <ServiceIcon type={s.icon} color={s.color} />
                 </div>
-                <h3 style={{ fontSize: 17.5, fontWeight: 700, color: "#0F172A", marginBottom: 8 }}>{s[lang === "ar" ? "ar" : lang]}</h3>
-                <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{getLocalized(s, "desc")}</p>
+                <h3 style={{ fontSize: 15.5, fontWeight: 700, color: "#0F172A", marginBottom: 8 }}>{s[lang === "ar" ? "ar" : lang]}</h3>
+                <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{getLocalized(s, "desc")}</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
                   {s.chips.map((ch) => (
-                    <span key={ch} style={{ fontSize: 12, fontWeight: 600, padding: "3px 9px", borderRadius: 6, background: "#F1F5F9", color: "#475569", border: "1px solid #E2E8F0" }}>{ch}</span>
+                    <span key={ch} style={{ fontSize: 10.5, fontWeight: 600, padding: "3px 9px", borderRadius: 6, background: "#F1F5F9", color: "#475569", border: "1px solid #E2E8F0" }}>{ch}</span>
                   ))}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 700, padding: "7px 12px", borderRadius: 8, color: s.kpiColor, background: s.kpiColor + "12" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, padding: "7px 12px", borderRadius: 8, color: s.kpiColor, background: s.kpiColor + "12" }}>
                   {getLocalized(s, "kpi")}
                 </div>
               </div>
@@ -563,7 +563,7 @@ export default function HomePage() {
       <section id="results" style={{ background: "#0A1628", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -150, left: -150, width: 600, height: 600, background: "radial-gradient(ellipse,rgba(26,86,219,.12) 0%,transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -100, right: -100, width: 500, height: 500, background: "radial-gradient(ellipse,rgba(6,182,212,.08) 0%,transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ padding: "88px 44px", maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue3)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue3)", borderRadius: 2 }} />
             {lang === "en" ? "Proven results" : lang === "fr" ? "Résultats prouvés" : "نتائج مثبتة"}
@@ -575,16 +575,16 @@ export default function HomePage() {
             {t.resultsSub}
           </p>
         </div>
-        <div style={{ maxWidth: 1380, margin: "0 auto", padding: "0 44px 88px", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 44px 88px", position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>
             {RESULTS_DATA.map((r, i) => (
-              <div key={i} className="reveal" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26, transition: "all .25s", position: "relative", overflow: "hidden" }}>
+              <div key={i} className="reveal" data-card-hover style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26, position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: r.color }} />
                 <div style={{ fontSize: 32, marginBottom: 12 }}>{r.emoji}</div>
-                <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 38, fontWeight: 800, color: r.color, lineHeight: 1, marginBottom: 6 }}>{getLocalized(r, "val")}</div>
-                <div style={{ fontSize: 17, fontWeight: 700, color: "white", marginBottom: 6 }}>{r[lang === "ar" ? "ar" : lang]}</div>
-                <div style={{ fontSize: 14.5, color: "var(--muted2)", lineHeight: 1.65 }}>{getLocalized(r, "desc")}</div>
-                <div style={{ display: "inline-block", fontSize: 12, fontWeight: 700, padding: "3px 9px", borderRadius: 5, background: "rgba(255,255,255,.07)", color: "var(--muted2)", marginTop: 12 }}>{r.tag}</div>
+                <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 34, fontWeight: 800, color: r.color, lineHeight: 1, marginBottom: 6 }}>{getLocalized(r, "val")}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 6 }}>{r[lang === "ar" ? "ar" : lang]}</div>
+                <div style={{ fontSize: 12.5, color: "var(--muted2)", lineHeight: 1.65 }}>{getLocalized(r, "desc")}</div>
+                <div style={{ display: "inline-block", fontSize: 10.5, fontWeight: 700, padding: "3px 9px", borderRadius: 5, background: "rgba(255,255,255,.07)", color: "var(--muted2)", marginTop: 12 }}>{r.tag}</div>
               </div>
             ))}
           </div>
@@ -593,7 +593,7 @@ export default function HomePage() {
 
       {/* WHY US */}
       <section id="why" style={{ background: "white", position: "relative", overflow: "hidden" }}>
-        <div style={{ padding: "88px 44px", maxWidth: 1380, margin: "0 auto" }}>
+        <div style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 52, alignItems: "center" }}>
             <div>
               <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue2)", textTransform: "uppercase", marginBottom: 12 }}>
@@ -611,8 +611,8 @@ export default function HomePage() {
                   <div key={i} className="reveal" style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
                     <div style={{ width: 42, height: 42, borderRadius: 12, background: "var(--gs-blue2)", color: "white", fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</div>
                     <div>
-                      <div style={{ fontSize: 17, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>{w[lang === "ar" ? "ar" : lang]}</div>
-                      <div style={{ fontSize: 15, color: "#475569", lineHeight: 1.7 }}>{getLocalized(w, "desc")}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>{w[lang === "ar" ? "ar" : lang]}</div>
+                      <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{getLocalized(w, "desc")}</div>
                     </div>
                   </div>
                 ))}
@@ -645,7 +645,7 @@ export default function HomePage() {
       {/* PROCESS */}
       <section id="process" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(26,86,219,.05) 1px,transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue2)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue2)", borderRadius: 2 }} />
             {lang === "en" ? "How we work" : lang === "fr" ? "Comment nous travaillons" : "كيف نعمل"}
@@ -657,14 +657,14 @@ export default function HomePage() {
             {t.processSub}
           </p>
         </div>
-        <div style={{ maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 0, position: "relative" }}>
             <div style={{ position: "absolute", top: 30, left: "10%", right: "10%", height: 2, background: "linear-gradient(90deg,var(--gs-blue2),var(--gs-cyan),var(--gs-blue2))", zIndex: 0 }} />
             {STEPS_DATA.map((s, i) => (
-              <div key={i} className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", position: "relative", zIndex: 1, padding: "0 12px" }}>
+              <div key={i} className="reveal" data-card-process style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", position: "relative", zIndex: 1, padding: "0 12px" }}>
                 <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#0A1628", border: "3px solid var(--gs-blue2)", color: "var(--gs-blue3)", fontFamily: "'Space Grotesk',sans-serif", fontSize: 23, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>{i + 1}</div>
-                <div style={{ fontSize: 15.5, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>{s[lang === "ar" ? "ar" : lang]}</div>
-                <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.6 }}>{getLocalized(s, "desc")}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>{s[lang === "ar" ? "ar" : lang]}</div>
+                <div style={{ fontSize: 11.5, color: "#475569", lineHeight: 1.6 }}>{getLocalized(s, "desc")}</div>
               </div>
             ))}
           </div>
@@ -674,7 +674,7 @@ export default function HomePage() {
       {/* TESTIMONIALS */}
       <section id="testimonials" style={{ background: "linear-gradient(135deg,#0A1628,#0f1f38)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(255,255,255,.02) 1px,transparent 1px)", backgroundSize: "40px 40px", pointerEvents: "none" }} />
-        <div style={{ padding: "88px 44px", maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div style={{ padding: "88px 44px", maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           <div className="reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "var(--gs-blue3)", textTransform: "uppercase", marginBottom: 12 }}>
             <div style={{ width: 26, height: 2, background: "var(--gs-blue3)", borderRadius: 2 }} />
             {lang === "en" ? "Client reviews" : lang === "fr" ? "Avis clients" : "آراء العملاء"}
@@ -683,17 +683,17 @@ export default function HomePage() {
             {t.clientsTitle}
           </h2>
         </div>
-        <div style={{ maxWidth: 1380, margin: "0 auto", padding: "0 44px 88px", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 44px 88px", position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18, marginBottom: 18 }}>
             {TESTIMONIALS_DATA.slice(0, 3).map((tc, i) => (
-              <div key={i} className="reveal" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26, transition: "all .25s" }}>
+              <div key={i} className="reveal" data-card-testi style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26 }}>
                 <div style={{ color: "#F59E0B", fontSize: 15, letterSpacing: 3, marginBottom: 12 }}>★★★★★</div>
-                <div style={{ fontSize: 15.5, color: "rgba(255,255,255,.75)", lineHeight: 1.78, marginBottom: 20, fontStyle: "italic" }}>{getLocalized(tc, "text")}</div>
+                <div style={{ fontSize: 13.5, color: "rgba(255,255,255,.75)", lineHeight: 1.78, marginBottom: 20, fontStyle: "italic" }}>{getLocalized(tc, "text")}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 11, borderTop: "1px solid rgba(255,255,255,.1)", paddingTop: 14 }}>
                   <div style={{ width: 42, height: 42, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "white", fontFamily: "'Space Grotesk',sans-serif", flexShrink: 0, background: tc.bg }}>{tc.initials}</div>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "white" }}>{tc.name}</div>
-                    <div style={{ fontSize: 12.5, color: "var(--muted2)", marginTop: 2 }}>{lang === "fr" ? tc.role_fr : lang === "ar" ? tc.role_ar : tc.role_en}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{tc.name}</div>
+                    <div style={{ fontSize: 11, color: "var(--muted2)", marginTop: 2 }}>{lang === "fr" ? tc.role_fr : lang === "ar" ? tc.role_ar : tc.role_en}</div>
                   </div>
                 </div>
               </div>
@@ -701,14 +701,14 @@ export default function HomePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
             {TESTIMONIALS_DATA.slice(3).map((tc, i) => (
-              <div key={i} className="reveal" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26, transition: "all .25s" }}>
+              <div key={i} className="reveal" data-card-testi style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, padding: 26 }}>
                 <div style={{ color: "#F59E0B", fontSize: 15, letterSpacing: 3, marginBottom: 12 }}>★★★★★</div>
-                <div style={{ fontSize: 15.5, color: "rgba(255,255,255,.75)", lineHeight: 1.78, marginBottom: 20, fontStyle: "italic" }}>{getLocalized(tc, "text")}</div>
+                <div style={{ fontSize: 13.5, color: "rgba(255,255,255,.75)", lineHeight: 1.78, marginBottom: 20, fontStyle: "italic" }}>{getLocalized(tc, "text")}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 11, borderTop: "1px solid rgba(255,255,255,.1)", paddingTop: 14 }}>
                   <div style={{ width: 42, height: 42, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "white", fontFamily: "'Space Grotesk',sans-serif", flexShrink: 0, background: tc.bg }}>{tc.initials}</div>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "white" }}>{tc.name}</div>
-                    <div style={{ fontSize: 12.5, color: "var(--muted2)", marginTop: 2 }}>{lang === "fr" ? tc.role_fr : lang === "ar" ? tc.role_ar : tc.role_en}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{tc.name}</div>
+                    <div style={{ fontSize: 11, color: "var(--muted2)", marginTop: 2 }}>{lang === "fr" ? tc.role_fr : lang === "ar" ? tc.role_ar : tc.role_en}</div>
                   </div>
                 </div>
               </div>
@@ -728,10 +728,10 @@ export default function HomePage() {
             {t.ctaP}
           </p>
           <div className="reveal" style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
-            <a href="#contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "white", color: "var(--gs-blue2)", padding: "15px 32px", borderRadius: 10, fontSize: 16.5, fontWeight: 800, textDecoration: "none", transition: "all .25s" }}>
+            <a href="#contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "white", color: "var(--gs-blue2)", padding: "15px 32px", borderRadius: 10, fontSize: 14.5, fontWeight: 800, textDecoration: "none", transition: "all .25s" }}>
               <SendIcon /> {lang === "en" ? "Get Free Audit" : lang === "fr" ? "Audit Gratuit" : "احصل على تدقيق مجاني"}
             </a>
-            <a href="/portfolio" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", color: "white", padding: "15px 28px", borderRadius: 10, border: "2px solid rgba(255,255,255,.5)", fontSize: 16.5, fontWeight: 700, textDecoration: "none", transition: "all .25s" }}>
+            <a href="/portfolio" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", color: "white", padding: "15px 28px", borderRadius: 10, border: "2px solid rgba(255,255,255,.5)", fontSize: 14.5, fontWeight: 700, textDecoration: "none", transition: "all .25s" }}>
               <EyeIcon /> {t.viewPortfolio}
             </a>
           </div>
@@ -748,23 +748,23 @@ export default function HomePage() {
       {/* CONTACT */}
       <section id="contact" style={{ padding: "88px 44px", background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(26,86,219,.05) 1px,transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1380, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 52, alignItems: "start" }}>
-            <div style={{ background: "#0A1628", borderRadius: 18, padding: 32, border: "1px solid rgba(255,255,255,.1)" }}>
-              <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "white", marginBottom: 8, letterSpacing: -0.5, whiteSpace: "pre-line" }}>{t.contactTitle}</div>
-              <div style={{ fontSize: 15.5, color: "var(--muted2)", marginBottom: 24, lineHeight: 1.7 }}>{t.contactSub}</div>
+            <div data-card-contact style={{ background: "#0A1628", borderRadius: 18, padding: 32, border: "1px solid rgba(255,255,255,.1)" }}>
+              <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 22, fontWeight: 800, color: "white", marginBottom: 8, letterSpacing: -0.5, whiteSpace: "pre-line" }}>{t.contactTitle}</div>
+              <div style={{ fontSize: 13.5, color: "var(--muted2)", marginBottom: 24, lineHeight: 1.7 }}>{t.contactSub}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
-                <a href="https://wa.me/212751134318" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 11, padding: "14px 16px", textDecoration: "none", transition: "all .2s" }}>
+                <a href="https://wa.me/212751134318" target="_blank" rel="noopener noreferrer" data-card-contact style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 11, padding: "14px 16px", textDecoration: "none", transition: "all .2s" }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(37,99,235,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>💬</div>
-                  <div><div style={{ fontSize: 12, color: "var(--muted2)", fontWeight: 600, letterSpacing: 0.4, marginBottom: 2 }}>WhatsApp</div><div style={{ fontSize: 15.5, fontWeight: 700, color: "white" }}>+212 751 134 318</div></div>
+                  <div><div style={{ fontSize: 12, color: "var(--muted2)", fontWeight: 600, letterSpacing: 0.4, marginBottom: 2 }}>WhatsApp</div><div style={{ fontSize: 13.5, fontWeight: 700, color: "white" }}>+212 751 134 318</div></div>
                 </a>
-                <a href="mailto:contact@gosite.digital" style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 11, padding: "14px 16px", textDecoration: "none", transition: "all .2s" }}>
+                <a href="mailto:contact@gosite.digital" data-card-contact style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 11, padding: "14px 16px", textDecoration: "none", transition: "all .2s" }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(37,99,235,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>✉️</div>
-                  <div><div style={{ fontSize: 12, color: "var(--muted2)", fontWeight: 600, letterSpacing: 0.4, marginBottom: 2 }}>Email</div><div style={{ fontSize: 15.5, fontWeight: 700, color: "white" }}>contact@gosite.digital</div></div>
+                  <div><div style={{ fontSize: 12, color: "var(--muted2)", fontWeight: 600, letterSpacing: 0.4, marginBottom: 2 }}>Email</div><div style={{ fontSize: 13.5, fontWeight: 700, color: "white" }}>contact@gosite.digital</div></div>
                 </a>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 11, padding: "14px 16px" }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(37,99,235,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🌍</div>
-                  <div><div style={{ fontSize: 12, color: "var(--muted2)", fontWeight: 600, letterSpacing: 0.4, marginBottom: 2 }}>{lang === "en" ? "Location" : lang === "fr" ? "Localisation" : "الموقع"}</div><div style={{ fontSize: 15.5, fontWeight: 700, color: "white" }}>{t.locationLabel}</div></div>
+                  <div><div style={{ fontSize: 12, color: "var(--muted2)", fontWeight: 600, letterSpacing: 0.4, marginBottom: 2 }}>{lang === "en" ? "Location" : lang === "fr" ? "Localisation" : "الموقع"}</div><div style={{ fontSize: 13.5, fontWeight: 700, color: "white" }}>{t.locationLabel}</div></div>
                 </div>
               </div>
               <div style={{ marginTop: 24, padding: 18, background: "rgba(16,185,129,.1)", border: "1px solid rgba(16,185,129,.25)", borderRadius: 12, display: "flex", alignItems: "center", gap: 10 }}>
@@ -776,21 +776,21 @@ export default function HomePage() {
               </div>
             </div>
             <div style={{ background: "white", border: "1px solid #E2E8F0", borderRadius: 18, padding: 32 }}>
-              <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 23, fontWeight: 800, color: "#0F172A", marginBottom: 22, letterSpacing: -0.5 }}>{t.sendMessage}</div>
+              <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 20, fontWeight: 800, color: "#0F172A", marginBottom: 22, letterSpacing: -0.5 }}>{t.sendMessage}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 0 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.fullName}</label>
-                  <input id="gs-name" type="text" placeholder="Your name" required suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 15.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }} />
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.fullName}</label>
+                  <input id="gs-name" type="text" placeholder="Your name" required suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }} />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>Email</label>
-                  <input id="gs-email" type="email" placeholder="your@email.com" required suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 15.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }} />
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>Email</label>
+                  <input id="gs-email" type="email" placeholder="your@email.com" required suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }} />
                 </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 14 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.serviceName}</label>
-                  <select id="gs-service" suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 15.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }}>
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.serviceName}</label>
+                  <select id="gs-service" suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }}>
                     <option value="">Select...</option>
                     <option>Web Development</option>
                     <option>Google Ads</option>
@@ -802,18 +802,18 @@ export default function HomePage() {
                   </select>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.budgetLabel}</label>
-                  <select id="gs-budget" suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 15.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }}>
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.budgetLabel}</label>
+                  <select id="gs-budget" suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 13.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none" }}>
                     <option value="">Select...</option>
                     {BUDGETS[lang].map((b) => <option key={b}>{b}</option>)}
                   </select>
                 </div>
               </div>
               <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.tellProject}</label>
+                <label style={{ fontSize: 11.5, fontWeight: 700, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>{t.tellProject}</label>
                 <textarea id="gs-message" placeholder="Describe your goals, current situation and what you need..." suppressHydrationWarning style={{ padding: "11px 14px", borderRadius: 9, border: "1.5px solid #E2E8F0", fontFamily: "inherit", fontSize: 15.5, color: "#0F172A", background: "#F8FAFC", transition: "all .2s", outline: "none", resize: "none", minHeight: 110 }} />
               </div>
-              <button onClick={handleSendForm} style={{ width: "100%", padding: 13, borderRadius: 9, background: "var(--gs-blue2)", color: "white", fontSize: 16, fontWeight: 700, border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all .25s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6 }}>
+              <button onClick={handleSendForm} style={{ width: "100%", padding: 13, borderRadius: 9, background: "var(--gs-blue2)", color: "white", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all .25s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6 }}>
                 <SendIcon /> {t.sendBtn}
               </button>
               {success && (
@@ -835,7 +835,7 @@ export default function HomePage() {
                 <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--gs-blue3)", letterSpacing: -1 }}>Site</span>
                 <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 25, fontWeight: 800, color: "var(--orange)" }}>.</span>
               </div>
-              <div style={{ fontSize: 15, color: "#64748B", lineHeight: 1.7, marginBottom: 16 }}>
+              <div style={{ fontSize: 13, color: "#64748B", lineHeight: 1.7, marginBottom: 16 }}>
                 {lang === "en" ? "Performance-driven digital agency. Web development, paid advertising, SEO, AI chatbots and automation for ambitious businesses worldwide." : lang === "fr" ? "Agence digitale orientée performance. Développement web, publicité payante, SEO, chatbots IA et automation pour les entreprises ambitieuses du monde entier." : "وكالة رقمية موجّهة للأداء. تطوير ويب، إعلانات مدفوعة، SEO، شات بوت ذكاء اصطناعي وأتمتة للأعمال الطموحة حول العالم."}
               </div>
               <div style={{ display: "flex", gap: 8 }}>
@@ -844,13 +844,13 @@ export default function HomePage() {
               </div>
             </div>
             <div>
-              <h4 style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--muted2)", marginBottom: 14 }}>{lang === "en" ? "Services" : lang === "fr" ? "Services" : "الخدمات"}</h4>
+              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--muted2)", marginBottom: 14 }}>{lang === "en" ? "Services" : lang === "fr" ? "Services" : "الخدمات"}</h4>
               {["Web Development", "Paid Advertising", "SEO", "AI Chatbots", "Automation", "CRO & Funnels"].map((l) => (
-                <a key={l} href="#services" style={{ display: "block", fontSize: 14.5, color: "#64748B", textDecoration: "none", marginBottom: 8, transition: "color .2s" }}>{l}</a>
+                <a key={l} href="#services" style={{ display: "block", fontSize: 12.5, color: "#64748B", textDecoration: "none", marginBottom: 8, transition: "color .2s" }}>{l}</a>
               ))}
             </div>
             <div>
-              <h4 style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--muted2)", marginBottom: 14 }}>{lang === "en" ? "Company" : lang === "fr" ? "Société" : "الشركة"}</h4>
+              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--muted2)", marginBottom: 14 }}>{lang === "en" ? "Company" : lang === "fr" ? "Société" : "الشركة"}</h4>
               {[
                 { label: lang === "en" ? "Why GoSite" : lang === "fr" ? "Pourquoi GoSite" : "لماذا GoSite", href: "#why" },
                 { label: lang === "en" ? "Results" : lang === "fr" ? "Résultats" : "النتائج", href: "#results" },
@@ -862,18 +862,18 @@ export default function HomePage() {
               ))}
             </div>
             <div>
-              <h4 style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--muted2)", marginBottom: 14 }}>Contact</h4>
+              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--muted2)", marginBottom: 14 }}>Contact</h4>
               <a href="https://wa.me/212751134318" target="_blank" rel="noopener noreferrer" style={{ display: "block", fontSize: 14.5, color: "#64748B", textDecoration: "none", marginBottom: 8 }}>WhatsApp: +212 751 134 318</a>
               <a href="mailto:contact@gosite.digital" style={{ display: "block", fontSize: 14.5, color: "#64748B", textDecoration: "none", marginBottom: 8 }}>contact@gosite.digital</a>
               <a href="mailto:sahabyoussef@gmail.com" style={{ display: "block", fontSize: 14.5, color: "#64748B", textDecoration: "none", marginBottom: 8 }}>sahabyoussef@gmail.com</a>
             </div>
           </div>
           <div style={{ borderTop: "1px solid rgba(255,255,255,.05)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-            <div style={{ fontSize: 13, color: "#64748B" }}>© 2026 GoSite Digital Agency · {lang === "en" ? "All rights reserved · International" : lang === "fr" ? "Tous droits réservés · International" : "جميع الحقوق محفوظة · دولي"}</div>
+            <div style={{ fontSize: 11.5, color: "#64748B" }}>© 2026 GoSite Digital Agency · {lang === "en" ? "All rights reserved · International" : lang === "fr" ? "Tous droits réservés · International" : "جميع الحقوق محفوظة · دولي"}</div>
             <div style={{ display: "flex", gap: 18 }}>
-              <a href="#" onClick={(e) => { e.preventDefault(); setModal("privacy"); }} style={{ fontSize: 13, color: "#64748B", textDecoration: "none", transition: "color .2s", cursor: "pointer" }}>Privacy</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); setModal("terms"); }} style={{ fontSize: 13, color: "#64748B", textDecoration: "none", transition: "color .2s", cursor: "pointer" }}>Terms</a>
-              <a href="/portfolio" style={{ fontSize: 13, color: "#3B82F6", textDecoration: "none" }}>{lang === "en" ? "Portfolio" : lang === "fr" ? "Portfolio" : "المشاريع"}</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setModal("privacy"); }} style={{ fontSize: 11.5, color: "#64748B", textDecoration: "none", transition: "color .2s", cursor: "pointer" }}>Privacy</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setModal("terms"); }} style={{ fontSize: 11.5, color: "#64748B", textDecoration: "none", transition: "color .2s", cursor: "pointer" }}>Terms</a>
+              <a href="/portfolio" style={{ fontSize: 11.5, color: "#3B82F6", textDecoration: "none" }}>{lang === "en" ? "Portfolio" : lang === "fr" ? "Portfolio" : "المشاريع"}</a>
             </div>
           </div>
       </footer>

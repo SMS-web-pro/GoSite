@@ -50,3 +50,18 @@
 .orb3{animation:orbf3 8s ease-in-out infinite}
 
 ::selection{background:rgba(37,99,235,.15);color:#1A56DB}
+
+/* Card hover effects */
+[data-card-hover]{transition:all .3s}
+[data-card-hover]:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.09)}
+[data-card-dark]{transition:all .25s}
+[data-card-dark]:hover{background:rgba(255,255,255,.08);transform:translateY(-4px)}
+[data-card-testi]{transition:all .25s}
+[data-card-testi]:hover{background:rgba(255,255,255,.08);transform:translateY(-3px)}
+[data-card-srv]{transition:all .3s;position:relative;overflow:hidden}
+[data-card-srv]::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc,#2563EB);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+[data-card-srv]:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.09);border-color:transparent}
+[data-card-srv]:hover::after{transform:scaleX(1)}
+[data-card-process]{transition:all .3s}
+[data-card-process]:hover .proc-num{background:var(--gs-blue2);color:white;box-shadow:0 0 0 6px rgba(37,99,235,.2)}
+[data-card-contact]:hover{background:rgba(255,255,255,.08);border-color:rgba(37,99,235,.3)}
