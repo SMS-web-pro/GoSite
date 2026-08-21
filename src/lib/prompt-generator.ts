@@ -605,7 +605,8 @@ export function generateVibecoderPrompt(b: ScrapedBusiness): string {
   const linkedin = (b as any).linkedin || "";
   const googleMapsUrl = (b as any).googleMapsUrl || "";
   const subcategory = b.subcategory || "";
-  const country = (b as any).country || "France";
+  const country = (b as any).country || "";
+  const lang = detectProspectLanguage(country, city);
 
   const hasDelivery = (b as any).delivery === "yes";
   const hasTakeaway = (b as any).takeaway === "yes";
@@ -715,7 +716,8 @@ ${hasAirCon ? "- **Climatisation** : Oui" : ""}
 ${cuisine ? `- **Spécialité culinaire** : ${cuisine}` : ""}
 
 ### Langue du Site
-- **Langue** : FR (français par défaut)
+- **Langue** : ${lang} (${lang === 'ar' ? 'arabe' : lang === 'en' ? 'anglais' : 'français'})
+- **IMPORTANT** : TOUT le contenu du site (titres, descriptions, textes, CTA, FAQ, témoignages) doit être généré en ${lang}. Aucun texte en ${lang === 'fr' ? 'anglais ou arabe' : lang === 'ar' ? 'français ou anglais' : 'français ou arabe'}.
 
 ### Urgences 24h
 - **Offre urgences** : Non
@@ -745,10 +747,10 @@ Utilise **toutes** les données ci-dessus pour remplir chaque section du site. A
 - **Aucune phrase tronquée** avec "..." dans le contenu visible
 
 ### Contenu
-- Tout le texte est rédigé en français correct, sans fautes d'orthographe ou grammaire
+- Tout le texte est rédigé en ${lang} correct, sans fautes d'orthographe ou grammaire
 - Les descriptions de services sont spécifiques au secteur de ${b.name} — jamais de texte générique
 - Les avis clients sont complets (minimum 2 phrases chacun), crédibles et adaptés au secteur
-- Les CTAs sont courts et actionnables : "Demander un devis", "Appeler maintenant", "Prendre rendez-vous"
+- Les CTAs sont courts et actionnables : ${lang === 'ar' ? '"اطلب عرض سعر"، "اتصل الآن"، "احجز موعد"' : lang === 'en' ? '"Get a quote", "Call now", "Book an appointment"' : '"Demander un devis", "Appeler maintenant", "Prendre rendez-vous"'}
 - **Aucun prix ni tarif** mentionné sauf si le client les fournit explicitement
 
 ### Règles sur les Images — CRITIQUE
@@ -769,10 +771,10 @@ Le site contient ces sections dans cet ordre, chacune avec un id fixe :
 Barre d'info défilante (marquee CSS infinite) : téléphone, email, adresse, horaires, note Google — toutes les données de ${b.name} extraites de Google Maps. Style fond sombre avec texte blanc, hauteur 36px, animation défilement continu de droite à gauche.
 
 ### 2. #navbar
-Navigation fixe en haut avec logo (nom du business en texte stylé), liens (Accueil, Services, À propos, Contact), CTA téléphone cliquable. Style fond blanc/transparent avec ombre au scroll. Burger menu sur mobile.
+Navigation fixe en haut avec logo (nom du business en texte stylé), liens (${lang === 'ar' ? 'الرئيسية، الخدمات، من نحن، الاتصال' : lang === 'en' ? 'Home, Services, About, Contact' : 'Accueil, Services, À propos, Contact'}), CTA téléphone cliquable. Style fond blanc/transparent avec ombre au scroll. Burger menu sur mobile.
 
 ### 3. #hero
-Section principale plein écran avec **image réelle et visible** en arrière-plan. L'image doit être professionnelle, claire, et directement liée au métier de ${businessType}. Pour un plombier : photo d'un plombier en action (soudure, tuyauterie, intervention). Pour un restaurant : photo des plats servis. Pour un coiffeur : photo d'un salon moderne. L'image doit être **visible à 100%** avec un **overlay semi-transparent léger** (rgba noir 30-40% max) pour que le texte reste lisible. **JAMAIS** de gradient foncé qui cache l'image. Le titre est percutant et spécifique au secteur : "${b.name} — ${businessType} de référence à ${city}". Sous-titre court avec la valeur unique. Deux CTA : "Appeler maintenant" (lien tel:${phone}) + "Voir sur la carte" (lien ${googleMapsUrl || "#"}). Badges : note Google ${rating || "4.8"}/5, ${reviewsCount || "50+"} avis. Animation fade-in au chargement. Si l'image n'est pas disponible, utiliser un gradient léger avec un motif SVG subtil, pas un fond noir.
+Section principale plein écran avec **image réelle et visible** en arrière-plan. L'image doit être professionnelle, claire, et directement liée au métier de ${businessType}. Pour un plombier : photo d'un plombier en action (soudure, tuyauterie, intervention). Pour un restaurant : photo des plats servis. Pour un coiffeur : photo d'un salon moderne. L'image doit être **visible à 100%** avec un **overlay semi-transparent léger** (rgba noir 30-40% max) pour que le texte reste lisible. **JAMAIS** de gradient foncé qui cache l'image. Le titre est percutant et spécifique au secteur : "${b.name} — ${lang === 'ar' ? businessType + ' مرجعي في ' + city : lang === 'en' ? 'Premier ' + businessType + ' in ' + city : businessType + ' de référence à ' + city}". Sous-titre court avec la valeur unique. Deux CTA : ${lang === 'ar' ? '"اتصل الآن"' : lang === 'en' ? '"Call now"' : '"Appeler maintenant"'} (lien tel:${phone}) + ${lang === 'ar' ? '"عرض على الخريطة"' : lang === 'en' ? '"View on map"' : '"Voir sur la carte"'} (lien ${googleMapsUrl || "#"}). Badges : note Google ${rating || "4.8"}/5, ${reviewsCount || "50+"} avis. Animation fade-in au chargement. Si l'image n'est pas disponible, utiliser un gradient léger avec un motif SVG subtil, pas un fond noir.
 
 ### 4. #trust-bar
 Barre de réassurance : 4 arguments clés du secteur ${businessType} avec icônes et animations hover. Pour ${b.name} (${businessType} à ${city}) :
@@ -817,7 +819,7 @@ ${isRestaurant ? '- "Quels sont vos horaires ?" — "Nous ouvrons du lundi au sa
 Animation accordéon smooth.
 
 ### 14. #cta-banner
-Bannière CTA finale "Devis gratuit sans engagement" avec fond dégradé coloré, bouton prominent "Demander un devis" et numéro de téléphone. Animation pulse subtile sur le bouton.
+Bannière CTA finale "${lang === 'ar' ? 'عرض أسعار مجاني بدون التزام' : lang === 'en' ? 'Free quote with no obligation' : 'Devis gratuit sans engagement'}" avec fond dégradé coloré, bouton prominent ${lang === 'ar' ? '"طلب عرض سعر"' : lang === 'en' ? '"Get a quote"' : '"Demander un devis"'} et numéro de téléphone. Animation pulse subtile sur le bouton.
 
 ### 15. #contact
 Section Contact avec **deux colonnes égales** sur desktop (infos à gauche, formulaire à droite) — **jamais de vide** sous la carte d'infos. Les infos pratiques (téléphone, email, adresse, horaires) sont dans une carte avec icônes, et le formulaire est juste à côté. **PAS de site web** dans les infos de contact — uniquement : téléphone cliquable (${phone}), email (${email}), adresse complète (${address || city}), horaires (${hours || "Lun-Sam 9h-19h"}). Google Maps intégré en plein dessous (largeur 100%, hauteur 300px). Validation côté client HTML5.
@@ -825,13 +827,13 @@ Section Contact avec **deux colonnes égales** sur desktop (infos à gauche, for
 ### 16. #footer
 Footer professionnel en 3 colonnes (1 colonne sur mobile) :
 - **Colonne 1** : Logo en texte (${b.name}), description courte du business
-- **Colonne 2** : Liens rapides (Accueil, Services, Contact, Mentions légales, Politique de confidentialité)
+- **Colonne 2** : Liens rapides (${lang === 'ar' ? 'الرئيسية، الخدمات، الاتصال، الإشعارات القانونية، سياسة الخصوصية' : lang === 'en' ? 'Home, Services, Contact, Legal Notices, Privacy Policy' : 'Accueil, Services, Contact, Mentions légales, Politique de confidentialité'})
 - **Colonne 3** : Contact (téléphone, email, adresse — **PAS de site web**), Note Google visible : ★★★★★ ${rating || "4.8"}/5 (${reviewCount} avis), Horaires
-- **Copyright** : © 2026 ${b.name}. Tous droits réservés.
-Tous les horaires identiques aux autres sections.
+- **Copyright** : © 2026 ${b.name}. ${lang === 'ar' ? 'جميع الحقوق محفوظة.' : lang === 'en' ? 'All rights reserved.' : 'Tous droits réservés.'}
+${lang === 'ar' ? 'جميع المواعيد متطابقة مع الأقسام الأخرى.' : lang === 'en' ? 'All hours identical to other sections.' : 'Tous les horaires identiques aux autres sections.'}
 
 **Pages obligatoires fonctionnelles (modales avec bouton X FONCTIONNEL pour fermer) :**
-- Mentions légales : contenu professionnel long, normes légales françaises respectées (éditeur, hébergeur, droits d'auteur, RGPD). La modale doit avoir un bouton X en haut à droite qui ferme la modale au clic (addEventListener sur le bouton X et sur l'overlay sombre).
+- Mentions légales : contenu professionnel long, normes légales locales respectées (éditeur, hébergeur, droits d'auteur, RGPD${lang === 'ar' ? '/RGPD' : ''}). La modale doit avoir un bouton X en haut à droite qui ferme la modale au clic (addEventListener sur le bouton X et sur l'overlay sombre).
 - Politique de confidentialité : contenu professionnel long, conforme RGPD (données collectées, finalités, droits, cookies, durée de conservation). Même système de fermeture que les mentions légales.
 - **IMPORTANT** : Le bouton X et l'overlay sombre DOIVENT être fonctionnels — ajouter le JavaScript nécessaire pour ouvrir/fermer les modales (classList.toggle, event listeners).
 
