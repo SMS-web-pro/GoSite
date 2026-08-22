@@ -63,22 +63,22 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
 
   const [templates, setTemplates] = useState(() => {
     const raw: Record<string, any> = initialSettings.messageTemplates || {};
-    // Normalize: ensure every template is { fr, en, ar } object
-    // If DB has plain strings (old format), use proper multilingual defaults
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
     const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
     for (const key of stageKeys) {
       const val = raw[key];
       const defaultVal = DEFAULT_TEMPLATES[key as keyof typeof DEFAULT_TEMPLATES];
       if (val && typeof val === "object" && "fr" in val) {
-        // Already a multilingual object — use it
-        normalized[key] = val as { fr: string; en: string; ar: string };
+        // Merge with defaults to ensure portfolio_url always exists
+        const dbTpl = val as { fr: string; en: string; ar: string };
+        normalized[key] = {
+          fr: dbTpl.fr || defaultVal?.fr || "",
+          en: dbTpl.en || defaultVal?.en || "",
+          ar: dbTpl.ar || defaultVal?.ar || "",
+        };
       } else if (typeof val === "string" && val.trim()) {
-        // Plain string from DB (old format) — use proper multilingual defaults instead
-        // because the plain string is only French, not useful for EN/AR
         normalized[key] = defaultVal || { fr: val, en: val, ar: val };
       } else {
-        // No value — use multilingual defaults
         normalized[key] = defaultVal || { fr: "", en: "", ar: "" };
       }
     }
@@ -92,6 +92,20 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
     setError(null);
     setSaved(false);
     try {
+      // Ensure portfolio_url is always in template signatures
+      const safeTemplates: typeof templates = {};
+      for (const [key, val] of Object.entries(templates)) {
+        const fixed = { ...val };
+        for (const lang of ["fr", "en", "ar"] as const) {
+          if (fixed[lang] && !fixed[lang].includes("portfolio_url") && fixed[lang].includes("agency_website")) {
+            fixed[lang] = fixed[lang].replace(
+              /{{\/if}}{{#if agency_website}}/,
+              '{{/if}}{{#if portfolio_url}}\ud83d\udcbc {{portfolio_url}}\n{{/if}}{{#if agency_website}}'
+            );
+          }
+        }
+        safeTemplates[key] = fixed;
+      }
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -111,7 +125,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
           paymentLinkUSD: paymentLinkUSD || null,
           paymentLinkMAD: paymentLinkMAD || null,
           brandColor,
-          messageTemplates: templates,
+          messageTemplates: safeTemplates,
         }),
       });
       if (!res.ok) {

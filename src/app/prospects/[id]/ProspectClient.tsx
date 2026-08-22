@@ -745,10 +745,23 @@ function WhatsAppTab({
   };
   const save = async () => {
     try {
+      const safeValues: typeof values = {};
+      for (const [key, val] of Object.entries(values)) {
+        const fixed = { ...val };
+        for (const lang of ["fr", "en", "ar"] as const) {
+          if (fixed[lang] && !fixed[lang].includes("portfolio_url") && fixed[lang].includes("agency_website")) {
+            fixed[lang] = fixed[lang].replace(
+              /{{\/if}}{{#if agency_website}}/,
+              '{{/if}}{{#if portfolio_url}}\ud83d\udcbc {{portfolio_url}}\n{{/if}}{{#if agency_website}}'
+            );
+          }
+        }
+        safeValues[key] = fixed;
+      }
       await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageTemplates: values }),
+        body: JSON.stringify({ messageTemplates: safeValues }),
       });
       setEditing(false);
       window.location.reload();
