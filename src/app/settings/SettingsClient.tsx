@@ -286,43 +286,56 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
 
       {activeTab === "messages" && (
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <h2 className="text-sm font-semibold text-slate-900">💬 Templates de messages WhatsApp</h2>
-          <p className="text-xs text-slate-500">
-            Variables disponibles : <code className="rounded bg-slate-100 px-1">{"{{firstName}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{name}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{sector}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{city}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{phone}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{rating}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{cuisine}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{openingHours}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{demo_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_site_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{features}}"}</code>
-          </p>
-          <p className="mt-2 text-xs text-slate-500">
-            Conditionnels : <code className="rounded bg-slate-100 px-1">{"{{#if rating}}"}...{"{{/if}}"}</code> (le bloc n'apparaît que si la variable est définie)
-          </p>
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">💬 Templates de messages WhatsApp</h2>
+              <p className="text-xs text-slate-500">
+                Variables : <code className="rounded bg-slate-100 px-1">{"{{firstName}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{name}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{sector}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{city}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{phone}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{rating}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{demo_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_site_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{price}}"}</code>
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Conditionnels : <code className="rounded bg-slate-100 px-1">{"{{#if rating}}"}...{"{{/if}}"}</code>
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500">Langue :</span>
+              {(["fr", "en", "ar"] as const).map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setEditLang(lang)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                    editLang === lang
+                      ? "bg-blue-600 text-white"
+                      : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  {lang === "fr" ? "🇫🇷 FR" : lang === "en" ? "🇬🇧 EN" : "🇸🇦 AR"}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="mt-4 space-y-4">
             {(["intro", "demo", "quote", "payment_received", "delivery", "thanks"] as const).map((stage) => (
               <div key={stage}>
-                <label className="block text-xs font-medium text-slate-700 mb-1 capitalize">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                   {stage === "intro" ? "Message 1 — Premier contact" :
                    stage === "demo" ? "Message 2 — Envoi de la démo" :
                    stage === "quote" ? "Message 3 — Devis et lien de paiement" :
                    stage === "payment_received" ? "Message 4 — Accusé de paiement" :
                    stage === "delivery" ? "Message 5 — Livraison du site" :
                    "Message 6 — Remerciement & fidélisation"}
-                   <span className="ml-2 text-[10px] text-slate-400 font-normal">
-                     <select
-                       value={editLang}
-                       onChange={(e) => setEditLang(e.target.value as "fr" | "en" | "ar")}
-                       className="ml-1 rounded border border-slate-200 bg-white px-1 py-0.5 text-[10px]"
-                     >
-                       <option value="fr">🇫🇷 FR</option>
-                       <option value="en">🇬🇧 EN</option>
-                       <option value="ar">🇸🇦 AR</option>
-                     </select>
-                   </span>
-                 </label>
-                 <textarea
-                   value={templates[stage]?.[editLang] || templates[stage]?.fr || ""}
-                   onChange={(e) => {
-                     setTemplates({
-                       ...templates,
-                       [stage]: { ...templates[stage], [editLang]: e.target.value },
-                     });
-                   }}
+                  <span className="ml-2 text-[10px] text-slate-400 font-normal">
+                    ({editLang === "fr" ? "🇫🇷 Français" : editLang === "en" ? "🇬🇧 English" : "🇸🇦 العربية"})
+                  </span>
+                </label>
+                <textarea
+                  value={templates[stage]?.[editLang] || ""}
+                  onChange={(e) => {
+                    setTemplates({
+                      ...templates,
+                      [stage]: { ...templates[stage], [editLang]: e.target.value },
+                    });
+                  }}
                   rows={8}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs outline-none focus:border-blue-500"
                 />

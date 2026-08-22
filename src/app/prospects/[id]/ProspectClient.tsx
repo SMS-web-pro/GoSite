@@ -715,27 +715,15 @@ function WhatsAppTab({
   copy: (t: string, f: string) => void;
   copiedField: string | null;
 }) {
-  // Use settings templates as source of truth (not prospect's stored messages)
-  const settingsTemplates = (settings as any).messageTemplates || {};
+  const messages = prospect.whatsappMessages;
   const [editing, setEditing] = useState(false);
-  const [values, setValues] = useState<Record<string, { fr: string; en: string; ar: string }>>(() => {
-    // Normalize settings templates
-    const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
-    for (const key of stageKeys) {
-      const val = settingsTemplates[key];
-      if (typeof val === "string") {
-        normalized[key] = { fr: val, en: val, ar: val };
-      } else if (val && typeof val === "object" && "fr" in val) {
-        normalized[key] = val as { fr: string; en: string; ar: string };
-      } else {
-        normalized[key] = { fr: "", en: "", ar: "" };
-      }
-    }
-    return normalized;
-  });
+  const [values, setValues] = useState<NonNullable<typeof messages> | null>(messages);
+  useEffect(() => {
+    setValues(messages);
+  }, [messages]);
 
-  // Extract the displayable text for a given stage using campaign language
+  // Extract the displayable text for a given stage. The value can be
+  // either a plain string (legacy) or a {fr, en, ar} object.
   const getStageText = (raw: any): string => {
     if (!raw) return "";
     if (typeof raw === "string") return raw;
@@ -745,25 +733,15 @@ function WhatsAppTab({
     }
     return String(raw);
   };
-
-  // Save edits back to settings (global templates)
   const save = async () => {
-    try {
-      await fetch("/api/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageTemplates: values }),
-      });
-      setEditing(false);
-      window.location.reload();
-    } catch (e) {
-      console.error("Failed to save templates:", e);
-    }
+    await onUpdate({ whatsappMessages: values });
+    setEditing(false);
   };
-
   const regenerate = async () => {
     await onUpdate({ regenerateWhatsapp: true });
   };
+
+  if (!messages) return <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Aucun message. Régénérez.</div>;
 
   const stages = [
     { id: "intro", title: "Message 1 — Premier contact", desc: "Accroche personnalisée qui mentionne le business, ses avis et l'absence de site web.", icon: "💬" },
@@ -774,34 +752,16 @@ function WhatsAppTab({
     { id: "thanks", title: "Message 6 — Remerciement & fidélisation", desc: "Message post-livraison pour fidéliser et offrir un avantage parrainage.", icon: "🙏" },
   ] as const;
 
-  const [editLang, setEditLang] = useState<"fr" | "en" | "ar">((campaignLanguage as "fr" | "en" | "ar") || "fr");
-
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div>
-            <p className="text-sm text-slate-700">
-              💡 <strong>Variables</strong> : {"{{firstName}}"} {"{{name}}"} {"{{sector}}"} {"{{city}}"} {"{{phone}}"} {"{{rating}}"} {"{{demo_url}}"} {"{{payment_url}}"} {"{{final_site_url}}"} {"{{price}}"} {"{{features}}"}
-              <br />
-              <span className="text-xs text-slate-500">Conditionnels : {"{{#if var}}"} ... {"{{/if}}"}</span>
-            </p>
-            <p className="mt-1 text-[10px] text-slate-400">
-              📝 Les modifications ici s'appliquent à TOUS les prospects (templates globaux)
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {editing && (
-              <select
-                value={editLang}
-                onChange={(e) => setEditLang(e.target.value as "fr" | "en" | "ar")}
-                className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs"
-              >
-                <option value="fr">🇫🇷 FR</option>
-                <option value="en">🇬🇧 EN</option>
-                <option value="ar">🇸🇦 AR</option>
-              </select>
-            )}
+          <p className="text-sm text-slate-700">
+            💡 <strong>Variables</strong> : {"{{firstName}}"} {"{{name}}"} {"{{sector}}"} {"{{city}}"} {"{{phone}}"} {"{{rating}}"} {"{{demo_url}}"} {"{{payment_url}}"} {"{{final_site_url}}"} {"{{price}}"} {"{{features}}"}
+            <br />
+            <span className="text-xs text-slate-500">Conditionnels : {"{{#if var}}"} ... {"{{/if}}"}</span>
+          </p>
+          <div className="flex gap-2">
             <button onClick={regenerate} className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100">🔄 Régénérer tout</button>
             {editing ? (
               <>
@@ -850,7 +810,7 @@ function WhatsAppTab({
       )}
 
       {stages.map((s) => {
-        const value = values[s.id] || "";
+        const value = values?.[s.id as keyof typeof values] || "";
         return (
           <div key={s.id} className="rounded-2xl border border-slate-200 bg-white p-5">
             <div className="mb-2 flex items-center justify-between gap-2 flex-wrap">
@@ -892,12 +852,21 @@ function WhatsAppTab({
             <p className="mb-2 text-xs text-slate-500">{s.desc}</p>
             {editing ? (
               <textarea
-                value={values[s.id]?.[editLang] || values[s.id]?.fr || ""}
+                value={values?.[s.id as keyof typeof values] ? getStageText(values[s.id as keyof typeof values]) : ""}
                 onChange={(e) =>
-                  setValues((prev) => ({
-                    ...prev,
-                    [s.id]: { ...prev[s.id], [editLang]: e.target.value },
-                  }))
+                  setValues((prev) => {
+                    if (!prev) return prev;
+                    const lang = campaignLanguage || detectProspectLanguage(business.country, business.city) || "fr";
+                    const cur = prev[s.id as keyof typeof prev];
+                    const curObj =
+                      cur && typeof cur === "object" && cur !== null
+                        ? (cur as Record<string, string>)
+                        : {};
+                    return {
+                      ...prev,
+                      [s.id]: { ...curObj, [lang]: e.target.value },
+                    } as any;
+                  })
                 }
                 className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                 rows={8}
