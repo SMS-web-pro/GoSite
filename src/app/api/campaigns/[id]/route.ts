@@ -56,6 +56,7 @@ export async function PATCH(
   if (body.location !== undefined) updates.location = body.location;
   if (body.status !== undefined) updates.status = body.status;
   if (body.language !== undefined) updates.language = body.language;
+  if (body.currency !== undefined) updates.currency = body.currency;
   if (body.pricingTiers !== undefined) updates.pricingTiers = body.pricingTiers;
 
   let updated;

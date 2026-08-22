@@ -12,6 +12,7 @@ type Campaign = {
   sector: string | null;
   location: string | null;
   language: string | null;
+  currency: string | null;
   status: string;
   createdAt: Date | string;
 };
@@ -132,6 +133,11 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
                 <span className="rounded-full bg-violet-50 px-2.5 py-0.5 text-violet-700">
                   {campaign.language === "en" ? "🇬🇧 English" : campaign.language === "ar" ? "🇸🇦 العربية" : "🇫🇷 Français"}
                 </span>
+                {campaign.currency && (
+                  <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-amber-700">
+                    {campaign.currency === "USD" ? "💵 USD" : campaign.currency === "MAD" ? "💰 MAD" : "💶 EUR"}
+                  </span>
+                )}
                 <span className={`rounded-full px-2.5 py-0.5 ${campaign.status === "active" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
                   {campaign.status === "active" ? "🟢 Active" : campaign.status}
                 </span>
@@ -265,13 +271,18 @@ function EditCampaignButton({ campaign }: { campaign: Campaign }) {
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
+  // Auto-set currency from language
+  const langToCurrency: Record<string, string> = { fr: "EUR", en: "USD", ar: "MAD" };
+  const currency = langToCurrency[language] || "EUR";
+  const currencySymbol: Record<string, string> = { EUR: "€", USD: "$", MAD: "MAD" };
+
   const save = async () => {
     setSaving(true);
     try {
       const res = await fetch(`/api/campaigns/${campaign.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, sector, location, description, language }),
+        body: JSON.stringify({ name, sector, location, description, language, currency }),
       });
       if (res.ok) {
         setOpen(false);
@@ -337,6 +348,9 @@ function EditCampaignButton({ campaign }: { campaign: Campaign }) {
               {lang === "fr" ? "🇫🇷 FR" : lang === "en" ? "🇬🇧 EN" : "🇸🇦 AR"}
             </button>
           ))}
+          <span className="ml-2 rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-600">
+            Devise : {currencySymbol[currency]} ({currency})
+          </span>
         </div>
         <div className="flex gap-2">
           <button

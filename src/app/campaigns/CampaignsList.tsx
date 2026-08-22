@@ -11,6 +11,7 @@ type Campaign = {
   sector: string | null;
   location: string | null;
   language: string | null;
+  currency: string | null;
   status: string;
   createdAt: Date | string;
 };
@@ -29,6 +30,11 @@ export default function CampaignsList({ items }: { items: Item[] }) {
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState("fr");
   const [creating, setCreating] = useState(false);
+
+  // Auto-set currency from language
+  const langToCurrency: Record<string, string> = { fr: "EUR", en: "USD", ar: "MAD" };
+  const currency = langToCurrency[language] || "EUR";
+  const currencySymbol: Record<string, string> = { EUR: "€", USD: "$", MAD: "MAD" };
   // Bulk selection state
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
@@ -93,7 +99,7 @@ export default function CampaignsList({ items }: { items: Item[] }) {
       const res = await fetch("/api/campaigns", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, sector, location, description, language }),
+        body: JSON.stringify({ name, sector, location, description, language, currency }),
       });
       const data = await res.json();
       if (res.ok && data.campaign) {
@@ -158,6 +164,9 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                 {lang === "fr" ? "🇫🇷 FR" : lang === "en" ? "🇬🇧 EN" : "🇸🇦 AR"}
               </button>
             ))}
+            <span className="ml-2 rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-600">
+              Devise : {currencySymbol[currency]} ({currency})
+            </span>
           </div>
           <div className="mt-3 flex gap-2">
             <button
@@ -309,6 +318,11 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                         <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-700">
                           {campaign.language === "en" ? "🇬🇧 EN" : campaign.language === "ar" ? "🇸🇦 AR" : "🇫🇷 FR"}
                         </span>
+                        {campaign.currency && (
+                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+                            {campaign.currency === "USD" ? "💵 USD" : campaign.currency === "MAD" ? "💰 MAD" : "💶 EUR"}
+                          </span>
+                        )}
                         <span
                           className={`rounded-full px-2 py-0.5 ${
                             campaign.status === "active"

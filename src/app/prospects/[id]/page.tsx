@@ -35,5 +35,6 @@ export default async function ProspectPage({
 
   const settings = await getSettings();
   const campaignLanguage = (row.campaign as any)?.language || "fr";
-  return <ProspectClient prospect={row.prospect as any} business={row.business} settings={settings} campaignLanguage={campaignLanguage} />;
+  const campaignCurrency = (row.campaign as any)?.currency || "EUR";
+  return <ProspectClient prospect={row.prospect as any} business={row.business} settings={settings} campaignLanguage={campaignLanguage} campaignCurrency={campaignCurrency} />;
 }

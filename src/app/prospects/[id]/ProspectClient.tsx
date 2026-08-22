@@ -74,6 +74,7 @@ type Props = {
   business: Business;
   settings: Settings;
   campaignLanguage?: string;
+  campaignCurrency?: string;
 };
 
 const STAGES = [
@@ -86,7 +87,7 @@ const STAGES = [
   { id: "completed", label: "Terminé", icon: "🎉" },
 ];
 
-export default function ProspectClient({ prospect: initialProspect, business: initialBusiness, settings, campaignLanguage }: Props) {
+export default function ProspectClient({ prospect: initialProspect, business: initialBusiness, settings, campaignLanguage, campaignCurrency }: Props) {
   const router = useRouter();
   const [prospect, setProspect] = useState(initialProspect);
   const [business, setBusiness] = useState(initialBusiness);
@@ -152,7 +153,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
   // Compute template variables for this prospect
   const getTemplateVars = () => {
-    const currency = detectProspectCurrency(business.country, business.city);
+    const currency = campaignCurrency || detectProspectCurrency(business.country, business.city);
     const absBase = typeof window !== "undefined" ? window.location.origin : "";
     const absDemoUrl = prospect.demoToken ? `${absBase}/demo/${prospect.demoToken}` : "";
     const absCheckoutUrl = prospect.demoToken ? `${absBase}/checkout/${prospect.demoToken}` : "";
@@ -526,7 +527,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
           <LinksTab prospect={prospect} onUpdate={updateProspect} />
         )}
         {activeTab === "site" && (
-          <SiteTab prospect={prospect} business={business} demoUrl={demoUrl} checkoutUrl={checkoutUrl} deliveryUrl={deliveryUrl} settings={settings} onUpdate={updateProspect} />
+          <SiteTab prospect={prospect} business={business} demoUrl={demoUrl} checkoutUrl={checkoutUrl} deliveryUrl={deliveryUrl} settings={settings} onUpdate={updateProspect} campaignCurrency={campaignCurrency} />
         )}
       </div>
 
@@ -974,7 +975,7 @@ function LinksTab({ prospect, onUpdate }: { prospect: Prospect; onUpdate: (u: an
 }
 
 function SiteTab({
-  prospect, business, demoUrl, checkoutUrl, deliveryUrl, settings, onUpdate,
+  prospect, business, demoUrl, checkoutUrl, deliveryUrl, settings, onUpdate, campaignCurrency,
 }: {
   prospect: Prospect;
   business: Business;
@@ -983,14 +984,15 @@ function SiteTab({
   deliveryUrl: string;
   settings: Settings;
   onUpdate: (u: any) => Promise<void>;
+  campaignCurrency?: string;
 }) {
   const detectedPrice = (() => {
-    const curr = detectProspectCurrency(business.country || null, business.city || null);
+    const curr = campaignCurrency || detectProspectCurrency(business.country || null, business.city || null);
     if (curr === "EUR") return (settings as any).priceEUR || 0;
     if (curr === "USD") return (settings as any).priceUSD || 0;
     return (settings as any).priceMAD || 0;
   })();
-  const currency = detectProspectCurrency(business.country || null, business.city || null);
+  const currency = campaignCurrency || detectProspectCurrency(business.country || null, business.city || null);
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-6">

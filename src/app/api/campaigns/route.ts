@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  let body: { name?: string; sector?: string; location?: string; description?: string; language?: string };
+  let body: { name?: string; sector?: string; location?: string; description?: string; language?: string; currency?: string };
   try {
     body = await req.json();
   } catch {
@@ -18,6 +18,10 @@ export async function POST(req: Request) {
   if (!name) {
     return NextResponse.json({ error: "Le nom est requis" }, { status: 400 });
   }
+
+  // Auto-set currency from language
+  const langToCurrency: Record<string, string> = { fr: "EUR", en: "USD", ar: "MAD" };
+  const currency = body.currency || langToCurrency[body.language || "fr"] || "EUR";
 
   let created;
   try {
@@ -29,6 +33,7 @@ export async function POST(req: Request) {
         location: body.location || null,
         description: body.description || null,
         language: body.language || "fr",
+        currency,
         status: "active",
       })
       .returning();
@@ -40,6 +45,7 @@ export async function POST(req: Request) {
       location: body.location || null,
       description: body.description || null,
       language: body.language || "fr",
+      currency,
       status: "active",
     });
   }
