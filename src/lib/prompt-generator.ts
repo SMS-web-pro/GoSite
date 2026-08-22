@@ -73,6 +73,7 @@ Pouvez-vous me dire en un message si ce projet vous intéresse, ou si vous préf
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `Hi {{firstName}} 👋
@@ -92,6 +93,7 @@ Just send me a quick message if this project interests you, or if you'd prefer t
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `مرحبا {{firstName}} 👋
@@ -111,6 +113,7 @@ Just send me a quick message if this project interests you, or if you'd prefer t
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 
@@ -145,6 +148,7 @@ Vous préférez qu'on en discute avant ? Je suis disponible — il suffit de ré
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `Hi {{firstName}} 👋
@@ -174,6 +178,7 @@ Prefer to discuss first? I'm available — just reply to this message.
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `مرحبا {{firstName}} 👋
@@ -203,6 +208,7 @@ Prefer to discuss first? I'm available — just reply to this message.
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 
@@ -231,6 +237,7 @@ Merci pour votre intérêt pour nos services. Voici ma proposition personnalisé
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `Hi {{firstName}} 👋
@@ -254,6 +261,7 @@ Thank you for your interest in our services. Here's my personalized proposal for
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `مرحبا {{firstName}} 👋
@@ -277,6 +285,7 @@ Thank you for your interest in our services. Here's my personalized proposal for
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 
@@ -297,6 +306,7 @@ Si vous avez la moindre question d'ici là, n'hésitez pas à me contacter.
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `Hi {{firstName}} 👋
@@ -312,6 +322,7 @@ If you have any questions in the meantime, feel free to reach out.
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `مرحبا {{firstName}} 👋
@@ -327,6 +338,7 @@ If you have any questions in the meantime, feel free to reach out.
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 
@@ -354,6 +366,7 @@ Belle continuation à {{businessName}} 🚀
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `🎉 *Your site is live!*
@@ -376,6 +389,7 @@ Best wishes to {{businessName}} 🚀
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `🎉 *موقعك الآن مباشر!*
@@ -398,6 +412,7 @@ Best wishes to {{businessName}} 🚀
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 
@@ -419,6 +434,7 @@ Belle journée ☀️
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `Thank you so much {{firstName}} 🙏
@@ -435,6 +451,7 @@ Have a great day ☀️
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `شكراً جزيلاً {{firstName}} 🙏
@@ -451,6 +468,7 @@ Have a great day ☀️
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 
@@ -469,6 +487,7 @@ Sinon, dites-moi ce qui vous ferait hésiter (budget, délais, fonctionnalités.
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     en: `Hi {{firstName}} 👋
@@ -482,6 +501,7 @@ Otherwise, let me know what's holding you back (budget, timeline, features...) a
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
 
     ar: `مرحبا {{firstName}} 👋
@@ -495,6 +515,7 @@ Otherwise, let me know what's holding you back (budget, timeline, features...) a
 *{{contact_name}}* — {{agency_name}}
 {{#if contact_email}}✉️ {{contact_email}}
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}🎨 Portfolio : {{portfolio_url}}
 {{/if}}`,
   },
 };
