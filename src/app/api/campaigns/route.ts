@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  let body: { name?: string; sector?: string; location?: string; description?: string };
+  let body: { name?: string; sector?: string; location?: string; description?: string; language?: string };
   try {
     body = await req.json();
   } catch {
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         sector: body.sector || null,
         location: body.location || null,
         description: body.description || null,
+        language: body.language || "fr",
         status: "active",
       })
       .returning();
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
       sector: body.sector || null,
       location: body.location || null,
       description: body.description || null,
+      language: body.language || "fr",
       status: "active",
     });
   }

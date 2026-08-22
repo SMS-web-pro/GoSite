@@ -10,6 +10,7 @@ type Campaign = {
   description: string | null;
   sector: string | null;
   location: string | null;
+  language: string | null;
   status: string;
   createdAt: Date | string;
 };
@@ -26,6 +27,7 @@ export default function CampaignsList({ items }: { items: Item[] }) {
   const [sector, setSector] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+  const [language, setLanguage] = useState("fr");
   const [creating, setCreating] = useState(false);
   // Bulk selection state
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -91,7 +93,7 @@ export default function CampaignsList({ items }: { items: Item[] }) {
       const res = await fetch("/api/campaigns", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, sector, location, description }),
+        body: JSON.stringify({ name, sector, location, description, language }),
       });
       const data = await res.json();
       if (res.ok && data.campaign) {
@@ -139,6 +141,23 @@ export default function CampaignsList({ items }: { items: Item[] }) {
               placeholder="Description (optionnel)"
               className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
             />
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-xs text-slate-500">Langue :</span>
+            {(["fr", "en", "ar"] as const).map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                onClick={() => setLanguage(lang)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                  language === lang
+                    ? "bg-blue-600 text-white"
+                    : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                {lang === "fr" ? "🇫🇷 FR" : lang === "en" ? "🇬🇧 EN" : "🇸🇦 AR"}
+              </button>
+            ))}
           </div>
           <div className="mt-3 flex gap-2">
             <button
@@ -287,6 +306,9 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                             📍 {campaign.location}
                           </span>
                         )}
+                        <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-700">
+                          {campaign.language === "en" ? "🇬🇧 EN" : campaign.language === "ar" ? "🇸🇦 AR" : "🇫🇷 FR"}
+                        </span>
                         <span
                           className={`rounded-full px-2 py-0.5 ${
                             campaign.status === "active"

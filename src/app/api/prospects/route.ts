@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { prospects, businesses, searches } from "@/db/schema";
+import { prospects, businesses, searches, campaigns } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import {
   generateVibecoderPrompt,
@@ -84,12 +84,22 @@ export async function POST(req: Request) {
   }
 
   const settings = await getSettings();
+
+  // Fetch campaign language if campaignId provided
+  let campaignLanguage = "fr";
+  if (body.campaignId) {
+    try {
+      const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, body.campaignId)).limit(1);
+      if (campaign?.language) campaignLanguage = campaign.language;
+    } catch {}
+  }
+
   const currency = detectProspectCurrency(business.country || null, business.city || null);
   const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
     : currency === "USD" ? (settings.priceUSD || 0)
     : (settings.priceMAD || 0);
 
-  const vibecoderPrompt = generateVibecoderPrompt(business as any);
+  const vibecoderPrompt = generateVibecoderPrompt(business as any, campaignLanguage);
   const whatsappMessages = generateDefaultWhatsAppMessages(business as any);
   const demoHtml = generateDemoSiteHtml(business as any);
   const demoToken = nanoid(24);

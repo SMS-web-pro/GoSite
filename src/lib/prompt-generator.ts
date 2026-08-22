@@ -583,7 +583,7 @@ export function generateDefaultWhatsAppMessages(b: any) {
  * Generate the bilingual Vibecoder prompt — based on the original but
  * with stronger personalization guidance.
  */
-export function generateVibecoderPrompt(b: ScrapedBusiness): string {
+export function generateVibecoderPrompt(b: ScrapedBusiness, campaignLanguage?: string): string {
   const sector = (b as any).subcategory || b.category || "business local";
   const city = (b as any).city || b.postcode || "votre ville";
   const address = [b.housenumber, b.street, b.postcode, b.city]
@@ -606,7 +606,7 @@ export function generateVibecoderPrompt(b: ScrapedBusiness): string {
   const googleMapsUrl = (b as any).googleMapsUrl || "";
   const subcategory = b.subcategory || "";
   const country = (b as any).country || "";
-  const lang = detectProspectLanguage(country, city);
+  const lang = campaignLanguage || detectProspectLanguage(country, city);
 
   const hasDelivery = (b as any).delivery === "yes";
   const hasTakeaway = (b as any).takeaway === "yes";

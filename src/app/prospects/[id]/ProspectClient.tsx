@@ -73,6 +73,7 @@ type Props = {
   prospect: Prospect;
   business: Business;
   settings: Settings;
+  campaignLanguage?: string;
 };
 
 const STAGES = [
@@ -85,7 +86,7 @@ const STAGES = [
   { id: "completed", label: "Terminé", icon: "🎉" },
 ];
 
-export default function ProspectClient({ prospect: initialProspect, business: initialBusiness, settings }: Props) {
+export default function ProspectClient({ prospect: initialProspect, business: initialBusiness, settings, campaignLanguage }: Props) {
   const router = useRouter();
   const [prospect, setProspect] = useState(initialProspect);
   const [business, setBusiness] = useState(initialBusiness);
@@ -221,12 +222,10 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       return { phone, text: "" };
     }
     // Determine the active language:
-    // 1. Auto-detect from the prospect's country/city (highest priority)
-    // 2. Fallback to user-set setting
+    // 1. Campaign language (highest priority — set by user at campaign creation)
+    // 2. Auto-detect from the prospect's country/city
     // 3. Default to "fr"
-    const detectedLang = detectProspectLanguage(business.country, business.city);
-    const settingsLang = (settings as any).messageLanguage;
-    const lang = detectedLang || settingsLang || "fr";
+    const lang = campaignLanguage || detectProspectLanguage(business.country, business.city) || "fr";
     let rawText: string;
     if (typeof template === "string") {
       rawText = template;
@@ -512,6 +511,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
             prospect={prospect}
             business={business}
             settings={settings}
+            campaignLanguage={campaignLanguage}
             onUpdate={updateProspect}
             openWhatsApp={openWhatsApp}
             openOnMobile={openOnMobile}
@@ -699,11 +699,12 @@ function PromptTab({
 }
 
 function WhatsAppTab({
-  prospect, business, settings, onUpdate, openWhatsApp, openOnMobile, copyMessageWithLink, copyMessageOnly, copyPhone, copy, copiedField,
+  prospect, business, settings, campaignLanguage, onUpdate, openWhatsApp, openOnMobile, copyMessageWithLink, copyMessageOnly, copyPhone, copy, copiedField,
 }: {
   prospect: Prospect;
   business: Business;
   settings: Settings;
+  campaignLanguage?: string;
   onUpdate: (u: any) => Promise<void>;
   openWhatsApp: (stage: string, tpl: string | { fr: string; en: string; ar?: string } | null | undefined) => void;
   openOnMobile: (stage: string, tpl: string | { fr: string; en: string; ar?: string } | null | undefined) => void;
@@ -726,8 +727,7 @@ function WhatsAppTab({
     if (!raw) return "";
     if (typeof raw === "string") return raw;
     if (typeof raw === "object") {
-      const detectedLang = detectProspectLanguage(business.country, business.city);
-      const lang = detectedLang || (settings as any).messageLanguage || "fr";
+      const lang = campaignLanguage || detectProspectLanguage(business.country, business.city) || "fr";
       return (raw[lang] as string) || raw.fr || raw.en || raw.ar || "";
     }
     return String(raw);
@@ -855,9 +855,7 @@ function WhatsAppTab({
                 onChange={(e) =>
                   setValues((prev) => {
                     if (!prev) return prev;
-                    const detectedLang = detectProspectLanguage(business.country, business.city);
-                    const settingsLang = (settings as any).messageLanguage;
-                    const lang = detectedLang || settingsLang || "fr";
+                    const lang = campaignLanguage || detectProspectLanguage(business.country, business.city) || "fr";
                     const cur = prev[s.id as keyof typeof prev];
                     const curObj =
                       cur && typeof cur === "object" && cur !== null

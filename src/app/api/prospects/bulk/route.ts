@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, prospects, searches } from "@/db/schema";
+import { businesses, prospects, searches, campaigns } from "@/db/schema";
 import {
   generateVibecoderPrompt,
   generateDefaultWhatsAppMessages,
@@ -10,6 +10,7 @@ import { generateDemoSiteHtml } from "@/lib/site-generator";
 import { nanoid } from "nanoid";
 import { getSettings } from "@/lib/settings";
 import { localStore } from "@/lib/local-store";
+import { eq } from "drizzle-orm";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -52,6 +53,16 @@ export async function POST(req: Request) {
     }
 
     const settings = await getSettings();
+
+    // Fetch campaign language if campaignId provided
+    let campaignLanguage = "fr";
+    if (campaignId) {
+      try {
+        const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, campaignId)).limit(1);
+        if (campaign?.language) campaignLanguage = campaign.language;
+      } catch {}
+    }
+
     const created: Array<{ id: number; name: string }> = [];
     const errors: Array<{ name: string; error: string }> = [];
 
@@ -102,7 +113,7 @@ export async function POST(req: Request) {
           .returning();
 
         // Generate workflow data
-        const vibecoderPrompt = generateVibecoderPrompt(business as any);
+        const vibecoderPrompt = generateVibecoderPrompt(business as any, campaignLanguage);
         const whatsappMessages = generateDefaultWhatsAppMessages(business as any);
         const demoHtml = generateDemoSiteHtml(business as any);
         const demoToken = nanoid(24);

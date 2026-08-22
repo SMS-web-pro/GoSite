@@ -221,7 +221,7 @@ export async function POST(
           .returning();
 
         // Generate prompts and demo site
-        const vibecoderPrompt = generateVibecoderPrompt(business as any);
+        const vibecoderPrompt = generateVibecoderPrompt(business as any, campaign.language || "fr");
         const whatsappMessages = generateDefaultWhatsAppMessages(business as any);
         const demoHtml = generateDemoSiteHtml(business as any);
         const demoToken = nanoid(24);

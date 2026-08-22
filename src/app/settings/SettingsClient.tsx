@@ -18,7 +18,6 @@ type Settings = {
   whatsappSessionPhone: string | null;
   whatsappSessionName: string | null;
   whatsappConnectedAt: Date | string | null;
-  messageLanguage?: string;
   paymentLink: string | null;
   messageTemplates: {
     intro: string | { fr: string; en: string; ar: string };
@@ -78,9 +77,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
     return normalized as Record<string, { fr: string; en: string; ar: string }>;
   });
 
-  const [messageLanguage, setMessageLanguage] = useState<string>(
-    (initialSettings as any).messageLanguage || "fr"
-  );
+  const [editLang, setEditLang] = useState<"fr" | "en" | "ar">("fr");
 
   const save = async () => {
     setSaving(true);
@@ -107,7 +104,6 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
           paymentLinkMAD: paymentLinkMAD || null,
           brandColor,
           messageTemplates: templates,
-          messageLanguage,
         }),
       });
       if (!res.ok) {
@@ -151,33 +147,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
            <h2 className="text-sm font-semibold text-slate-900">🏢 Identité de l'agence</h2>
            <p className="text-xs text-slate-500">Ces informations apparaîtront dans vos messages WhatsApp et votre signature.</p>
 
-           <div className="mt-3 rounded-lg border-2 border-violet-200 bg-violet-50 p-3">
-             <label className="block text-xs font-semibold text-violet-900 mb-1">🌍 Langue des messages WhatsApp</label>
-             <p className="text-[10px] text-violet-700 mb-2">
-               Les templates sont bilingues (FR + EN). La langue sélectionnée sera utilisée par défaut.
-             </p>
-             <div className="flex gap-2">
-               {[
-                 { code: "fr", label: "🇫🇷 Français", desc: "Pour marché France" },
-                 { code: "en", label: "🇬🇧 English", desc: "Pour USA / international" },
-               ].map((l) => (
-                 <button
-                   key={l.code}
-                   onClick={() => setMessageLanguage(l.code)}
-                   className={`flex-1 rounded-lg border-2 px-3 py-2 text-left transition ${
-                     messageLanguage === l.code
-                       ? "border-violet-500 bg-white"
-                       : "border-slate-200 bg-white/50 hover:border-slate-300"
-                   }`}
-                 >
-                   <div className="text-sm font-bold">{l.label}</div>
-                   <div className="text-[10px] text-slate-500">{l.desc}</div>
-                 </button>
-               ))}
-             </div>
-           </div>
-
-           <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label="Nom de l'agence" value={agencyName} onChange={setAgencyName} placeholder="Vibecoder Studio" required />
             <Field label="Votre nom" value={contactName} onChange={setContactName} placeholder="Jean Dupont" required />
             <Field label="Email de contact" value={contactEmail} onChange={setContactEmail} placeholder="contact@agence.com" type="email" />
@@ -334,17 +304,26 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
                    stage === "delivery" ? "Message 5 — Livraison du site" :
                    stage === "thanks" ? "Message 6 — Remerciement" :
                    "Message 7 — Relance"}
-                  <span className="ml-2 text-[10px] text-slate-400 font-normal">(langue: {messageLanguage.toUpperCase()})</span>
-                </label>
-                <textarea
-                  value={templates[stage]?.[messageLanguage as "fr" | "en" | "ar"] || templates[stage]?.fr || ""}
-                  onChange={(e) => {
-                    const lang = messageLanguage as "fr" | "en" | "ar";
-                    setTemplates({
-                      ...templates,
-                      [stage]: { ...templates[stage], [lang]: e.target.value },
-                    });
-                  }}
+                   <span className="ml-2 text-[10px] text-slate-400 font-normal">
+                     <select
+                       value={editLang}
+                       onChange={(e) => setEditLang(e.target.value as "fr" | "en" | "ar")}
+                       className="ml-1 rounded border border-slate-200 bg-white px-1 py-0.5 text-[10px]"
+                     >
+                       <option value="fr">🇫🇷 FR</option>
+                       <option value="en">🇬🇧 EN</option>
+                       <option value="ar">🇸🇦 AR</option>
+                     </select>
+                   </span>
+                 </label>
+                 <textarea
+                   value={templates[stage]?.[editLang] || templates[stage]?.fr || ""}
+                   onChange={(e) => {
+                     setTemplates({
+                       ...templates,
+                       [stage]: { ...templates[stage], [editLang]: e.target.value },
+                     });
+                   }}
                   rows={8}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs outline-none focus:border-blue-500"
                 />

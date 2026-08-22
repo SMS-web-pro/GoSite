@@ -166,6 +166,8 @@ export const campaigns = pgTable(
     location: varchar("location", { length: 255 }),
     // Status
     status: varchar("status", { length: 32 }).notNull().default("active"),
+    // Language for WhatsApp messages + Vibecoder prompt (fr/en/ar)
+    language: varchar("language", { length: 8 }).default("fr"),
     // Custom pricing for this campaign (JSON of tiers)
     pricingTiers: jsonb("pricing_tiers").$type<
       Array<{

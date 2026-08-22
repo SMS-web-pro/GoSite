@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { prospects, businesses } from "@/db/schema";
+import { prospects, businesses, campaigns } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import ProspectClient from "./ProspectClient";
 import { getSettings } from "@/lib/settings";
@@ -19,9 +19,10 @@ export default async function ProspectPage({
   let row;
   try {
     row = await db
-      .select({ prospect: prospects, business: businesses })
+      .select({ prospect: prospects, business: businesses, campaign: campaigns })
       .from(prospects)
       .innerJoin(businesses, eq(prospects.businessId, businesses.id))
+      .leftJoin(campaigns, eq(prospects.campaignId, campaigns.id))
       .where(eq(prospects.id, prospectId))
       .limit(1)
       .then((res) => res[0]);
@@ -33,5 +34,6 @@ export default async function ProspectPage({
   if (!row) notFound();
 
   const settings = await getSettings();
-  return <ProspectClient prospect={row.prospect as any} business={row.business} settings={settings} />;
+  const campaignLanguage = (row.campaign as any)?.language || "fr";
+  return <ProspectClient prospect={row.prospect as any} business={row.business} settings={settings} campaignLanguage={campaignLanguage} />;
 }
