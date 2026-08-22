@@ -62,19 +62,27 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
   const [paymentLinkMAD, setPaymentLinkMAD] = useState((initialSettings as any).paymentLinkMAD || "");
 
   const [templates, setTemplates] = useState(() => {
-    const raw = initialSettings.messageTemplates || DEFAULT_TEMPLATES;
+    const raw: Record<string, any> = initialSettings.messageTemplates || {};
     // Normalize: ensure every template is { fr, en, ar } object
+    // If DB has plain strings (old format), use proper multilingual defaults
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    for (const [key, val] of Object.entries(raw)) {
-      if (typeof val === "string") {
-        normalized[key] = { fr: val, en: val, ar: val };
-      } else if (val && typeof val === "object" && "fr" in val) {
+    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
+    for (const key of stageKeys) {
+      const val = raw[key];
+      const defaultVal = DEFAULT_TEMPLATES[key as keyof typeof DEFAULT_TEMPLATES];
+      if (val && typeof val === "object" && "fr" in val) {
+        // Already a multilingual object — use it
         normalized[key] = val as { fr: string; en: string; ar: string };
+      } else if (typeof val === "string" && val.trim()) {
+        // Plain string from DB (old format) — use proper multilingual defaults instead
+        // because the plain string is only French, not useful for EN/AR
+        normalized[key] = defaultVal || { fr: val, en: val, ar: val };
       } else {
-        normalized[key] = { fr: "", en: "", ar: "" };
+        // No value — use multilingual defaults
+        normalized[key] = defaultVal || { fr: "", en: "", ar: "" };
       }
     }
-    return normalized as Record<string, { fr: string; en: string; ar: string }>;
+    return normalized;
   });
 
   const [editLang, setEditLang] = useState<"fr" | "en" | "ar">("fr");
