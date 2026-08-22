@@ -462,13 +462,19 @@ footer{background:#040d18;padding:32px 44px;display:grid;grid-template-columns:a
 @media(max-width:768px){
   nav{padding:0 16px;height:56px}
   .hero{padding:72px 16px 40px;min-height:auto}
-  .hero-top{gap:32px}
-  h1.hero-h1{font-size:clamp(28px,7vw,42px);letter-spacing:-1px}
-  .hero-desc{font-size:14px;max-width:100%}
-  .hero-btns{flex-direction:column;gap:10px}
+  .hero-top{gap:20px}
+  .hero-top>div{display:contents}
+  .hero-badge{order:1}
+  h1.hero-h1{order:2;font-size:clamp(28px,7vw,42px);letter-spacing:-1px}
+  .hero-desc{order:3;font-size:14px;max-width:100%}
+  .hero-photo-wrap{order:4;width:80%;margin:0 auto}
+  .hero-photo-wrap .photo-card{border-radius:18px}
+  .hero-btns{order:5;display:flex;flex-direction:column;gap:10px}
   .btn-p,.btn-o{width:100%;justify-content:center;padding:14px 20px}
-  .hero-tags{gap:6px}
-  .htag{font-size:11px;padding:5px 10px}
+  .hero-tags{order:6;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .htag{font-size:11px;padding:5px 10px;justify-content:center}
+  .strip{grid-template-columns:repeat(3,1fr)}
+  .strip .si:nth-child(n+4){justify-self:center}
   .sec-wrap{padding:48px 16px}
   .s-title{font-size:clamp(22px,6vw,36px)}
   .s-sub{font-size:14px;margin-bottom:36px}
@@ -569,12 +575,19 @@ footer{background:#040d18;padding:32px 44px;display:grid;grid-template-columns:a
 @media(max-width:480px){
   nav{padding:0 12px;height:52px}
   .hero{padding:64px 12px 32px}
-  .hero-top{grid-template-columns:1fr;gap:20px}
-  .hero-photo-wrap{max-width:150px;margin:0 auto}
-  h1.hero-h1{font-size:clamp(24px,8vw,36px)}
-  .hero-desc{font-size:13px;line-height:1.7}
-  .hero-btns{gap:8px}
+  .hero-top{gap:16px}
+  .hero-top>div{display:contents}
+  .hero-badge{order:1}
+  h1.hero-h1{order:2;font-size:clamp(24px,8vw,36px)}
+  .hero-desc{order:3;font-size:13px;line-height:1.7}
+  .hero-photo-wrap{order:4;width:85%;margin:0 auto}
+  .hero-btns{order:5;gap:8px}
   .btn-p,.btn-o{padding:12px 16px;font-size:12px}
+  .hero-tags{order:6;grid-template-columns:1fr 1fr;gap:5px}
+  .htag{font-size:10px;padding:4px 8px}
+  .strip{grid-template-columns:repeat(3,1fr);gap:4px}
+  .strip .si{padding:14px 10px}
+  .strip .si:nth-child(n+4){justify-self:center}
   .sec-wrap{padding:40px 12px}
   .s-title{font-size:clamp(20px,7vw,32px)}
   .s-sub{font-size:13px;margin-bottom:28px}
