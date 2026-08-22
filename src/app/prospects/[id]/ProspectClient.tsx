@@ -196,7 +196,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       contact_email: settings.contactEmail || "",
       contact_phone: settings.contactPhone || "",
       agency_website: settings.websiteUrl || "",
-      portfolio_url: settings.portfolioUrl || "",
+      portfolio: settings.portfolioUrl || "",
     };
   };
 
@@ -757,7 +757,7 @@ function WhatsAppTab({
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <p className="text-sm text-slate-700">
-            💡 <strong>Variables</strong> : {"{{firstName}}"} {"{{name}}"} {"{{sector}}"} {"{{city}}"} {"{{phone}}"} {"{{rating}}"} {"{{demo_url}}"} {"{{payment_url}}"} {"{{final_site_url}}"} {"{{price}}"} {"{{features}}"} {"{{agency_website}}"} {"{{portfolio_url}}"}
+            💡 <strong>Variables</strong> : {"{{firstName}}"} {"{{name}}"} {"{{sector}}"} {"{{city}}"} {"{{phone}}"} {"{{rating}}"} {"{{demo_url}}"} {"{{payment_url}}"} {"{{final_site_url}}"} {"{{price}}"} {"{{features}}"}
             <br />
             <span className="text-xs text-slate-500">Conditionnels : {"{{#if var}}"} ... {"{{/if}}"}</span>
           </p>
