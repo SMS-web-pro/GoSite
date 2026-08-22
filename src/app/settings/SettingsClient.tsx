@@ -294,16 +294,15 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             Conditionnels : <code className="rounded bg-slate-100 px-1">{"{{#if rating}}"}...{"{{/if}}"}</code> (le bloc n'apparaît que si la variable est définie)
           </p>
           <div className="mt-4 space-y-4">
-            {(["intro", "demo", "quote", "payment_received", "delivery", "thanks", "followup"] as const).map((stage) => (
+            {(["intro", "demo", "quote", "payment_received", "delivery", "thanks"] as const).map((stage) => (
               <div key={stage}>
                 <label className="block text-xs font-medium text-slate-700 mb-1 capitalize">
                   {stage === "intro" ? "Message 1 — Premier contact" :
                    stage === "demo" ? "Message 2 — Envoi de la démo" :
-                   stage === "quote" ? "Message 3 — Devis" :
+                   stage === "quote" ? "Message 3 — Devis et lien de paiement" :
                    stage === "payment_received" ? "Message 4 — Accusé de paiement" :
                    stage === "delivery" ? "Message 5 — Livraison du site" :
-                   stage === "thanks" ? "Message 6 — Remerciement" :
-                   "Message 7 — Relance"}
+                   "Message 6 — Remerciement & fidélisation"}
                    <span className="ml-2 text-[10px] text-slate-400 font-normal">
                      <select
                        value={editLang}
