@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { Pool, type PoolConfig } from "pg";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -16,7 +16,7 @@ function createPool() {
   // Supabase uses PgBouncer in transaction mode which does NOT support
   // PostgreSQL prepared statements. Disable them to prevent parameterized
   // query failures. (prepareThreshold is a valid pg option but not in TS types)
-  const config: any = {
+  const config: PoolConfig & { prepareThreshold?: number } = {
     connectionString: databaseUrl!,
     ssl: isSupabase ? { rejectUnauthorized: false } : undefined,
     max: 5,
