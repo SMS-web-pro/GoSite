@@ -31,6 +31,10 @@ export type BilingualTemplate = Record<LangKey, string>;
 // ============================================================
 // CURRENCY DETECTION — matches language detection
 // ============================================================
+/**
+ * @deprecated Use campaign currency instead. This is a fallback only.
+ * The campaign's language/currency setting should always take priority.
+ */
 export function detectProspectCurrency(
   country: string | null | undefined,
   city: string | null | undefined
@@ -525,6 +529,10 @@ export const DEFAULT_TEMPLATES_FALLBACK = DEFAULT_TEMPLATES;
 // Backward-compat alias
 
 
+/**
+ * @deprecated Use campaign language instead. This is a fallback only.
+ * The campaign's language setting should always take priority.
+ */
 export function detectProspectLanguage(
   country: string | null | undefined,
   city: string | null | undefined
