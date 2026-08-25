@@ -91,7 +91,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
   const router = useRouter();
   const [prospect, setProspect] = useState(initialProspect);
   const [business, setBusiness] = useState(initialBusiness);
-  const [activeTab, setActiveTab] = useState<"overview" | "prompt" | "whatsapp" | "links" | "site">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "prompt" | "whatsapp" | "links">("overview");
   const [saving, setSaving] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [sendModal, setSendModal] = useState<{ url: string; text: string; stage: string } | null>(null);
@@ -102,10 +102,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
     setTimeout(() => setToast(null), 3000);
   };
 
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const demoUrl = prospect.demoToken ? `/demo/${prospect.demoToken}` : "";
-  const checkoutUrl = prospect.demoToken ? `/checkout/${prospect.demoToken}` : "";
-  const deliveryUrl = prospect.demoToken ? `/delivery/${prospect.demoToken}` : "";
+
 
   const updateProspect = useCallback(async (updates: any) => {
     setSaving(true);
@@ -153,19 +150,14 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
   // Compute template variables for this prospect
   const getTemplateVars = () => {
-    const currency = campaignCurrency || detectProspectCurrency(business.country, business.city);
-    const absBase = typeof window !== "undefined" ? window.location.origin : "";
-    const absDemoUrl = prospect.demoToken ? `${absBase}/demo/${prospect.demoToken}` : "";
-    const absCheckoutUrl = prospect.demoToken ? `${absBase}/checkout/${prospect.demoToken}` : "";
+    const currency = campaignCurrency || "EUR";
 
-    // Auto-detect price based on language/market
     let detectedPrice = 0;
     if (currency === "EUR") detectedPrice = (settings as any).priceEUR || 89900;
     else if (currency === "USD") detectedPrice = (settings as any).priceUSD || 99900;
     else if (currency === "MAD") detectedPrice = (settings as any).priceMAD || 99900;
 
-    // Auto-detect payment link based on language/market
-    let detectedPaymentLink = settings.paymentLink || absCheckoutUrl;
+    let detectedPaymentLink = settings.paymentLink || "";
     if (currency === "EUR" && (settings as any).paymentLinkEUR) detectedPaymentLink = (settings as any).paymentLinkEUR;
     else if (currency === "USD" && (settings as any).paymentLinkUSD) detectedPaymentLink = (settings as any).paymentLinkUSD;
     else if (currency === "MAD" && (settings as any).paymentLinkMAD) detectedPaymentLink = (settings as any).paymentLinkMAD;
@@ -185,7 +177,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       openingHours: business.openingHours || "",
       description: business.description || "",
       website: business.website || "",
-      demo_url: prospect.externalDemoUrl || absDemoUrl,
+      demo_url: prospect.externalDemoUrl || "",
       payment_url: detectedPaymentLink,
       final_site_url: prospect.externalSiteUrl || "",
       price: tierPrice > 0 ? formatPrice(tierPrice, currency) : "",
@@ -487,8 +479,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
             ["overview", "📊 Vue d'ensemble"],
             ["prompt", "🤖 Prompt Vibecoder"],
             ["whatsapp", "💬 Messages WhatsApp"],
-            ["links", "🔗 Liens externes"],
-            ["site", "🎨 Démo & Paiement"],
+            ["links", "🔗 Liens & Paiement"],
           ] as const).map(([id, label]) => (
             <button
               key={id}
@@ -503,7 +494,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
         </div>
 
         {activeTab === "overview" && (
-          <OverviewTab prospect={prospect} business={business} settings={settings} onUpdate={updateProspect} demoUrl={demoUrl} checkoutUrl={checkoutUrl} deliveryUrl={deliveryUrl} />
+          <OverviewTab prospect={prospect} business={business} settings={settings} onUpdate={updateProspect} />
         )}
         {activeTab === "prompt" && (
           <PromptTab prospect={prospect} onUpdate={updateProspect} copy={copy} copiedField={copiedField} />
@@ -525,10 +516,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
           />
         )}
         {activeTab === "links" && (
-          <LinksTab prospect={prospect} onUpdate={updateProspect} />
-        )}
-        {activeTab === "site" && (
-          <SiteTab prospect={prospect} business={business} demoUrl={demoUrl} checkoutUrl={checkoutUrl} deliveryUrl={deliveryUrl} settings={settings} onUpdate={updateProspect} campaignCurrency={campaignCurrency} />
+          <LinksTab prospect={prospect} business={business} settings={settings} campaignCurrency={campaignCurrency} onUpdate={updateProspect} />
         )}
       </div>
 
@@ -568,15 +556,12 @@ function Badge({ children, tone = "slate" }: { children: React.ReactNode; tone?:
 }
 
 function OverviewTab({
-  prospect, business, settings, onUpdate, demoUrl, checkoutUrl, deliveryUrl,
+  prospect, business, settings, onUpdate,
 }: {
   prospect: Prospect;
   business: Business;
   settings: Settings;
   onUpdate: (u: any) => Promise<void>;
-  demoUrl: string;
-  checkoutUrl: string;
-  deliveryUrl: string;
 }) {
   const [notes, setNotes] = useState(prospect.notes || "");
   useEffect(() => {
@@ -616,14 +601,6 @@ function OverviewTab({
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <h3 className="text-sm font-semibold text-slate-900">🔗 Liens du workflow</h3>
           <div className="mt-2 space-y-1.5 text-xs">
-            <div>
-              <p className="text-[10px] font-semibold uppercase text-slate-400">Démo interne</p>
-              <a href={demoUrl} target="_blank" rel="noreferrer" className="block truncate text-blue-600 hover:underline">{demoUrl || "(non générée)"}</a>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase text-slate-400">Paiement (interne)</p>
-              <a href={checkoutUrl} target="_blank" rel="noreferrer" className="block truncate text-blue-600 hover:underline">{checkoutUrl || "(non généré)"}</a>
-            </div>
             {prospect.externalDemoUrl && (
               <div>
                 <p className="text-[10px] font-semibold uppercase text-violet-600">🎨 Démo externe (vibecodée)</p>
@@ -635,6 +612,9 @@ function OverviewTab({
                 <p className="text-[10px] font-semibold uppercase text-emerald-600">🚀 Site final externe</p>
                 <a href={prospect.externalSiteUrl} target="_blank" rel="noreferrer" className="block truncate text-blue-600 hover:underline">{prospect.externalSiteUrl}</a>
               </div>
+            )}
+            {!prospect.externalDemoUrl && !prospect.externalSiteUrl && (
+              <p className="text-xs text-slate-400 italic">Aucun lien externe configuré. Ajoutez-les dans l'onglet "Liens & Paiement".</p>
             )}
           </div>
         </div>
@@ -910,7 +890,7 @@ function WhatsAppTab({
   );
 }
 
-function LinksTab({ prospect, onUpdate }: { prospect: Prospect; onUpdate: (u: any) => Promise<void> }) {
+function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: { prospect: Prospect; business: Business; settings: Settings; campaignCurrency?: string; onUpdate: (u: any) => Promise<void> }) {
   const [demoUrl, setDemoUrl] = useState(prospect.externalDemoUrl || "");
   const [siteUrl, setSiteUrl] = useState(prospect.externalSiteUrl || "");
   const [saving, setSaving] = useState(false);
@@ -920,6 +900,11 @@ function LinksTab({ prospect, onUpdate }: { prospect: Prospect; onUpdate: (u: an
     setDemoUrl(prospect.externalDemoUrl || "");
     setSiteUrl(prospect.externalSiteUrl || "");
   }, [prospect.externalDemoUrl, prospect.externalSiteUrl]);
+
+  const currency = campaignCurrency || "EUR";
+  const currencySymbol = currency === "EUR" ? "€" : currency === "USD" ? "$" : "DH";
+  const priceKey = `price${currency}` as "priceEUR" | "priceUSD" | "priceMAD";
+  const marketPrice = (settings as any)[priceKey] || 0;
 
   const save = async () => {
     setSaving(true);
@@ -946,7 +931,7 @@ function LinksTab({ prospect, onUpdate }: { prospect: Prospect; onUpdate: (u: an
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <h3 className="text-sm font-semibold text-slate-900">🎨 Lien de la démo externe</h3>
         <p className="mt-1 text-xs text-slate-500">
-          Collez ici l'URL du site de démo que vous avez vibecodé en externe. Ce lien sera utilisé dans le message WhatsApp d'envoi de la démo.
+          Collez ici l'URL du site de démo que vous avez vibcodé en externe. Ce lien sera utilisé dans le message WhatsApp d'envoi de la démo.
         </p>
         <div className="mt-3 flex gap-2">
           <input
@@ -966,7 +951,7 @@ function LinksTab({ prospect, onUpdate }: { prospect: Prospect; onUpdate: (u: an
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <h3 className="text-sm font-semibold text-slate-900">🚀 Lien du site final externe</h3>
         <p className="mt-1 text-xs text-slate-500">
-          Collez ici l'URL définitive du site que vous avez livré au prospect. Ce lien sera utilisé dans le message de livraison (24h après paiement).
+          Collez ici l'URL définitive du site que vous avez livré au prospect. Ce lien sera utilisé dans le message de livraison.
         </p>
         <div className="mt-3 flex gap-2">
           <input
@@ -983,84 +968,20 @@ function LinksTab({ prospect, onUpdate }: { prospect: Prospect; onUpdate: (u: an
         </div>
       </div>
 
-      <div className="sticky bottom-4 flex items-center justify-end gap-2">
-        {saved && <span className="text-sm text-emerald-600">✓ Liens enregistrés</span>}
-        <button
-          onClick={save}
-          disabled={saving}
-          className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 disabled:opacity-60"
-        >
-          {saving ? "Enregistrement..." : "💾 Sauvegarder les liens"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function SiteTab({
-  prospect, business, demoUrl, checkoutUrl, deliveryUrl, settings, onUpdate, campaignCurrency,
-}: {
-  prospect: Prospect;
-  business: Business;
-  demoUrl: string;
-  checkoutUrl: string;
-  deliveryUrl: string;
-  settings: Settings;
-  onUpdate: (u: any) => Promise<void>;
-  campaignCurrency?: string;
-}) {
-  const detectedPrice = (() => {
-    const curr = campaignCurrency || detectProspectCurrency(business.country || null, business.city || null);
-    if (curr === "EUR") return (settings as any).priceEUR || 0;
-    if (curr === "USD") return (settings as any).priceUSD || 0;
-    return (settings as any).priceMAD || 0;
-  })();
-  const currency = campaignCurrency || detectProspectCurrency(business.country || null, business.city || null);
-  return (
-    <div className="space-y-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h3 className="text-sm font-semibold text-slate-900">🎨 Démo du site</h3>
-        <p className="mt-1 text-xs text-slate-500">Démo générée par la plateforme (preview rapide, non professionnelle).</p>
-        {demoUrl ? (
-          <div className="mt-3 flex flex-wrap gap-2">
-            <a href={demoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">🌐 Ouvrir la démo</a>
-            <button onClick={() => navigator.clipboard.writeText(demoUrl)} className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm">📋 Copier</button>
-            <button onClick={() => onUpdate({ regenerateDemo: true })} className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">🔄 Régénérer</button>
-          </div>
-        ) : (
-          <p className="mt-3 text-sm text-amber-600">Démo non générée.</p>
-        )}
-        {prospect.externalDemoUrl && (
-          <p className="mt-3 rounded-lg border border-violet-200 bg-violet-50 p-2 text-xs text-violet-900">
-            🎨 <strong>Démo professionnelle externe</strong> (utilisée dans les messages) :{" "}
-            <a href={prospect.externalDemoUrl} target="_blank" rel="noreferrer" className="underline break-all">{prospect.externalDemoUrl}</a>
-          </p>
-        )}
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h3 className="text-sm font-semibold text-slate-900">💰 Tarification</h3>
+        <h3 className="text-sm font-semibold text-slate-900">💰 Tarification & Paiement</h3>
         <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
           <p className="text-sm font-medium text-blue-900">
-            Prix du marché : <span className="text-xl font-bold">{formatPrice(detectedPrice, currency)}</span>
+            Prix du marché : <span className="text-xl font-bold">{formatPrice(marketPrice, currency)}</span>
           </p>
           <p className="mt-1 text-xs text-blue-600">
-            Devise auto-détectée : {currency} {currency === "EUR" ? "(€)" : currency === "USD" ? "($)" : "(DH)"}
+            Devise de la campagne : {currency} {currencySymbol}
           </p>
         </div>
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h3 className="text-sm font-semibold text-slate-900">💳 Lien de paiement</h3>
         {(settings.paymentLink || (settings as any).paymentLinkEUR || (settings as any).paymentLinkUSD || (settings as any).paymentLinkMAD) ? (
-          <p className="mt-1 text-sm text-emerald-700">✓ Configuré</p>
+          <p className="mt-3 text-sm text-emerald-700">✓ Lien de paiement configuré dans Settings</p>
         ) : (
-          <p className="mt-1 text-sm text-amber-600">⚠️ Non configuré. <Link href="/settings" className="underline">Configurer maintenant</Link></p>
-        )}
-        {checkoutUrl && (
-          <div className="mt-3 flex flex-wrap gap-2">
-            <a href={checkoutUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">💳 Page de paiement (interne)</a>
-          </div>
+          <p className="mt-3 text-sm text-amber-600">⚠️ Lien de paiement non configuré. <Link href="/settings" className="underline">Configurer dans Settings</Link></p>
         )}
         {prospect.paymentStatus === "paid" && (
           <p className="mt-3 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">
@@ -1084,24 +1005,20 @@ function SiteTab({
         )}
       </div>
 
-      {prospect.paymentStatus === "paid" && (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-          <h3 className="text-sm font-semibold text-emerald-900">🚀 Livraison</h3>
-          {prospect.externalSiteUrl ? (
-            <p className="mt-2 text-sm text-emerald-800">
-              ✓ Site final : <a href={prospect.externalSiteUrl} target="_blank" rel="noreferrer" className="underline break-all font-bold">{prospect.externalSiteUrl}</a>
-            </p>
-          ) : (
-            <p className="mt-2 text-sm text-amber-700">⚠️ Ajoutez le lien du site final dans l'onglet "Liens externes" pour pouvoir envoyer le message de livraison.</p>
-          )}
-          <a href={deliveryUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
-            🎉 Page de livraison (interne)
-          </a>
-        </div>
-      )}
+      <div className="sticky bottom-4 flex items-center justify-end gap-2">
+        {saved && <span className="text-sm text-emerald-600">✓ Liens enregistrés</span>}
+        <button
+          onClick={save}
+          disabled={saving}
+          className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 disabled:opacity-60"
+        >
+          {saving ? "Enregistrement..." : "💾 Sauvegarder les liens"}
+        </button>
+      </div>
     </div>
   );
 }
+
 
 function DeleteProspectButton({ prospectId, prospectName }: { prospectId: number; prospectName: string }) {
   const [confirming, setConfirming] = useState(false);
