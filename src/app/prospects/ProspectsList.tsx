@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { detectProspectCurrency, formatPrice } from "@/lib/prompt-generator";
+import type { ScrapedBusiness } from "@/lib/types";
 
 type Item = {
   prospect: {
@@ -14,60 +15,8 @@ type Item = {
     paymentStatus: string | null;
     updatedAt: Date | string | null;
   };
-  business: {
+  business: ScrapedBusiness & {
     id: number;
-    name: string;
-    category: string | null;
-    subcategory: string | null;
-    osmType: string | null;
-    osmId: number | null;
-    wikidataId: string | null;
-    wikipedia: string | null;
-    address: string | null;
-    housenumber: string | null;
-    street: string | null;
-    neighbourhood: string | null;
-    suburb: string | null;
-    postcode: string | null;
-    city: string | null;
-    state: string | null;
-    country: string | null;
-    phone: string | null;
-    mobile: string | null;
-    email: string | null;
-    website: string | null;
-    facebook: string | null;
-    twitter: string | null;
-    instagram: string | null;
-    linkedin: string | null;
-    youtube: string | null;
-    openingHours: string | null;
-    cuisine: string | null;
-    description: string | null;
-    wheelchair: string | null;
-    wifi: string | null;
-    takeaway: string | null;
-    delivery: string | null;
-    outdoorSeating: string | null;
-    smoking: string | null;
-    reservation: string | null;
-    parking: string | null;
-    airConditioning: string | null;
-    paymentCash: string | null;
-    paymentCard: string | null;
-    capacity: string | null;
-    stars: string | null;
-    latitude: string | null;
-    longitude: string | null;
-    bingUrl: string | null;
-    osmUrl: string | null;
-    googleMapsUrl: string | null;
-    rating: string | null;
-    reviewsCount: number | null;
-    source: string;
-    extraTags: string | null;
-    detailCount: number;
-    popularity: number | null;
   };
 };
 
