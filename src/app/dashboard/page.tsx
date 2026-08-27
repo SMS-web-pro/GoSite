@@ -143,12 +143,12 @@ export default async function HomePage({
         <section className="relative overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white p-6 sm:p-8" style={{ boxShadow: "0 2px 7px rgba(0,0,0,.04)" }}>
           <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #2563EB, #3B82F6)" }} />
           <div className="text-center">
-            <p className="text-sm text-[#64748B] mb-4">Importez vos prospects depuis un fichier CSV ou ajoutez-les manuellement</p>
+            <p className="text-sm text-[#64748B] mb-4">Créez une campagne pour lancer votre prospection</p>
             <Link
-              href="/prospects"
+              href="/campaigns"
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:from-blue-700 hover:to-indigo-700"
             >
-              📥 Importer des prospects
+              + Nouvelle campagne
             </Link>
           </div>
         </section>
