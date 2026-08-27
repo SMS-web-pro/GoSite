@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isExternalServerConfigured, callServer } from "@/lib/whatsapp-client";
-import { checkNumbersOnWhatsApp, getSessionStatusAsync } from "@/lib/whatsapp-session";
+import { checkNumbersOnWhatsApp } from "@/lib/whatsapp-session";
 import { normalizePhone } from "@/lib/phone-normalizer";
 
 export const runtime = "nodejs";
@@ -21,14 +21,6 @@ export async function POST(req: Request) {
     // If external server is configured, use it
     if (isExternalServerConfigured()) {
       try {
-        // First check if the external server is connected
-        const sessionData = await callServer("/session");
-        if (!sessionData.connected) {
-          return NextResponse.json({
-            error: "WhatsApp non connecté. Scannez le QR code dans Paramètres → WhatsApp.",
-            not_connected: true,
-          });
-        }
         const data = await callServer("/check-numbers", {
           method: "POST",
           body: JSON.stringify({ phones: normalized.map((n) => n.normalized) }),
@@ -44,22 +36,11 @@ export async function POST(req: Request) {
         }));
         return NextResponse.json({ results: mapped });
       } catch (err: any) {
-        return NextResponse.json({
-          error: "Impossible de joindre le serveur WhatsApp. Vérifiez votre configuration.",
-          not_connected: true,
-        });
+        return NextResponse.json({ error: err.message || "Check failed" }, { status: 500 });
       }
     }
 
-    // Fallback: local Baileys — check connection status first
-    const sessionStatus = await getSessionStatusAsync();
-    if (sessionStatus.status !== "connected") {
-      return NextResponse.json({
-        error: "WhatsApp non connecté. Scannez le QR code dans Paramètres → WhatsApp.",
-        not_connected: true,
-      });
-    }
-
+    // Fallback: local Baileys
     const results = await checkNumbersOnWhatsApp(normalized.map((n) => n.normalized));
     const mapped = results.map((r, i) => ({
       phone: normalized[i].raw,

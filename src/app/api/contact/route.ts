@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
 const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
-const SMTP_USER = process.env.SMTP_USER || "";
+const SMTP_USER = process.env.SMTP_USER || "siteup.services@gmail.com";
 const SMTP_PASS = process.env.SMTP_PASS || "";
-const CONTACT_TO = process.env.CONTACT_TO || SMTP_USER || "contact@gosite.io";
+const CONTACT_TO = process.env.CONTACT_TO || "siteup.services@gmail.com";
 
 function getTransporter() {
   return nodemailer.createTransport({
@@ -34,26 +34,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const inquiryRecord = {
-      receivedAt: new Date().toISOString(),
-      name,
-      email,
-      phone: phone || null,
-      service: service || null,
-      budget: budget || null,
-      message,
-    };
-
-    console.log("📥 [GoSite Inquiry Received]:", JSON.stringify(inquiryRecord, null, 2));
-
-    // If SMTP is not configured, still acknowledge receipt cleanly without crashing
-    if (!SMTP_PASS || !SMTP_USER) {
-      console.warn("⚠️ SMTP credentials not fully configured (SMTP_USER/SMTP_PASS missing). Inquiry logged locally.");
-      return NextResponse.json({
-        ok: true,
-        message: "Votre demande a été enregistrée avec succès. Notre équipe vous recontactera sous 24h.",
-        devNotice: "SMTP non configuré en environnement local. Message journalisé avec succès.",
-      });
+    if (!SMTP_PASS) {
+      return NextResponse.json(
+        { error: "Email not configured. Set SMTP_PASS env var." },
+        { status: 500 }
+      );
     }
 
     const htmlContent = `
@@ -106,8 +91,8 @@ ${message}
   } catch (err: any) {
     console.error("[Contact] Email error:", err.message);
     return NextResponse.json(
-      { ok: true, message: "Votre demande a été enregistrée. Nous revenons vers vous très rapidement." },
-      { status: 200 }
+      { error: err.message || "Failed to send email" },
+      { status: 500 }
     );
   }
 }

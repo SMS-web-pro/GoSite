@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { prospects, businesses, campaigns } from "@/db/schema";
+import { prospects, businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import {
   generateVibecoderPrompt,
@@ -9,6 +9,7 @@ import {
 } from "@/lib/prompt-generator";
 import { generateDemoSiteHtml } from "@/lib/site-generator";
 import { getSettings } from "@/lib/settings";
+
 import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
@@ -57,13 +58,11 @@ export async function PATCH(
   }
   const body = await req.json();
   const updates: any = { updatedAt: new Date() };
-
   // Workflow
   if (body.workflowStage) updates.workflowStage = body.workflowStage;
   if (body.notes !== undefined) updates.notes = body.notes;
-  if (body.vibecoderPrompt !== undefined) updates.vibecoderPrompt = body.vibecoderPrompt;
-  if (body.whatsappMessages !== undefined) updates.whatsappMessages = body.whatsappMessages;
-
+  if (body.vibecoderPrompt) updates.vibecoderPrompt = body.vibecoderPrompt;
+  if (body.whatsappMessages) updates.whatsappMessages = body.whatsappMessages;
   // Payment
   if (body.paymentStatus) updates.paymentStatus = body.paymentStatus;
   if (body.paymentAmount !== undefined) updates.paymentAmount = body.paymentAmount;
@@ -72,7 +71,6 @@ export async function PATCH(
     updates.deliveryDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
     updates.workflowStage = "paid";
   }
-
   // Quotes & external links
   if (body.quoteAmount !== undefined) updates.quoteAmount = body.quoteAmount;
   if (body.quoteCurrency) updates.quoteCurrency = body.quoteCurrency;
@@ -83,9 +81,8 @@ export async function PATCH(
     updates.externalSiteUrl = body.externalSiteUrl === "" ? null : body.externalSiteUrl;
   }
   if (body.finalSiteUrl !== undefined) {
-    updates.externalSiteUrl = body.finalSiteUrl === "" ? null : body.finalSiteUrl;
+    updates.finalSiteUrl = body.finalSiteUrl === "" ? null : body.finalSiteUrl;
   }
-
   if (body.quoteTier) {
     const settings = await getSettings();
     const currency = detectProspectCurrency(body.country || null, body.city || null);
@@ -94,36 +91,6 @@ export async function PATCH(
       : (settings.priceMAD || 0);
     updates.quoteAmount = tierPrice;
     updates.quoteCurrency = currency;
-  }
-
-  // If regeneration of demo / prompt is requested
-  if (body.regenerateDemo) {
-    try {
-      const [row] = await db
-        .select({ prospect: prospects, business: businesses })
-        .from(prospects)
-        .innerJoin(businesses, eq(prospects.businessId, businesses.id))
-        .where(eq(prospects.id, prospectId))
-        .limit(1);
-
-      if (row) {
-        let lang = "fr";
-        if (row.prospect.campaignId) {
-          const [c] = await db.select().from(campaigns).where(eq(campaigns.id, row.prospect.campaignId)).limit(1);
-          if (c?.language) lang = c.language;
-        }
-        updates.vibecoderPrompt = generateVibecoderPrompt(row.business as any, lang);
-        updates.whatsappMessages = generateDefaultWhatsAppMessages(row.business as any);
-        updates.demoHtml = generateDemoSiteHtml(row.business as any);
-      }
-    } catch {
-      const local = localStore.getProspectById(prospectId);
-      if (local && local.business) {
-        updates.vibecoderPrompt = generateVibecoderPrompt(local.business as any, "fr");
-        updates.whatsappMessages = generateDefaultWhatsAppMessages(local.business as any);
-        updates.demoHtml = generateDemoSiteHtml(local.business as any);
-      }
-    }
   }
 
   try {

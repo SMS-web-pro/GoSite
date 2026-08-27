@@ -96,37 +96,6 @@ export default function ProspectClient({ prospect: initialProspect, business: in
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [sendModal, setSendModal] = useState<{ url: string; text: string; stage: string } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
-  // Live WhatsApp connection status (refreshed from API, not just from static server settings)
-  const [waLiveStatus, setWaLiveStatus] = useState<{
-    connected: boolean;
-    phone: string | null;
-    name: string | null;
-  }>({
-    connected: !!settings.whatsappConnectedAt,
-    phone: settings.whatsappSessionPhone,
-    name: settings.whatsappSessionName,
-  });
-
-  // Refresh WA status from the live API on mount
-  useEffect(() => {
-    let cancelled = false;
-    const check = async () => {
-      try {
-        const res = await fetch("/api/whatsapp/session");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled) {
-          setWaLiveStatus({
-            connected: data.connected === true,
-            phone: data.phone || data.phoneNumber || null,
-            name: data.profileName || null,
-          });
-        }
-      } catch {}
-    };
-    check();
-    return () => { cancelled = true; };
-  }, []);
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -401,7 +370,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       <div className="mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
-          {waLiveStatus.connected ? (
+          {settings.whatsappConnectedAt && (
             <div className="flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
@@ -409,21 +378,11 @@ export default function ProspectClient({ prospect: initialProspect, business: in
               </span>
               <span className="text-[11px] font-medium text-emerald-700">
                 WhatsApp connecté
-                {waLiveStatus.phone && (
-                  <> · {waLiveStatus.phone}</>
+                {settings.whatsappSessionPhone && (
+                  <> · {settings.whatsappSessionPhone}</>
                 )}
               </span>
             </div>
-          ) : (
-            <Link
-              href="/settings"
-              className="flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 transition hover:border-amber-300"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400"></span>
-              </span>
-              <span className="text-[11px] font-medium text-amber-700">WhatsApp non connecté → Configurer</span>
-            </Link>
           )}
           <Link
             href="/prospects"

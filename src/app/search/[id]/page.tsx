@@ -15,28 +15,17 @@ export default async function SearchResultPage({
   const searchId = parseInt(id, 10);
   if (Number.isNaN(searchId)) notFound();
 
-  let search: typeof searches.$inferSelect | undefined;
-  let results: Array<typeof businesses.$inferSelect> = [];
-
-  try {
-    const [foundSearch] = await db
-      .select()
-      .from(searches)
-      .where(eq(searches.id, searchId))
-      .limit(1);
-
-    if (foundSearch) {
-      search = foundSearch;
-      results = await db
-        .select()
-        .from(businesses)
-        .where(eq(businesses.searchId, searchId));
-    }
-  } catch (err) {
-    console.warn("DB lookup failed for search/[id]:", err);
-  }
-
+  const [search] = await db
+    .select()
+    .from(searches)
+    .where(eq(searches.id, searchId))
+    .limit(1);
   if (!search) notFound();
+
+  const results = await db
+    .select()
+    .from(businesses)
+    .where(eq(businesses.searchId, searchId));
 
   return (
     <SearchClient
@@ -52,7 +41,7 @@ export default async function SearchResultPage({
         wikipedia: r.wikipedia,
         address: r.address,
         housenumber: r.housenumber,
-        popularity: r.popularity ?? null,
+        popularity: null,
         street: r.street,
         neighbourhood: r.neighbourhood,
         suburb: r.suburb,
@@ -92,9 +81,9 @@ export default async function SearchResultPage({
         googleMapsUrl: r.googleMapsUrl,
         rating: r.rating,
         reviewsCount: r.reviewsCount,
-        source: r.source || "scraper",
+        source: r.source,
         extraTags: r.extraTags,
-        detailCount: r.detailCount ?? 0,
+        detailCount: 0,
       }))}
     />
   );

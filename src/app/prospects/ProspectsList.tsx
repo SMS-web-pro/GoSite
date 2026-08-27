@@ -112,7 +112,6 @@ export default function ProspectsList({ items }: { items: Item[] }) {
   const [whatsappStatus, setWhatsappStatus] = useState<Map<string, boolean>>(new Map());
   const [checkingWhatsapp, setCheckingWhatsapp] = useState(false);
   const [waError, setWaError] = useState<string | null>(null);
-  const [waNotConnected, setWaNotConnected] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [filterWhatsapp, setFilterWhatsapp] = useState<"all" | "yes" | "no">("all");
   const [filterWebsite, setFilterWebsite] = useState<"all" | "yes" | "no">("all");
@@ -132,7 +131,6 @@ export default function ProspectsList({ items }: { items: Item[] }) {
     (async () => {
       const newMap = new Map<string, boolean>();
       let errorMsg: string | null = null;
-      let notConnected = false;
       for (const chunk of chunks) {
         try {
           const res = await fetch("/api/whatsapp/check-numbers", {
@@ -143,7 +141,6 @@ export default function ProspectsList({ items }: { items: Item[] }) {
           const data = await res.json();
           if (data.error) {
             errorMsg = data.error;
-            if (data.not_connected) notConnected = true;
             break;
           }
           if (data.results) {
@@ -152,12 +149,11 @@ export default function ProspectsList({ items }: { items: Item[] }) {
             }
           }
         } catch {
-          errorMsg = "Erreur réseau lors de la vérification WhatsApp";
+          errorMsg = "Erreur réseau";
         }
       }
       setWhatsappStatus(newMap);
       setWaError(errorMsg);
-      setWaNotConnected(notConnected);
       setCheckingWhatsapp(false);
     })();
   }, [items]);
@@ -271,24 +267,6 @@ export default function ProspectsList({ items }: { items: Item[] }) {
 
   return (
     <div className="space-y-4">
-      {/* WhatsApp non connecté — bannière d'alerte visible */}
-      {waNotConnected && (
-        <div className="flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3">
-          <span className="mt-0.5 text-xl">📱</span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-800">WhatsApp non connecté</p>
-            <p className="mt-0.5 text-xs text-amber-700">
-              La validation des numéros WhatsApp est désactivée. Connectez WhatsApp dans les paramètres pour activer cette fonctionnalité.
-            </p>
-          </div>
-          <a
-            href="/settings"
-            className="shrink-0 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700"
-          >
-            ⚙️ Connecter
-          </a>
-        </div>
-      )}
       {selected.size > 0 && (
         <div className="sticky top-16 z-30 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-blue-400 bg-blue-50 p-3 shadow-lg">
           <div className="flex items-center gap-3 text-sm text-blue-900">
@@ -360,11 +338,8 @@ export default function ProspectsList({ items }: { items: Item[] }) {
         {checkingWhatsapp && (
           <span className="ml-auto text-xs text-blue-500">⏳ Vérification WhatsApp...</span>
         )}
-        {!checkingWhatsapp && waError && !waNotConnected && (
+        {!checkingWhatsapp && waError && (
           <span className="ml-auto text-xs text-red-500">⚠ {waError}</span>
-        )}
-        {!checkingWhatsapp && waNotConnected && (
-          <span className="ml-auto text-xs text-amber-600">📵 WA non connecté</span>
         )}
         {!checkingWhatsapp && !waError && whatsappStatus.size > 0 && (
           <span className="ml-auto text-xs">
