@@ -103,12 +103,9 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
   const paidItems = items.filter((i) => saleStages.includes((i.prospect as any).workflowStage) || i.prospect.paymentStatus === "paid");
   const paidByCurrency = getValueByCurrency(paidItems);
 
-  const formatMultiCurrency = (vals: { eur: number; usd: number; mad: number }) => {
-    const parts: string[] = [];
-    if (vals.eur > 0) parts.push(formatPrice(vals.eur, "EUR"));
-    if (vals.usd > 0) parts.push(formatPrice(vals.usd, "USD"));
-    if (vals.mad > 0) parts.push(formatPrice(vals.mad, "MAD"));
-    return parts.length > 0 ? parts.join(" + ") : "0 €";
+  const formatCampaignAmount = (vals: { eur: number; usd: number; mad: number }) => {
+    const amount = vals.eur + vals.usd + vals.mad;
+    return formatPrice(amount, campaignCurrency as "EUR" | "USD" | "MAD");
   };
 
   return (
@@ -168,11 +165,11 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
         <div className="mb-6 grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
             <p className="text-xs text-slate-500">Valeur potentielle totale</p>
-            <p className="text-2xl font-bold text-slate-900">{formatMultiCurrency(totalByCurrency)}</p>
+            <p className="text-2xl font-bold text-slate-900">{formatCampaignAmount(totalByCurrency)}</p>
           </div>
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
             <p className="text-xs text-emerald-600">Chiffre d'affaires réalisé</p>
-            <p className="text-2xl font-bold text-emerald-900">{formatMultiCurrency(paidByCurrency)}</p>
+            <p className="text-2xl font-bold text-emerald-900">{formatCampaignAmount(paidByCurrency)}</p>
            </div>
          </div>
 
