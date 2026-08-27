@@ -613,38 +613,38 @@ export function generateDefaultWhatsAppMessages(b: any) {
  * with stronger personalization guidance.
  */
 export function generateVibecoderPrompt(b: ScrapedBusiness, campaignLanguage?: string): string {
-  const sector = (b as any).subcategory || b.category || "business local";
-  const city = (b as any).city || b.postcode || "votre ville";
+  const sector = b.subcategory || b.category || "business local";
+  const city = b.city || b.postcode || "votre ville";
   const address = [b.housenumber, b.street, b.postcode, b.city]
     .filter(Boolean)
     .join(", ");
   const phone = b.phone || "";
   const phoneClean = phone.replace(/[^0-9]/g, "");
   const email = b.email || "";
-  const hours = (b as any).openingHours || "";
+  const hours = b.openingHours || "";
   const rating = b.rating || "";
   const reviewsCount = b.reviewsCount || "";
   const cuisine = b.cuisine || "";
-  const description = (b as any).description || "";
+  const description = b.description || "";
   const website = b.website || "";
   const wikipedia = b.wikipedia || "";
-  const facebook = (b as any).facebook || "";
-  const instagram = (b as any).instagram || "";
-  const twitter = (b as any).twitter || "";
-  const linkedin = (b as any).linkedin || "";
-  const googleMapsUrl = (b as any).googleMapsUrl || "";
+  const facebook = b.facebook || "";
+  const instagram = b.instagram || "";
+  const twitter = b.twitter || "";
+  const linkedin = b.linkedin || "";
+  const googleMapsUrl = b.googleMapsUrl || "";
   const subcategory = b.subcategory || "";
-  const country = (b as any).country || "";
+  const country = b.country || "";
   const lang = campaignLanguage || detectProspectLanguage(country, city);
 
-  const hasDelivery = (b as any).delivery === "yes";
-  const hasTakeaway = (b as any).takeaway === "yes";
-  const hasTerrace = (b as any).outdoorSeating === "yes";
-  const hasReservation = (b as any).reservation === "yes";
-  const hasWifi = (b as any).wifi === "yes";
-  const hasWheelchair = (b as any).wheelchair === "yes";
-  const hasParking = (b as any).parking && (b as any).parking !== "no";
-  const hasAirCon = (b as any).airConditioning === "yes";
+  const hasDelivery = b.delivery === "yes";
+  const hasTakeaway = b.takeaway === "yes";
+  const hasTerrace = b.outdoorSeating === "yes";
+  const hasReservation = b.reservation === "yes";
+  const hasWifi = b.wifi === "yes";
+  const hasWheelchair = b.wheelchair === "yes";
+  const hasParking = b.parking && b.parking !== "no";
+  const hasAirCon = b.airConditioning === "yes";
 
   const isRestaurant = subcategory === "restaurant" || cuisine !== "";
   const isPharmacy = subcategory === "pharmacy" || subcategory === "pharmacie";
@@ -740,7 +740,7 @@ ${hasTerrace ? "- **Terrasse** : Oui" : ""}
 ${hasReservation ? "- **Réservation** : Oui" : ""}
 ${hasWifi ? "- **Wi-Fi** : Oui" : ""}
 ${hasWheelchair ? "- **Accès PMR** : Oui" : ""}
-${hasParking ? "- **Parking** : " + (b as any).parking : ""}
+${hasParking ? "- **Parking** : " + b.parking : ""}
 ${hasAirCon ? "- **Climatisation** : Oui" : ""}
 ${cuisine ? `- **Spécialité culinaire** : ${cuisine}` : ""}
 

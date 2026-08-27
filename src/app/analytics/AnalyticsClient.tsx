@@ -277,6 +277,7 @@ export default function AnalyticsClient({
 function StatusBar({ label, count, total, color }: { label: string; count: number; total: number; color: "emerald" | "amber" | "red" }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
   const bg = color === "emerald" ? "bg-emerald-100" : color === "amber" ? "bg-amber-100" : "bg-red-100";
+  const fill = color === "emerald" ? "bg-emerald-500" : color === "amber" ? "bg-amber-500" : "bg-red-500";
   const text = color === "emerald" ? "text-emerald-700" : color === "amber" ? "text-amber-700" : "text-red-700";
   return (
     <div>
@@ -285,7 +286,7 @@ function StatusBar({ label, count, total, color }: { label: string; count: numbe
         <span className={`font-semibold ${text}`}>{count} ({pct}%)</span>
       </div>
       <div className={`mt-1 h-2 overflow-hidden rounded-full ${bg}`}>
-        <div className={`h-full ${bg}`} style={{ width: `${pct}%` }} />
+        <div className={`h-full ${fill}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );

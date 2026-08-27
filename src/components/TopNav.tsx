@@ -33,7 +33,7 @@ export default function TopNav() {
   return (
     <nav className="sticky top-0 z-50 border-b border-[#E2E8F0] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-[#0F172A]">
+        <Link href="/" className="flex items-center gap-2 font-bold text-[#0F172A]">
           <span className="grid h-8 w-8 place-items-center rounded-lg text-sm text-white" style={{ background: "linear-gradient(135deg, #2563EB, #3B82F6)" }}>
             ⚡
           </span>

@@ -26,6 +26,7 @@ type Business = {
 };
 
 type Settings = {
+  id: number;
   agencyName: string;
   contactName: string;
   contactEmail: string | null;
@@ -38,7 +39,23 @@ type Settings = {
   whatsappSessionName: string | null;
   whatsappConnectedAt: string | Date | null;
   paymentLink: string | null;
-  messageTemplates: any;
+  priceEUR: number | null;
+  priceUSD: number | null;
+  priceMAD: number | null;
+  paymentLinkEUR: string | null;
+  paymentLinkUSD: string | null;
+  paymentLinkMAD: string | null;
+  brandColor: string;
+  logoUrl: string | null;
+  messageTemplates: {
+    intro: string | { fr: string; en: string; ar: string };
+    demo: string | { fr: string; en: string; ar: string };
+    quote: string | { fr: string; en: string; ar: string };
+    payment_received: string | { fr: string; en: string; ar: string };
+    delivery: string | { fr: string; en: string; ar: string };
+    thanks: string | { fr: string; en: string; ar: string };
+    followup: string | { fr: string; en: string; ar: string };
+  } | null;
 };
 
 type Prospect = {
@@ -130,7 +147,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messageStage }),
       });
-    } catch {}
+    } catch { console.warn("Failed to log message"); }
   };
 
   // Process a template: replace variables + handle {{#if}} conditionals
@@ -313,7 +330,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
   const copyPhone = async () => {
     const phone = business.phone?.replace(/[^0-9]/g, "");
     if (!phone) return;
-    const intl = phone.startsWith("33") ? `+${phone}` : phone;
+    const intl = phone.startsWith("+") ? phone : phone.startsWith("00") ? `+${phone.slice(2)}` : `+${phone}`;
     try {
       await navigator.clipboard.writeText(intl);
       setCopiedField("phone");
@@ -744,7 +761,6 @@ function WhatsAppTab({
         body: JSON.stringify({ messageTemplates: safeValues }),
       });
       setEditing(false);
-      window.location.reload();
     } catch (e) {
       console.error("Failed to save:", e);
     }
@@ -890,6 +906,16 @@ function WhatsAppTab({
   );
 }
 
+function isValidUrl(str: string): boolean {
+  if (!str) return true;
+  try {
+    const url = new URL(str);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: { prospect: Prospect; business: Business; settings: Settings; campaignCurrency?: string; onUpdate: (u: any) => Promise<void> }) {
   const [demoUrl, setDemoUrl] = useState(prospect.externalDemoUrl || "");
   const [siteUrl, setSiteUrl] = useState(prospect.externalSiteUrl || "");
@@ -938,7 +964,7 @@ function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: 
             value={demoUrl}
             onChange={(e) => setDemoUrl(e.target.value)}
             placeholder="https://demo-mon-site.netlify.app"
-            className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
+            className={`flex-1 rounded-xl border bg-slate-50 px-3 py-2 text-sm ${demoUrl && !isValidUrl(demoUrl) ? "border-red-400" : "border-slate-200"}`}
           />
           {demoUrl && (
             <a href={demoUrl} target="_blank" rel="noreferrer" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
@@ -958,7 +984,7 @@ function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: 
             value={siteUrl}
             onChange={(e) => setSiteUrl(e.target.value)}
             placeholder="https://www.client.com"
-            className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
+            className={`flex-1 rounded-xl border bg-slate-50 px-3 py-2 text-sm ${siteUrl && !isValidUrl(siteUrl) ? "border-red-400" : "border-slate-200"}`}
           />
           {siteUrl && (
             <a href={siteUrl} target="_blank" rel="noreferrer" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
@@ -1009,7 +1035,7 @@ function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: 
         {saved && <span className="text-sm text-emerald-600">✓ Liens enregistrés</span>}
         <button
           onClick={save}
-          disabled={saving}
+          disabled={saving || (demoUrl !== "" && !isValidUrl(demoUrl)) || (siteUrl !== "" && !isValidUrl(siteUrl))}
           className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 disabled:opacity-60"
         >
           {saving ? "Enregistrement..." : "💾 Sauvegarder les liens"}

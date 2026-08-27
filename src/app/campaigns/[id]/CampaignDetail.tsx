@@ -355,7 +355,7 @@ function EditCampaignButton({ campaign }: { campaign: Campaign }) {
         <div className="flex gap-2">
           <button
             onClick={save}
-            disabled={saving || !sector.trim() || !location.trim()}
+            disabled={saving}
             className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
           >
             {saving ? "..." : "Sauvegarder"}

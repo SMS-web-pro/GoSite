@@ -92,8 +92,17 @@ function detectColumns(headers: string[]): Record<string, number> {
 
 function normalizePhone(p: string | undefined): string | null {
   if (!p) return null;
-  const cleaned = p.replace(/[^\d+]/g, "");
-  return cleaned || null;
+  const trimmed = p.trim();
+  if (trimmed.startsWith("+")) {
+    const digits = trimmed.slice(1).replace(/\D/g, "");
+    return digits.length >= 7 ? `+${digits}` : null;
+  }
+  if (trimmed.startsWith("00")) {
+    const digits = trimmed.replace(/\D/g, "").slice(2);
+    return digits.length >= 7 ? `+${digits}` : null;
+  }
+  const digits = trimmed.replace(/\D/g, "");
+  return digits.length >= 7 ? `+${digits}` : null;
 }
 
 export async function POST(

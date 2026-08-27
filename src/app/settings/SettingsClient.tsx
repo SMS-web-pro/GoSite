@@ -454,13 +454,14 @@ function WhatsAppTab({
       const r = await fetch("/api/whatsapp/debug");
       const d = await r.json();
       setLog(d.eventLog || []);
-    } catch {}
+    } catch { /* debug log fetch failed */ }
   }, []);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [copiedPayload, setCopiedPayload] = useState(false);
   const router = useRouter();
   const pollRef = useRef<NodeJS.Timeout | null>(null);
+  const statusRef = useRef(status);
 
   // Start polling when status is "qr_ready" or "connecting"
   const startPolling = () => {
@@ -481,7 +482,7 @@ function WhatsAppTab({
           pollRef.current = null;
           router.refresh(); // Reload server data
         } else if (data.status === "failed" || data.status === "disconnected") {
-          if (status === "qr_ready" || status === "connecting") {
+          if (statusRef.current === "qr_ready" || statusRef.current === "connecting") {
             setStatus(data.status);
             setSessionError(data.error || null);
             if (pollRef.current) clearInterval(pollRef.current);
@@ -535,7 +536,7 @@ function WhatsAppTab({
       if (pollRef.current) clearInterval(pollRef.current);
       pollRef.current = null;
       router.refresh();
-    } catch {}
+    } catch { console.warn("Failed to disconnect WhatsApp"); }
     setLoading(false);
   };
 
@@ -554,6 +555,9 @@ function WhatsAppTab({
       }
     } catch {}
   };
+
+  // Sync statusRef with status
+  useEffect(() => { statusRef.current = status; }, [status]);
 
   // Cleanup on unmount
   useEffect(() => {
