@@ -5,7 +5,6 @@ import { eq, desc } from "drizzle-orm";
 import {
   generateVibecoderPrompt,
   generateDefaultWhatsAppMessages,
-  detectProspectCurrency,
 } from "@/lib/prompt-generator";
 import { generateDemoSiteHtml } from "@/lib/site-generator";
 import { nanoid } from "nanoid";
@@ -85,16 +84,18 @@ export async function POST(req: Request) {
 
   const settings = await getSettings();
 
-  // Fetch campaign language if campaignId provided
+  // Fetch campaign language + currency if campaignId provided
   let campaignLanguage = "fr";
+  let campaignCurrency = "EUR";
   if (body.campaignId) {
     try {
       const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, body.campaignId)).limit(1);
       if (campaign?.language) campaignLanguage = campaign.language;
+      if (campaign?.currency) campaignCurrency = campaign.currency;
     } catch {}
   }
 
-  const currency = detectProspectCurrency(business.country || null, business.city || null);
+  const currency = campaignCurrency;
   const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
     : currency === "USD" ? (settings.priceUSD || 0)
     : (settings.priceMAD || 0);

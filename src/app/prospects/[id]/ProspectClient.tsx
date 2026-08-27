@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { detectProspectLanguage, detectProspectCurrency, formatPrice } from "@/lib/prompt-generator";
+import { detectProspectLanguage, formatPrice } from "@/lib/prompt-generator";
 
 type Business = {
   id: number;

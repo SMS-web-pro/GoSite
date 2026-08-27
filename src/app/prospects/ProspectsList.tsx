@@ -3,7 +3,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { detectProspectCurrency, formatPrice } from "@/lib/prompt-generator";
 import type { ScrapedBusiness } from "@/lib/types";
 
 type Item = {

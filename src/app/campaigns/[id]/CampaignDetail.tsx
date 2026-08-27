@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { detectProspectCurrency, formatPrice } from "@/lib/prompt-generator";
+import { formatPrice } from "@/lib/prompt-generator";
 
 type Campaign = {
   id: number;
@@ -72,28 +72,28 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
 
   const stageOrder = ["discovered", "contacted", "demo_sent", "quoted", "paid", "delivered", "completed"];
 
-  // Helper to get price for a prospect based on its business location
+  const campaignCurrency = campaign.currency || "EUR";
+
+  // Helper to get price for a prospect based on campaign currency
   const getProspectPrice = (item: Item): number => {
     const p = item.prospect as any;
     if (p.paymentAmount) return p.paymentAmount;
-    const currency = detectProspectCurrency(item.business.country || null, item.business.city || null);
-    if (currency === "EUR") return settings?.priceEUR || 0;
-    if (currency === "USD") return settings?.priceUSD || 0;
-    if (currency === "MAD") return settings?.priceMAD || 0;
+    if (campaignCurrency === "EUR") return settings?.priceEUR || 0;
+    if (campaignCurrency === "USD") return settings?.priceUSD || 0;
+    if (campaignCurrency === "MAD") return settings?.priceMAD || 0;
     return settings?.priceEUR || 0;
   };
 
   const saleStages = ["paid", "delivered", "completed"];
 
-  // Per-currency value computation
+  // Value computation using campaign currency
   const getValueByCurrency = (items: Item[]) => {
     const result = { eur: 0, usd: 0, mad: 0 };
     for (const i of items) {
       const p = i.prospect as any;
-      const curr = detectProspectCurrency(i.business.country || null, i.business.city || null);
       const amount = p.paymentAmount || getProspectPrice(i);
-      if (curr === "EUR") result.eur += amount;
-      else if (curr === "USD") result.usd += amount;
+      if (campaignCurrency === "EUR") result.eur += amount;
+      else if (campaignCurrency === "USD") result.usd += amount;
       else result.mad += amount;
     }
     return result;
@@ -228,7 +228,7 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
                           </div>
                           {getProspectPrice(item) > 0 ? (
                             <p className="mt-1.5 text-xs font-semibold text-slate-700">
-                              {formatPrice(getProspectPrice(item), detectProspectCurrency(item.business.country || null, item.business.city || null))}
+                              {formatPrice(getProspectPrice(item), campaignCurrency as "EUR" | "USD" | "MAD")}
                             </p>
                           ) : null}
                         </Link>

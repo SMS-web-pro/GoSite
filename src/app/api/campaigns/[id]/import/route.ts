@@ -6,7 +6,6 @@ import { getSettings } from "@/lib/settings";
 import {
   generateVibecoderPrompt,
   generateDefaultWhatsAppMessages,
-  detectProspectCurrency,
 } from "@/lib/prompt-generator";
 import { generateDemoSiteHtml } from "@/lib/site-generator";
 import { nanoid } from "nanoid";
@@ -235,8 +234,8 @@ export async function POST(
         const demoHtml = generateDemoSiteHtml(business as any);
         const demoToken = nanoid(24);
 
-        // Detect currency
-        const currency = detectProspectCurrency(business.country || null, business.city || null);
+        // Use campaign currency (already fetched above)
+        const currency = campaign.currency || "EUR";
         const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
           : currency === "USD" ? (settings.priceUSD || 0)
           : (settings.priceMAD || 0);
