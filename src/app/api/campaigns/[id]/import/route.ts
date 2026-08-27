@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, prospects, searches, campaigns } from "@/db/schema";
+import { businesses, prospects, campaigns } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getSettings } from "@/lib/settings";
 import {
@@ -194,22 +194,10 @@ export async function POST(
         const postcode = (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
         const city = addressParts.length > 1 ? addressParts[addressParts.length - 1] : null;
 
-        // Create a search entry
-        const [search] = await db
-          .insert(searches)
-          .values({
-            sector: row.category || "Import manuel",
-            location: city || "Import manuel",
-            status: "completed",
-            resultsCount: 1,
-          })
-          .returning();
-
         // Create the business
         const [business] = await db
           .insert(businesses)
           .values({
-            searchId: search.id,
             name: row.name,
             phone: row.phone || null,
             email: row.email || null,

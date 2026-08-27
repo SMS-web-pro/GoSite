@@ -5,11 +5,9 @@ const DATA_DIR = path.join(process.cwd(), "data");
 const STORE_FILE = path.join(DATA_DIR, "store.json");
 
 export type StoreData = {
-  nextSearchId: number;
   nextBusinessId: number;
   nextProspectId: number;
   nextCampaignId: number;
-  searches: any[];
   businesses: any[];
   prospects: any[];
   campaigns: any[];
@@ -23,11 +21,9 @@ function ensureStore(): StoreData {
     }
     if (!fs.existsSync(STORE_FILE)) {
       const initial: StoreData = {
-        nextSearchId: 1,
         nextBusinessId: 1,
         nextProspectId: 1,
         nextCampaignId: 1,
-        searches: [],
         businesses: [],
         prospects: [],
         campaigns: [],
@@ -41,11 +37,9 @@ function ensureStore(): StoreData {
   } catch (err) {
     console.error("Local store read error:", err);
     return {
-      nextSearchId: 1,
       nextBusinessId: 1,
       nextProspectId: 1,
       nextCampaignId: 1,
-      searches: [],
       businesses: [],
       prospects: [],
       campaigns: [],
@@ -205,15 +199,6 @@ export const localStore = {
   getCampaignById(id: number) {
     const data = ensureStore();
     return data.campaigns.find((c) => c.id === id) || null;
-  },
-
-  addSearch(s: any) {
-    const data = ensureStore();
-    const id = data.nextSearchId++;
-    const newSearch = { id, createdAt: new Date().toISOString(), ...s };
-    data.searches.push(newSearch);
-    saveStore(data);
-    return newSearch;
   },
 
   getSettings() {

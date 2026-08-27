@@ -35,7 +35,6 @@ export const businesses = pgTable(
   {
     id: serial("id").primaryKey(),
     searchId: integer("search_id")
-      .notNull()
       .references(() => searches.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 512 }).notNull(),
     category: varchar("category", { length: 255 }),

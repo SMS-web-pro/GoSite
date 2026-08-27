@@ -1,4 +1,4 @@
-import type { ScrapedBusiness } from "./scraper";
+import type { ScrapedBusiness } from "./types";
 
 /**
  * Generates a complete, modern, responsive HTML site for a local

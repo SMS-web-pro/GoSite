@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { prospects, businesses, searches, campaigns } from "@/db/schema";
+import { prospects, businesses, campaigns } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import {
   generateVibecoderPrompt,
@@ -14,20 +14,6 @@ import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-async function ensureSearchId(searchId?: number): Promise<number> {
-  if (searchId) return searchId;
-  const [fallback] = await db
-    .select({ id: searches.id })
-    .from(searches)
-    .limit(1);
-  if (fallback) return fallback.id;
-  const [created] = await db
-    .insert(searches)
-    .values({ sector: "imported", location: "direct" })
-    .returning();
-  return created.id;
-}
 
 // Convert a business into a prospect with all the workflow data
 export async function POST(req: Request) {
@@ -56,18 +42,16 @@ export async function POST(req: Request) {
       business = b;
     } else if (body.newBusiness) {
       const { searchId, ...data } = body.newBusiness;
-      const resolvedSearchId = await ensureSearchId(searchId);
       const [b] = await db
         .insert(businesses)
-        .values({ searchId: resolvedSearchId, ...data })
+        .values({ searchId: searchId || null, ...data })
         .returning();
       business = b;
     }
   } catch (dbErr) {
     console.warn("DB unavailable during prospect business query, using local store:", dbErr);
     if (body.newBusiness) {
-      const { searchId, ...data } = body.newBusiness;
-      business = localStore.addBusiness({ searchId: searchId || 1, ...data });
+      business = localStore.addBusiness(body.newBusiness);
     }
   }
 

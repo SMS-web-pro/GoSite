@@ -8,13 +8,12 @@ export default function HomeClient() {
         <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#2563EB]">Comment ça marche</span>
       </div>
       <h3 className="mb-6 text-xl font-extrabold text-[#0F172A]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -0.5 }}>
-        4 étapes pour démarrer
+        3 étapes pour démarrer
       </h3>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Step n={1} icon="🔍" title="Cherchez" desc="Secteur + localisation" color="#2563EB" />
-        <Step n={2} icon="🎯" title="Filtrez" desc="Ciblez les business sans site" color="#10B981" />
-        <Step n={3} icon="🤖" title="Vibecodez" desc="Prompt + démo personnalisée" color="#7C3AED" />
-        <Step n={4} icon="💰" title="Vendez" desc="Workflow WhatsApp complet" color="#E8622A" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Step n={1} icon="📥" title="Importez" desc="CSV, contact, copier-coller" color="#2563EB" />
+        <Step n={2} icon="🤖" title="Vibecodez" desc="Prompt + démo personnalisée" color="#7C3AED" />
+        <Step n={3} icon="💰" title="Vendez" desc="Workflow WhatsApp complet" color="#E8622A" />
       </div>
     </section>
   );

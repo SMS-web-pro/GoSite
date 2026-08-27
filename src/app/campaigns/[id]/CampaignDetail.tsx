@@ -143,16 +143,7 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
                 <p className="mt-2 text-sm text-slate-600">{campaign.description}</p>
               ) : null}
             </div>
-            {campaign.sector && campaign.location ? (
-              <Link
-                href={`/search?sector=${encodeURIComponent(campaign.sector)}&location=${encodeURIComponent(campaign.location)}&campaignId=${campaign.id}`}
-                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:from-blue-700 hover:to-indigo-700"
-              >
-                🔍 Lancer une recherche pour cette campagne
-              </Link>
-            ) : (
-              <EditCampaignButton campaign={campaign} />
-            )}
+            <EditCampaignButton campaign={campaign} />
           </div>
         </div>
 
@@ -179,7 +170,7 @@ export default function CampaignDetail({ campaign, items, messageLogs = [], sett
         <h2 className="mb-3 text-sm font-bold text-slate-900">Pipeline de la campagne</h2>
         {items.length === 0 ? (
           <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
-            Aucun prospect dans cette campagne. Allez sur la <Link href="/dashboard" className="text-blue-600 hover:underline">page d'accueil</Link> pour faire une recherche, ou importez un fichier ci-dessous.
+            Aucun prospect dans cette campagne. Importez un fichier CSV ou ajoutez des prospects depuis la <Link href="/prospects" className="text-blue-600 hover:underline">page prospects</Link>.
           </div>
         ) : (
           <div className="space-y-4">

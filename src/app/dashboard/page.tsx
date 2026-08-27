@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db";
-import { searches, prospects, businesses } from "@/db/schema";
+import { prospects, businesses } from "@/db/schema";
 import { desc, eq, sql } from "drizzle-orm";
-import SearchForm from "@/components/SearchForm";
 import HomeClient from "./HomeClient";
 import { localStore } from "@/lib/local-store";
 import { getSettings } from "@/lib/settings";
@@ -14,7 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ sector?: string; location?: string; campaignId?: string }>;
+  searchParams: Promise<{ campaignId?: string }>;
 }) {
   let totalProspectsCount = 0;
   let totalPaidCount = 0;
@@ -129,8 +128,8 @@ export default async function HomePage({
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-[#0F172A] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Trouvez · Vibecodez · Vendez</h1>
-              <p className="mt-1 text-sm text-[#64748B]">Bing Maps + OpenStreetMap · Workflow WhatsApp automatisé</p>
+              <h1 className="text-3xl font-extrabold text-[#0F172A] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Importez · Vibecodez · Vendez</h1>
+              <p className="mt-1 text-sm text-[#64748B]">Importez vos prospects · Workflow WhatsApp automatisé</p>
             </div>
           </div>
 
@@ -143,11 +142,15 @@ export default async function HomePage({
 
         <section className="relative overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white p-6 sm:p-8" style={{ boxShadow: "0 2px 7px rgba(0,0,0,.04)" }}>
           <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #2563EB, #3B82F6)" }} />
-          <SearchForm
-            initialCampaignId={campaignId}
-            initialSector={campaign?.sector || ""}
-            initialLocation={campaign?.location || ""}
-          />
+          <div className="text-center">
+            <p className="text-sm text-[#64748B] mb-4">Importez vos prospects depuis un fichier CSV ou ajoutez-les manuellement</p>
+            <Link
+              href="/prospects"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:from-blue-700 hover:to-indigo-700"
+            >
+              📥 Importer des prospects
+            </Link>
+          </div>
         </section>
 
         <HomeClient />

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, prospects, searches, campaigns } from "@/db/schema";
+import { businesses, prospects, campaigns } from "@/db/schema";
 import {
   generateVibecoderPrompt,
   generateDefaultWhatsAppMessages,
@@ -79,22 +79,10 @@ export async function POST(req: Request) {
           : currency === "USD" ? (settings.priceUSD || 0)
           : (settings.priceMAD || 0);
 
-        // Create a search entry in DB
-        const [search] = await db
-          .insert(searches)
-          .values({
-            sector: biz.category || "Bulk Import",
-            location: biz.city || "Unknown",
-            status: "completed",
-            resultsCount: 1,
-          })
-          .returning();
-
         // Create business in DB
         const [business] = await db
           .insert(businesses)
           .values({
-            searchId: search.id,
             name: biz.name,
             category: biz.category || null,
             subcategory: biz.subcategory || null,
