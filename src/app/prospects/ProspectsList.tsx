@@ -526,14 +526,9 @@ export default function ProspectsList({ items }: { items: Item[] }) {
                       {b.wikipedia && <Badge tone="amber">📚 Wikipedia</Badge>}
 
                       <div className="ml-auto flex items-center gap-1.5">
-                        {b.phone && (
-                          <a href={`tel:${b.phone}`} className="inline-flex items-center gap-1 rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white transition hover:bg-slate-700">
-                            📞 Appeler
-                          </a>
-                        )}
                         {b.googleMapsUrl && (
                           <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-amber-600 px-2 py-1 text-[10px] font-semibold text-white transition hover:bg-amber-700">
-                            ⭐ Avis Google
+                            ⭐ Fiche Google
                           </a>
                         )}
                         {b.bingUrl && (
