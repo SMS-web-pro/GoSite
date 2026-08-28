@@ -19,10 +19,23 @@ type ImportedRow = {
   phone?: string;
   email?: string;
   address?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  postcode?: string;
+  country?: string;
   website?: string;
   category?: string;
+  subcategory?: string;
   rating?: string;
   description?: string;
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  linkedin?: string;
+  youtube?: string;
+  openingHours?: string;
+  cuisine?: string;
 };
 
 function parseCSV(text: string): string[][] {
@@ -71,11 +84,24 @@ function detectColumns(headers: string[]): Record<string, number> {
     name: [/^name$/i, /nom/i, /business/i, /entreprise/i, /societe/i, /raison/i, /company/i],
     phone: [/phone/i, /tel/i, /téléphone/i, /telephone/i, /mobile/i, /num/i],
     email: [/^email$/i, /e-?mail/i, /courriel/i, /mail/i],
-    address: [/address/i, /adresse/i, /location/i, /lieu/i, /rue/i],
-    website: [/website/i, /site/i, /url/i, /web/i, /http/i],
-    category: [/category/i, /catégorie/i, /categorie/i, /type/i, /secteur/i, /activity/i, /activité/i],
-    rating: [/rating/i, /note/i, /stars/i, /etoile/i, /étoile/i],
-    description: [/description/i, /desc/i, /note/i, /comment/i, /commentaire/i],
+    address: [/^address$/i, /^adresse$/i, /full.?address/i],
+    street: [/street/i, /rue/i, /avenue/i, /boulevard/i, /road/i],
+    city: [/city$/i, /ville$/i, /town/i, /municipality/i],
+    state: [/state/i, /province/i, /region/i, /département/i, /dept/i],
+    postcode: [/postcode/i, /zip/i, /postal/i, /code.?postale/i],
+    country: [/country/i, /pays/i, /nation/i],
+    website: [/website/i, /site/i, /url(?!\.)/i, /web(?!site)/i, /http/i],
+    category: [/category/i, /catégorie/i, /categorie/i, /type/i, /secteur/i, /activity/i, /activité/i, /industry/i],
+    subcategory: [/subcategory/i, /sub.?category/i, /spécialité/i, /specialite/i, /niche/i],
+    rating: [/rating/i, /note/i, /stars/i, /etoile/i, /étoile/i, /avis/i],
+    description: [/description/i, /desc/i, /comment/i, /commentaire/i, /about/i],
+    facebook: [/facebook/i, /fb/i],
+    instagram: [/instagram/i, /insta/i],
+    twitter: [/twitter/i, /tweet/i],
+    linkedin: [/linkedin/i],
+    youtube: [/youtube/i],
+    openingHours: [/hours/i, /horaires/i, /opening/i, /ouverture/i],
+    cuisine: [/cuisine/i, /type.?food/i, /food.?type/i],
   };
   headers.forEach((h, i) => {
     for (const [field, regs] of Object.entries(patterns)) {
@@ -171,10 +197,23 @@ export async function POST(
         phone,
         email: row[colMap.email ?? -1]?.trim() || undefined,
         address: row[colMap.address ?? -1]?.trim() || undefined,
+        street: row[colMap.street ?? -1]?.trim() || undefined,
+        city: row[colMap.city ?? -1]?.trim() || undefined,
+        state: row[colMap.state ?? -1]?.trim() || undefined,
+        postcode: row[colMap.postcode ?? -1]?.trim() || undefined,
+        country: row[colMap.country ?? -1]?.trim() || undefined,
         website: row[colMap.website ?? -1]?.trim() || undefined,
         category: row[colMap.category ?? -1]?.trim() || undefined,
+        subcategory: row[colMap.subcategory ?? -1]?.trim() || undefined,
         rating: row[colMap.rating ?? -1]?.trim() || undefined,
         description: row[colMap.description ?? -1]?.trim() || undefined,
+        facebook: row[colMap.facebook ?? -1]?.trim() || undefined,
+        instagram: row[colMap.instagram ?? -1]?.trim() || undefined,
+        twitter: row[colMap.twitter ?? -1]?.trim() || undefined,
+        linkedin: row[colMap.linkedin ?? -1]?.trim() || undefined,
+        youtube: row[colMap.youtube ?? -1]?.trim() || undefined,
+        openingHours: row[colMap.openingHours ?? -1]?.trim() || undefined,
+        cuisine: row[colMap.cuisine ?? -1]?.trim() || undefined,
       });
     }
 
@@ -189,10 +228,28 @@ export async function POST(
     const inserted: Array<{ id: number; name: string; phone: string }> = [];
     for (const row of imported) {
       try {
+        // Parse address parts if address is provided but individual fields are missing
         const addressParts = row.address?.split(",").map((s) => s.trim()) || [];
-        const street = addressParts[0] || null;
-        const postcode = (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
-        const city = addressParts.length > 1 ? addressParts[addressParts.length - 1] : null;
+        const street = row.street || addressParts[0] || null;
+        const postcode = row.postcode || (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
+        const city = row.city || (addressParts.length > 1 ? addressParts[addressParts.length - 1] : null);
+
+        // Detect country from various signals
+        let country = row.country || null;
+        if (!country) {
+          // Try to detect from phone number prefix
+          const phoneDigits = row.phone?.replace(/\D/g, "") || "";
+          if (phoneDigits.startsWith("1") && phoneDigits.length >= 10) country = "USA";
+          else if (phoneDigits.startsWith("44")) country = "UK";
+          else if (phoneDigits.startsWith("49")) country = "Germany";
+          else if (phoneDigits.startsWith("33")) country = "France";
+          else if (phoneDigits.startsWith("212")) country = "Morocco";
+          else if (phoneDigits.startsWith("213")) country = "Algeria";
+          else if (phoneDigits.startsWith("216")) country = "Tunisia";
+          else if (phoneDigits.startsWith("971")) country = "UAE";
+          else if (phoneDigits.startsWith("966")) country = "Saudi Arabia";
+          else country = "France"; // fallback
+        }
 
         // Create the business
         const [business] = await db
@@ -206,10 +263,18 @@ export async function POST(
             street,
             city,
             postcode,
-            country: "France",
+            country,
             category: row.category || null,
+            subcategory: row.subcategory || null,
             rating: row.rating || null,
             description: row.description || null,
+            facebook: row.facebook || null,
+            instagram: row.instagram || null,
+            twitter: row.twitter || null,
+            linkedin: row.linkedin || null,
+            youtube: row.youtube || null,
+            openingHours: row.openingHours || null,
+            cuisine: row.cuisine || null,
             latitude: null,
             longitude: null,
             source: "manual_import",
