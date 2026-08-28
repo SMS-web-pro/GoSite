@@ -9,6 +9,7 @@ type Item = {
   prospect: {
     id: number;
     workflowStage: string;
+    campaignId: number | null;
     quoteAmount: number | null;
     paymentAmount: number | null;
     paymentStatus: string | null;
@@ -17,6 +18,11 @@ type Item = {
   business: ScrapedBusiness & {
     id: number;
   };
+};
+
+type Campaign = {
+  id: number;
+  name: string;
 };
 
 const STAGE_INFO: Record<string, { label: string; color: string; icon: string }> = {
@@ -103,7 +109,7 @@ function EquipLine({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function ProspectsList({ items }: { items: Item[] }) {
+export default function ProspectsList({ items, campaigns = [] }: { items: Item[]; campaigns?: Campaign[] }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
@@ -112,6 +118,7 @@ export default function ProspectsList({ items }: { items: Item[] }) {
   const [checkingWhatsapp, setCheckingWhatsapp] = useState(false);
   const [waError, setWaError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [filterCampaign, setFilterCampaign] = useState<number | "all">("all");
   const [filterWhatsapp, setFilterWhatsapp] = useState<"all" | "yes" | "no">("all");
   const [filterWebsite, setFilterWebsite] = useState<"all" | "yes" | "no">("all");
 
@@ -161,6 +168,7 @@ export default function ProspectsList({ items }: { items: Item[] }) {
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
+      if (filterCampaign !== "all" && item.prospect.campaignId !== filterCampaign) return false;
       if (filterWhatsapp === "yes") {
         const phone = item.business.phone;
         if (!phone || !whatsappStatus.get(phone)) return false;
@@ -173,7 +181,7 @@ export default function ProspectsList({ items }: { items: Item[] }) {
       if (filterWebsite === "no" && item.business.website) return false;
       return true;
     });
-  }, [items, filterWhatsapp, filterWebsite, whatsappStatus]);
+  }, [items, filterCampaign, filterWhatsapp, filterWebsite, whatsappStatus]);
 
   const allSelected = selected.size > 0 && filteredItems.every((i) => selected.has(i.prospect.id));
   const someSelected = selected.size > 0 && !allSelected;
@@ -352,6 +360,18 @@ export default function ProspectsList({ items }: { items: Item[] }) {
       {/* Filter bar */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-medium text-slate-500">Filtrer :</span>
+        {campaigns.length > 0 && (
+          <select
+            value={filterCampaign}
+            onChange={(e) => setFilterCampaign(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 transition hover:border-blue-300 focus:border-blue-500 focus:outline-none"
+          >
+            <option value="all">📋 Toutes les campagnes</option>
+            {campaigns.map((c) => (
+              <option key={c.id} value={c.id}>📋 {c.name}</option>
+            ))}
+          </select>
+        )}
         <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-0.5">
           <button
             onClick={() => setFilterWhatsapp("all")}
@@ -380,9 +400,9 @@ export default function ProspectsList({ items }: { items: Item[] }) {
             className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "no" ? "bg-red-500 text-white" : "text-slate-600 hover:bg-slate-100"}`}
           >🌐 Non</button>
         </div>
-        {(filterWhatsapp !== "all" || filterWebsite !== "all") && (
+        {(filterCampaign !== "all" || filterWhatsapp !== "all" || filterWebsite !== "all") && (
           <button
-            onClick={() => { setFilterWhatsapp("all"); setFilterWebsite("all"); }}
+            onClick={() => { setFilterCampaign("all"); setFilterWhatsapp("all"); setFilterWebsite("all"); }}
             className="text-xs text-blue-600 hover:underline"
           >Réinitialiser</button>
         )}

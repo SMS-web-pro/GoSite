@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { db } from "@/db";
-import { prospects, businesses } from "@/db/schema";
+import { prospects, businesses, campaigns } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import ProspectsList from "./ProspectsList";
 import { localStore } from "@/lib/local-store";
@@ -19,6 +19,14 @@ export default async function ProspectsPage() {
   if (rows.length === 0) {
     rows = localStore.getProspects() as any;
   }
+
+  let campaignList: Array<{ id: number; name: string }> = [];
+  try {
+    campaignList = await db
+      .select({ id: campaigns.id, name: campaigns.name })
+      .from(campaigns)
+      .orderBy(desc(campaigns.createdAt));
+  } catch {}
 
   return (
       <div className="mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
@@ -45,7 +53,7 @@ export default async function ProspectsPage() {
             + Nouvelle recherche
           </Link>
         </div>
-        <ProspectsList items={rows} />
+        <ProspectsList items={rows} campaigns={campaignList} />
       </div>
   );
 }
