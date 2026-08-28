@@ -572,6 +572,9 @@ export default function ProspectsList({ items }: { items: Item[] }) {
 }
 
 function ExpandedDetails({ b }: { b: Item["business"] }) {
+  const photos = (b as any).photos as string[] | null;
+  const reviews = (b as any).reviews as Array<{ author: string; rating: number; text: string; time: string }> | null;
+  const services = (b as any).services as string | null;
   const extraTagsParsed = b.extraTags ? safeJson(b.extraTags) : null;
   const otherTags = extraTagsParsed
     ? Object.entries(extraTagsParsed).filter(([k]) => ![
@@ -589,109 +592,171 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
     : [];
 
   return (
-    <div className="grid gap-4 border-t border-slate-200 bg-slate-50/60 p-4 sm:grid-cols-2 lg:grid-cols-3">
-      {b.description ? (
-        <Section title="Description">
-          <p className="text-sm text-slate-700">{b.description}</p>
-          {b.wikipedia ? (
-            <a href={b.wikipedia} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] text-blue-600 hover:underline">
-              📚 Lire sur Wikipedia
-            </a>
-          ) : null}
-        </Section>
-      ) : null}
-
-      <Section title="Adresse complète">
-        <div className="text-sm text-slate-700">
-          {b.housenumber || b.street ? <div>{b.housenumber} {b.street}</div> : null}
-          {b.neighbourhood ? <div>{b.neighbourhood}</div> : null}
-          {b.suburb ? <div>{b.suburb}</div> : null}
-          {b.postcode || b.city ? <div>{b.postcode} {b.city}</div> : null}
-          {b.state ? <div>{b.state}</div> : null}
-          {b.country ? <div>{b.country}</div> : null}
-        </div>
-      </Section>
-
-      {(b.phone || b.mobile || b.email || b.website) && (
-        <Section title="Contact">
-          <div className="space-y-1 text-sm">
-            {b.phone ? <div><span className="text-slate-500">Tél :</span> <a href={`tel:${b.phone}`} className="font-medium text-blue-700 hover:underline">{b.phone}</a></div> : null}
-            {b.mobile ? <div><span className="text-slate-500">Mobile :</span> <a href={`tel:${b.mobile}`} className="font-medium text-blue-700 hover:underline">{b.mobile}</a></div> : null}
-            {b.email ? <div><span className="text-slate-500">Email :</span> <a href={`mailto:${b.email}`} className="font-medium text-blue-700 hover:underline">{b.email}</a></div> : null}
-            {b.website ? <div><span className="text-slate-500">Web :</span> <a href={b.website} target="_blank" rel="noreferrer" className="break-all font-medium text-blue-700 hover:underline">{b.website}</a></div> : null}
-          </div>
-        </Section>
-      )}
-
-      {b.openingHours ? (
-        <Section title="Horaires d'ouverture">
-          <p className="text-sm text-slate-700">{b.openingHours}</p>
-          <a href="https://wiki.openstreetmap.org/wiki/Key:opening_hours" target="_blank" rel="noreferrer" className="mt-1 text-[10px] text-slate-400 hover:underline">Format OpenStreetMap</a>
-        </Section>
-      ) : null}
-
-      {(b.facebook || b.instagram || b.twitter || b.linkedin || b.youtube) && (
-        <Section title="Réseaux sociaux">
-          <div className="flex flex-wrap gap-1.5">
-            {b.facebook ? <SocialLink href={b.facebook} icon="📘" label="Facebook" /> : null}
-            {b.instagram ? <SocialLink href={b.instagram} icon="📷" label="Instagram" /> : null}
-            {b.twitter ? <SocialLink href={b.twitter} icon="🐦" label="Twitter" /> : null}
-            {b.linkedin ? <SocialLink href={b.linkedin} icon="💼" label="LinkedIn" /> : null}
-            {b.youtube ? <SocialLink href={b.youtube} icon="▶️" label="YouTube" /> : null}
-          </div>
-        </Section>
-      )}
-
-      {(b.wheelchair || b.wifi || b.parking || b.outdoorSeating || b.airConditioning || b.reservation || b.takeaway || b.delivery) && (
-        <Section title="Équipements & services">
-          <div className="grid grid-cols-2 gap-1.5 text-sm">
-            {b.wheelchair && <EquipLine label="♿ Accès handicapé" value={b.wheelchair} />}
-            {b.wifi && <EquipLine label="📶 Wi-Fi" value={b.wifi} />}
-            {b.parking && <EquipLine label="🅿️ Parking" value={b.parking} />}
-            {b.outdoorSeating && <EquipLine label="☀️ Terrasse" value={b.outdoorSeating} />}
-            {b.airConditioning && <EquipLine label="❄️ Climatisation" value={b.airConditioning} />}
-            {b.reservation && <EquipLine label="📅 Réservation" value={b.reservation} />}
-            {b.takeaway && <EquipLine label="🥡 À emporter" value={b.takeaway} />}
-            {b.delivery && <EquipLine label="🚚 Livraison" value={b.delivery} />}
-            {b.smoking && <EquipLine label="🚬 Tabac" value={b.smoking} />}
-            {b.paymentCash && <EquipLine label="💵 Espèces" value={b.paymentCash} />}
-            {b.paymentCard && <EquipLine label="💳 CB" value={b.paymentCard} />}
-            {b.capacity && <EquipLine label="👥 Capacité" value={b.capacity} />}
-          </div>
-        </Section>
-      )}
-
-      <Section title="Voir sur les cartes">
-        <div className="flex flex-col gap-1.5">
-          {b.googleMapsUrl && (
-            <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-amber-700 hover:underline">
-              ⭐ Avis Google Maps
-            </a>
-          )}
-          {b.bingUrl && <a href={b.bingUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-sky-700 hover:underline">📍 Bing Maps</a>}
-          {b.osmUrl && <a href={b.osmUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-emerald-700 hover:underline">🗺️ OpenStreetMap</a>}
-          {b.wikipedia && <a href={b.wikipedia} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-blue-700 hover:underline">📚 Wikipedia</a>}
-        </div>
-      </Section>
-
-      {b.latitude && b.longitude ? (
-        <Section title="Coordonnées GPS">
-          <code className="block font-mono text-xs text-slate-600">{parseFloat(b.latitude).toFixed(6)}, {parseFloat(b.longitude).toFixed(6)}</code>
-        </Section>
-      ) : null}
-
-      {otherTags.length > 0 ? (
-        <Section title={`Autres tags OSM (${otherTags.length})`} className="sm:col-span-2 lg:col-span-3">
-          <div className="grid grid-cols-1 gap-x-4 gap-y-0.5 sm:grid-cols-2 lg:grid-cols-3">
-            {otherTags.slice(0, 30).map(([k, v]) => (
-              <div key={k} className="text-xs text-slate-600">
-                <span className="font-medium text-slate-500">{k}:</span>{" "}
-                <span className="text-slate-700">{String(v)}</span>
-              </div>
+    <div className="border-t border-slate-200 bg-slate-50/60 p-4">
+      {/* Photos */}
+      {photos && photos.length > 0 && (
+        <Section title={`Photos (${photos.length})`} className="mb-4">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {photos.slice(0, 6).map((url, i) => (
+              <a key={i} href={url} target="_blank" rel="noreferrer" className="shrink-0">
+                <img src={url} alt={`${b.name} ${i + 1}`} className="h-24 w-24 rounded-lg object-cover border border-slate-200" />
+              </a>
             ))}
           </div>
         </Section>
-      ) : null}
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Note Google + nombre d'avis */}
+        {(b.rating || b.reviewsCount) && (
+          <Section title="Note Google">
+            <div className="flex items-center gap-2">
+              {b.rating && (
+                <span className="text-2xl font-bold text-amber-600">★ {b.rating}</span>
+              )}
+              {b.reviewsCount != null && (
+                <span className="text-sm text-slate-500">({b.reviewsCount} avis)</span>
+              )}
+            </div>
+          </Section>
+        )}
+
+        {/* Description */}
+        {b.description && (
+          <Section title="Description">
+            <p className="text-sm text-slate-700">{b.description}</p>
+          </Section>
+        )}
+
+        {/* Catégorie */}
+        {(b.category || b.subcategory) && (
+          <Section title="Catégorie">
+            <div className="flex flex-wrap gap-1.5">
+              {b.category && <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">{b.category}</span>}
+              {b.subcategory && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">{b.subcategory}</span>}
+              {b.cuisine && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">🍽️ {b.cuisine}</span>}
+            </div>
+          </Section>
+        )}
+
+        {/* Adresse complète */}
+        <Section title="Adresse complète">
+          <div className="text-sm text-slate-700">
+            {b.housenumber || b.street ? <div>{b.housenumber} {b.street}</div> : null}
+            {b.neighbourhood ? <div>{b.neighbourhood}</div> : null}
+            {b.suburb ? <div>{b.suburb}</div> : null}
+            {b.postcode || b.city ? <div>{b.postcode} {b.city}</div> : null}
+            {b.state ? <div>{b.state}</div> : null}
+            {b.country ? <div className="font-medium">{b.country}</div> : null}
+          </div>
+        </Section>
+
+        {/* Contact */}
+        {(b.phone || b.mobile || b.email || b.website) && (
+          <Section title="Contact">
+            <div className="space-y-1 text-sm">
+              {b.phone && <div><span className="text-slate-500">Tél :</span> <a href={`tel:${b.phone}`} className="font-medium text-blue-700 hover:underline">{b.phone}</a></div>}
+              {b.mobile && <div><span className="text-slate-500">Mobile :</span> <a href={`tel:${b.mobile}`} className="font-medium text-blue-700 hover:underline">{b.mobile}</a></div>}
+              {b.email && <div><span className="text-slate-500">Email :</span> <a href={`mailto:${b.email}`} className="font-medium text-blue-700 hover:underline">{b.email}</a></div>}
+              {b.website && <div><span className="text-slate-500">Web :</span> <a href={b.website} target="_blank" rel="noreferrer" className="break-all font-medium text-blue-700 hover:underline">{b.website}</a></div>}
+            </div>
+          </Section>
+        )}
+
+        {/* Horaires */}
+        {b.openingHours && (
+          <Section title="Horaires d'ouverture">
+            <p className="text-sm text-slate-700">{b.openingHours}</p>
+          </Section>
+        )}
+
+        {/* Services proposés */}
+        {services && (
+          <Section title="Services proposés">
+            <p className="text-sm text-slate-700">{services}</p>
+          </Section>
+        )}
+
+        {/* Coordonnées GPS */}
+        {b.latitude && b.longitude && (
+          <Section title="Coordonnées GPS">
+            <code className="block font-mono text-xs text-slate-600">{parseFloat(b.latitude).toFixed(6)}, {parseFloat(b.longitude).toFixed(6)}</code>
+            <a href={`https://www.google.com/maps?q=${b.latitude},${b.longitude}`} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] text-blue-600 hover:underline">
+              📍 Ouvrir dans Google Maps
+            </a>
+          </Section>
+        )}
+
+        {/* Lien Google Maps */}
+        {b.googleMapsUrl && (
+          <Section title="Google Maps">
+            <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-amber-700 hover:underline">
+              ⭐ Voir sur Google Maps
+            </a>
+          </Section>
+        )}
+
+        {/* Réseaux sociaux */}
+        {(b.facebook || b.instagram || b.twitter || b.linkedin || b.youtube) && (
+          <Section title="Réseaux sociaux">
+            <div className="flex flex-wrap gap-1.5">
+              {b.facebook && <SocialLink href={b.facebook} icon="📘" label="Facebook" />}
+              {b.instagram && <SocialLink href={b.instagram} icon="📷" label="Instagram" />}
+              {b.twitter && <SocialLink href={b.twitter} icon="🐦" label="Twitter" />}
+              {b.linkedin && <SocialLink href={b.linkedin} icon="💼" label="LinkedIn" />}
+              {b.youtube && <SocialLink href={b.youtube} icon="▶️" label="YouTube" />}
+            </div>
+          </Section>
+        )}
+
+        {/* Équipements */}
+        {(b.wheelchair || b.wifi || b.parking || b.outdoorSeating || b.airConditioning || b.reservation || b.takeaway || b.delivery) && (
+          <Section title="Équipements & services">
+            <div className="grid grid-cols-2 gap-1.5 text-sm">
+              {b.wheelchair && <EquipLine label="♿ Accès handicapé" value={b.wheelchair} />}
+              {b.wifi && <EquipLine label="📶 Wi-Fi" value={b.wifi} />}
+              {b.parking && <EquipLine label="🅿️ Parking" value={b.parking} />}
+              {b.outdoorSeating && <EquipLine label="☀️ Terrasse" value={b.outdoorSeating} />}
+              {b.airConditioning && <EquipLine label="❄️ Climatisation" value={b.airConditioning} />}
+              {b.reservation && <EquipLine label="📅 Réservation" value={b.reservation} />}
+              {b.takeaway && <EquipLine label="🥡 À emporter" value={b.takeaway} />}
+              {b.delivery && <EquipLine label="🚚 Livraison" value={b.delivery} />}
+            </div>
+          </Section>
+        )}
+
+        {/* Avis Google */}
+        {reviews && reviews.length > 0 && (
+          <Section title={`Avis Google (${reviews.length})`} className="sm:col-span-2 lg:col-span-3">
+            <div className="space-y-3">
+              {reviews.slice(0, 6).map((r, i) => (
+                <div key={i} className="rounded-lg border border-slate-200 bg-white p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-slate-900">{r.author}</span>
+                    <span className="text-xs text-amber-600">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-600">{r.text}</p>
+                  {r.time && <p className="mt-1 text-[10px] text-slate-400">{r.time}</p>}
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {/* Autres tags */}
+        {otherTags.length > 0 && (
+          <Section title={`Autres tags (${otherTags.length})`} className="sm:col-span-2 lg:col-span-3">
+            <div className="grid grid-cols-1 gap-x-4 gap-y-0.5 sm:grid-cols-2 lg:grid-cols-3">
+              {otherTags.slice(0, 30).map(([k, v]) => (
+                <div key={k} className="text-xs text-slate-600">
+                  <span className="font-medium text-slate-500">{k}:</span>{" "}
+                  <span className="text-slate-700">{String(v)}</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+      </div>
     </div>
   );
 }

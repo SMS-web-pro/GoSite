@@ -86,6 +86,9 @@ export const businesses = pgTable(
     reviewsCount: integer("reviews_count"),
     source: varchar("source", { length: 32 }).notNull().default("photon"),
     extraTags: text("extra_tags"),
+    photos: jsonb("photos").$type<string[]>(),
+    reviews: jsonb("reviews").$type<Array<{ author: string; rating: number; text: string; time: string }>>(),
+    services: text("services"),
     detailCount: integer("detail_count").notNull().default(0),
     popularity: integer("popularity"),
     createdAt: timestamp("created_at", { withTimezone: true })

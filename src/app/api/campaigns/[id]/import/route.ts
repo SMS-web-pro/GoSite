@@ -17,7 +17,6 @@ export const dynamic = "force-dynamic";
 type ImportedRow = {
   name: string;
   phone?: string;
-  email?: string;
   address?: string;
   street?: string;
   city?: string;
@@ -28,14 +27,22 @@ type ImportedRow = {
   category?: string;
   subcategory?: string;
   rating?: string;
+  reviewsCount?: string;
   description?: string;
+  openingHours?: string;
+  latitude?: string;
+  longitude?: string;
+  googleMapsUrl?: string;
   facebook?: string;
   instagram?: string;
   twitter?: string;
   linkedin?: string;
   youtube?: string;
-  openingHours?: string;
   cuisine?: string;
+  services?: string;
+  photos?: string;
+  reviews?: string;
+  whatsapp?: string;
 };
 
 function parseCSV(text: string): string[][] {
@@ -81,27 +88,34 @@ function parseCSV(text: string): string[][] {
 function detectColumns(headers: string[]): Record<string, number> {
   const map: Record<string, number> = {};
   const patterns: Record<string, RegExp[]> = {
-    name: [/^name$/i, /nom/i, /business/i, /entreprise/i, /societe/i, /raison/i, /company/i],
-    phone: [/phone/i, /tel/i, /téléphone/i, /telephone/i, /mobile/i, /num/i],
-    email: [/^email$/i, /e-?mail/i, /courriel/i, /mail/i],
-    address: [/^address$/i, /^adresse$/i, /full.?address/i],
-    street: [/street/i, /rue/i, /avenue/i, /boulevard/i, /road/i],
+    name: [/^name$/i, /^nom$/i, /business/i, /entreprise/i, /societe/i, /raison/i, /company/i],
+    phone: [/phone/i, /tel(?!e)/i, /téléphone/i, /telephone/i, /mobile/i, /num/i],
+    address: [/^address$/i, /^adresse$/i, /full.?address/i, /adresse complète/i],
+    street: [/street/i, /rue$/i, /avenue/i, /boulevard/i, /road/i, /chemin/i],
     city: [/city$/i, /ville$/i, /town/i, /municipality/i],
     state: [/state/i, /province/i, /region/i, /département/i, /dept/i],
     postcode: [/postcode/i, /zip/i, /postal/i, /code.?postale/i],
     country: [/country/i, /pays/i, /nation/i],
-    website: [/website/i, /site/i, /url(?!\.)/i, /web(?!site)/i, /http/i],
-    category: [/category/i, /catégorie/i, /categorie/i, /type/i, /secteur/i, /activity/i, /activité/i, /industry/i],
+    website: [/website/i, /site web/i, /url$/i, /web(?!site)/i, /http/i],
+    category: [/category/i, /catégorie/i, /categorie/i, /secteur/i, /activity/i, /activité/i, /industry/i],
     subcategory: [/subcategory/i, /sub.?category/i, /spécialité/i, /specialite/i, /niche/i],
-    rating: [/rating/i, /note/i, /stars/i, /etoile/i, /étoile/i, /avis/i],
-    description: [/description/i, /desc/i, /comment/i, /commentaire/i, /about/i],
-    facebook: [/facebook/i, /fb/i],
+    rating: [/^rating$/i, /^note$/i, /google.?rating/i, /note google/i, /stars/i, /etoile/i, /étoile/i],
+    reviewsCount: [/reviews?.?count/i, /nombre d/i, /nb.?avis/i, /review/i],
+    description: [/description/i, /desc$/i, /about/i],
+    openingHours: [/hours/i, /horaires/i, /opening/i, /ouverture/i],
+    latitude: [/latitude/i, /lat$/i],
+    longitude: [/longitude/i, /lng$/i, /lon$/i],
+    googleMapsUrl: [/google.?maps/i, /maps.?url/i, /gmaps/i, /lien.*google/i],
+    facebook: [/facebook/i, /fb$/i],
     instagram: [/instagram/i, /insta/i],
     twitter: [/twitter/i, /tweet/i],
     linkedin: [/linkedin/i],
     youtube: [/youtube/i],
-    openingHours: [/hours/i, /horaires/i, /opening/i, /ouverture/i],
     cuisine: [/cuisine/i, /type.?food/i, /food.?type/i],
+    services: [/services?.?proposés/i, /services?.?offerts/i, /services?$/i, /prestations/i],
+    photos: [/photos?/i, /images?/i, /galerie/i, /gallery/i],
+    reviews: [/avis$/i, /reviews?$/i, /commentaires?/i, /6 premiers? avis/i],
+    whatsapp: [/whatsapp/i, /wa.?valid/i, /validé.*whatsapp/i],
   };
   headers.forEach((h, i) => {
     for (const [field, regs] of Object.entries(patterns)) {
@@ -130,6 +144,16 @@ function normalizePhone(p: string | undefined): string | null {
   return digits.length >= 7 ? `+${digits}` : null;
 }
 
+function parseJsonArray<T>(raw: string | undefined): T[] | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -141,7 +165,6 @@ export async function POST(
       return NextResponse.json({ error: "Invalid campaign ID" }, { status: 400 });
     }
 
-    // Verify campaign exists in DB
     const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, campaignId)).limit(1);
     if (!campaign) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
@@ -195,7 +218,6 @@ export async function POST(
       imported.push({
         name,
         phone,
-        email: row[colMap.email ?? -1]?.trim() || undefined,
         address: row[colMap.address ?? -1]?.trim() || undefined,
         street: row[colMap.street ?? -1]?.trim() || undefined,
         city: row[colMap.city ?? -1]?.trim() || undefined,
@@ -206,14 +228,22 @@ export async function POST(
         category: row[colMap.category ?? -1]?.trim() || undefined,
         subcategory: row[colMap.subcategory ?? -1]?.trim() || undefined,
         rating: row[colMap.rating ?? -1]?.trim() || undefined,
+        reviewsCount: row[colMap.reviewsCount ?? -1]?.trim() || undefined,
         description: row[colMap.description ?? -1]?.trim() || undefined,
+        openingHours: row[colMap.openingHours ?? -1]?.trim() || undefined,
+        latitude: row[colMap.latitude ?? -1]?.trim() || undefined,
+        longitude: row[colMap.longitude ?? -1]?.trim() || undefined,
+        googleMapsUrl: row[colMap.googleMapsUrl ?? -1]?.trim() || undefined,
         facebook: row[colMap.facebook ?? -1]?.trim() || undefined,
         instagram: row[colMap.instagram ?? -1]?.trim() || undefined,
         twitter: row[colMap.twitter ?? -1]?.trim() || undefined,
         linkedin: row[colMap.linkedin ?? -1]?.trim() || undefined,
         youtube: row[colMap.youtube ?? -1]?.trim() || undefined,
-        openingHours: row[colMap.openingHours ?? -1]?.trim() || undefined,
         cuisine: row[colMap.cuisine ?? -1]?.trim() || undefined,
+        services: row[colMap.services ?? -1]?.trim() || undefined,
+        photos: row[colMap.photos ?? -1]?.trim() || undefined,
+        reviews: row[colMap.reviews ?? -1]?.trim() || undefined,
+        whatsapp: row[colMap.whatsapp ?? -1]?.trim() || undefined,
       });
     }
 
@@ -224,20 +254,16 @@ export async function POST(
       );
     }
 
-    // Insert into DB
     const inserted: Array<{ id: number; name: string; phone: string }> = [];
     for (const row of imported) {
       try {
-        // Parse address parts if address is provided but individual fields are missing
         const addressParts = row.address?.split(",").map((s) => s.trim()) || [];
         const street = row.street || addressParts[0] || null;
         const postcode = row.postcode || (row.address?.match(/\b(\d{5})\b/) || [])[1] || null;
         const city = row.city || (addressParts.length > 1 ? addressParts[addressParts.length - 1] : null);
 
-        // Detect country from various signals
         let country = row.country || null;
         if (!country) {
-          // Try to detect from phone number prefix
           const phoneDigits = row.phone?.replace(/\D/g, "") || "";
           if (phoneDigits.startsWith("1") && phoneDigits.length >= 10) country = "USA";
           else if (phoneDigits.startsWith("44")) country = "UK";
@@ -248,52 +274,57 @@ export async function POST(
           else if (phoneDigits.startsWith("216")) country = "Tunisia";
           else if (phoneDigits.startsWith("971")) country = "UAE";
           else if (phoneDigits.startsWith("966")) country = "Saudi Arabia";
-          else country = "France"; // fallback
+          else country = "France";
         }
 
-        // Create the business
+        const photosArray = parseJsonArray<string>(row.photos);
+        const reviewsArray = parseJsonArray<{ author: string; rating: number; text: string; time: string }>(row.reviews);
+
         const [business] = await db
           .insert(businesses)
           .values({
             name: row.name,
             phone: row.phone || null,
-            email: row.email || null,
+            email: null,
             website: row.website || null,
             address: row.address || null,
             street,
             city,
             postcode,
+            state: row.state || null,
             country,
             category: row.category || null,
             subcategory: row.subcategory || null,
             rating: row.rating || null,
+            reviewsCount: row.reviewsCount ? parseInt(row.reviewsCount, 10) || null : null,
             description: row.description || null,
+            openingHours: row.openingHours || null,
+            latitude: row.latitude || null,
+            longitude: row.longitude || null,
+            googleMapsUrl: row.googleMapsUrl || null,
             facebook: row.facebook || null,
             instagram: row.instagram || null,
             twitter: row.twitter || null,
             linkedin: row.linkedin || null,
             youtube: row.youtube || null,
-            openingHours: row.openingHours || null,
             cuisine: row.cuisine || null,
-            latitude: null,
-            longitude: null,
+            services: row.services || null,
+            photos: photosArray,
+            reviews: reviewsArray,
             source: "manual_import",
           })
           .returning();
 
-        // Generate prompts and demo site
         const vibecoderPrompt = generateVibecoderPrompt(business as any, campaign.language || "fr");
         const whatsappMessages = generateDefaultWhatsAppMessages(business as any);
         const demoHtml = generateDemoSiteHtml(business as any);
         const demoToken = nanoid(24);
 
-        // Use campaign currency (already fetched above)
         const currency = campaign.currency || "EUR";
         const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
           : currency === "USD" ? (settings.priceUSD || 0)
           : (settings.priceMAD || 0);
 
-        // Create the prospect
         const [prospect] = await db
           .insert(prospects)
           .values({

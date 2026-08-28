@@ -49,6 +49,9 @@ export type ScrapedBusiness = {
   reviewsCount: number | null;
   source: string;
   extraTags: string | null;
+  photos: string[] | null;
+  reviews: Array<{ author: string; rating: number; text: string; time: string }> | null;
+  services: string | null;
   detailCount: number;
   popularity: number | null;
 };
