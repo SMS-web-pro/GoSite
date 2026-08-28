@@ -663,29 +663,37 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
           </Section>
         )}
 
-        {/* Horaires */}
-        {b.openingHours && (
-          <Section title="Horaires d'ouverture">
+        {/* Horaires d'ouverture */}
+        <Section title="🕐 Horaires d'ouverture">
+          {b.openingHours ? (
             <p className="text-sm text-slate-700">{b.openingHours}</p>
-          </Section>
-        )}
+          ) : (
+            <p className="text-sm text-slate-400 italic">Non renseigné</p>
+          )}
+        </Section>
 
         {/* Services proposés */}
-        {services && (
-          <Section title="Services proposés">
+        <Section title="🔧 Services proposés">
+          {services ? (
             <p className="text-sm text-slate-700">{services}</p>
-          </Section>
-        )}
+          ) : (
+            <p className="text-sm text-slate-400 italic">Non renseigné</p>
+          )}
+        </Section>
 
         {/* Coordonnées GPS */}
-        {b.latitude && b.longitude && (
-          <Section title="Coordonnées GPS">
-            <code className="block font-mono text-xs text-slate-600">{parseFloat(b.latitude).toFixed(6)}, {parseFloat(b.longitude).toFixed(6)}</code>
-            <a href={`https://www.google.com/maps?q=${b.latitude},${b.longitude}`} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] text-blue-600 hover:underline">
-              📍 Ouvrir dans Google Maps
-            </a>
-          </Section>
-        )}
+        <Section title="📍 Coordonnées GPS">
+          {b.latitude && b.longitude ? (
+            <>
+              <code className="block font-mono text-xs text-slate-600">{parseFloat(b.latitude).toFixed(6)}, {parseFloat(b.longitude).toFixed(6)}</code>
+              <a href={`https://www.google.com/maps?q=${b.latitude},${b.longitude}`} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] text-blue-600 hover:underline">
+                Ouvrir dans Google Maps
+              </a>
+            </>
+          ) : (
+            <p className="text-sm text-slate-400 italic">Non renseigné</p>
+          )}
+        </Section>
 
         {/* Lien Google Maps */}
         {b.googleMapsUrl && (
@@ -725,9 +733,9 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
           </Section>
         )}
 
-        {/* Avis Google */}
-        {reviews && reviews.length > 0 && (
-          <Section title={`Avis Google (${reviews.length})`} className="sm:col-span-2 lg:col-span-3">
+        {/* Avis clients */}
+        <Section title={`⭐ Avis clients${reviews && reviews.length > 0 ? ` (${reviews.length})` : ""}`} className="sm:col-span-2 lg:col-span-3">
+          {reviews && reviews.length > 0 ? (
             <div className="space-y-3">
               {reviews.slice(0, 6).map((r, i) => (
                 <div key={i} className="rounded-lg border border-slate-200 bg-white p-3">
@@ -740,8 +748,10 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
                 </div>
               ))}
             </div>
-          </Section>
-        )}
+          ) : (
+            <p className="text-sm text-slate-400 italic">Aucun avis pour le moment</p>
+          )}
+        </Section>
 
         {/* Autres tags */}
         {otherTags.length > 0 && (
