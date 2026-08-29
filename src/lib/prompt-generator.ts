@@ -18,24 +18,16 @@ export type PricingTier = {
 
 export type MessageTemplateKey =
   | "intro"
+  | "demo"
+  | "quote"
+  | "payment_received"
+  | "delivery"
+  | "thanks"
   | "followup"
   | "followup_2"
-  | "demo"
-  | "ask_offer"
-  | "quote"
-  | "deposit"
-  | "payment_received"
-  | "progress_update"
-  | "preview"
-  | "confirm_changes"
-  | "final_payment"
-  | "delivery"
-  | "checkin"
-  | "referral"
-  | "has_website"
-  | "not_interested"
-  | "too_expensive"
-  | "cheaper";
+  | "followup_3"
+  | "review_request"
+  | "testimonial_request";
 
 export type LangKey = "fr" | "en" | "ar";
 export type BilingualTemplate = Record<LangKey, string>;
@@ -69,8 +61,7 @@ export function formatPrice(cents: number, currency: string = "EUR"): string {
 
 export const DEFAULT_TEMPLATES: Record<MessageTemplateKey, BilingualTemplate> = {
   // =====================================================
-  // MESSAGE 1: First Contact
-  // Goal: Get a reply — NOT sell the website.
+  // MESSAGE 1: Premier contact / First contact
   // =====================================================
   intro: {
     fr: `Bonjour {{firstName}} 👋
@@ -83,843 +74,480 @@ Voulez-vous que je vous envoie l'aperçu ?
 
 Aucune pression — je pensais simplement que ça pourrait être utile pour votre activité.
 
-*{{contact_name}}*
-{{agency_name}}`,
+*{{contact_name}}* — {{agency_name}}`,
 
     en: `Hi {{firstName}} 👋
 
 I came across *{{businessName}}* on Google and noticed you have a great reputation with *{{rating}} ⭐ and {{reviewCount}} reviews*.
 
-I also noticed you don't currently have a dedicated website, so I put together a quick website concept specifically for *{{businessName}}*.
+I put together a quick website concept specifically for your business.
 
 Would you like me to send you the preview?
 
 No pressure at all — I just thought it might be useful for your business.
 
-*{{contact_name}}*
-{{agency_name}}`,
+*{{contact_name}}* — {{agency_name}}`,
 
     ar: `مرحبا {{firstName}} 👋
 
 لاحظت أن *{{businessName}}* لديها سمعة ممتازة على Google مع *{{rating}} ⭐ و{{reviewCount}} تقييم*.
 
-لاحظت أيضاً أن ليس لديكم موقع ويب مخصص، لذلك أعددت مفهوم موقع ويب سريع خصيصاً لـ *{{businessName}}*.
+لقد أعددت مفهوم موقع ويب سريع خصيصاً لعملك.
 
 هل تريد أن أرسل لك المعاينة؟
 
 لا ضغط — فقط أردت أن أكون مفيداً لنشاطك.
 
-*{{contact_name}}*
-{{agency_name}}`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // MESSAGE 2: Follow-up #1 (J+2-3)
-  // Goal: Give them another opportunity to say yes without pressure.
+  // MESSAGE 2: Envoi de la démo + inclusions
   // =====================================================
-  followup: {
+  demo: {
     fr: `Bonjour {{firstName}} 👋
 
-Je me permets de revenir vers vous concernant mon message précédent.
+Voici l'aperçu du site que j'ai créé pour *{{businessName}}* :
+👉 *{{demo_url}}*
 
-J'ai créé un concept de site web spécialement pour *{{businessName}}* basé sur votre activité et vos services.
+Ce qui est inclus :
+• Site complet responsive (mobile + desktop)
+• Design professionnel sur-mesure
+• Optimisé pour Google (SEO local)
+• Bouton WhatsApp + formulaire de contact
 
-Si vous souhaitez le voir, je peux vous envoyer l'aperçu ici.
+Voulez-vous que je vous envoie un devis ?
 
-Si ce n'est pas votre truc, pas de souci. 👍
-
-*{{contact_name}}*`,
+*{{contact_name}}* — {{agency_name}}`,
 
     en: `Hi {{firstName}} 👋
 
-Just following up on my previous message.
+Here's the preview I created for *{{businessName}}*:
+👉 *{{demo_url}}*
 
-I created a quick website concept specifically for *{{businessName}}* based on your business and services.
+What's included:
+• Full responsive website (mobile + desktop)
+• Professional custom design
+• Google-optimized (local SEO)
+• WhatsApp button + contact form
 
-If you'd like to see it, I can send the preview here.
+Would you like me to send you a quote?
 
-If you're not interested, no worries at all. 👍
-
-*{{contact_name}}*`,
+*{{contact_name}}* — {{agency_name}}`,
 
     ar: `مرحبا {{firstName}} 👋
 
-مجرد متابعة لرسالتي السابقة.
-
-لقد أعددت مفهوم موقع ويب خصيصاً لـ *{{businessName}}* بناءً على نشاطك وخدماتك.
-
-إذا كنت تريد رؤيته، يمكنني إرسال المعاينة هنا.
-
-إذا لم تكن مهتماً، لا مشكلة. 👍
-
-*{{contact_name}}*`,
-  },
-
-  // =====================================================
-  // MESSAGE 3: Follow-up #2 / Final (J+4-5)
-  // Goal: Final attempt. Don't chase indefinitely.
-  // =====================================================
-  followup_2: {
-    fr: `Bonjour {{firstName}},
-
-Je ferai de ceci mon dernier message pour ne pas vous déranger.
-
-J'ai préparé un concept de site web pour *{{businessName}}* et je serais ravi de vous l'envoyer si vous souhaitez y jeter un œil.
-
-Si ce n'est pas quelque chose qui vous intéresse, aucun problème.
-
-Belle journée ! 👍
-
-*{{contact_name}}*`,
-
-    en: `Hi {{firstName}},
-
-I'll make this my last follow-up so I don't bother you.
-
-I prepared a website concept for *{{businessName}}* and I'm happy to send it over if you'd like to take a look.
-
-If it's not something you're interested in, no problem at all.
-
-Have a great day! 👍
-
-*{{contact_name}}*`,
-
-    ar: `مرحبا {{firstName}}،
-
-سأجعل هذه آخر رسالة حتى لا أزعجك.
-
-لقد أعددت مفهوم موقع ويب لـ *{{businessName}}* ويسعدني إرساله إليك إذا كنت تريد الاطلاع عليه.
-
-إذا لم يكن شيئاً تهتم به، لا مشكلة على الإطلاق.
-
-أتمنى لك يوماً رائعاً! 👍
-
-*{{contact_name}}*`,
-  },
-
-  // =====================================================
-  // MESSAGE 4: Send the Demo
-  // Goal: Make them interested in the result, not explain your technology.
-  // =====================================================
-  demo: {
-    fr: `Absolument ! 👋
-
-Voici le concept de site web personnalisé que j'ai créé pour *{{businessName}}* :
-
+إليك المعاينة التي أعددتها لـ *{{businessName}}*:
 👉 *{{demo_url}}*
 
-Je l'ai conçu spécifiquement autour de votre activité, vos services et votre zone locale.
+ما هو مشمول:
+• موقع ويب كامل متجاوب (جوال + سطح مكتب)
+• تصميم احترافي مخصص
+• مُحسّن لـ Google (تحسين محلي)
+• زر WhatsApp + نموذج اتصال
 
-Il comprend :
+هل تريد أن أرسل لك عرض أسعار؟
 
-• 📱 Design responsive (mobile)
-• 📞 Options d'appel/contact
-• 💬 WhatsApp
-• ⭐ Avis Google
-• 📍 Zones de service
-• 📝 Formulaire de devis/contact
-
-C'est juste un aperçu pour l'instant.
-
-Regardez et dites-moi ce que vous en pensez. J'aimerais vraiment avoir votre retour 😊
-
-*{{contact_name}}*`,
-
-    en: `Absolutely! 👋
-
-Here's the personalized website concept I created for *{{businessName}}*:
-
-👉 *{{demo_url}}*
-
-I designed it specifically around your business, services and local area.
-
-It includes:
-
-• 📱 Mobile-friendly design
-• 📞 Call/contact options
-• 💬 WhatsApp
-• ⭐ Google reviews
-• 📍 Service areas
-• 📝 Quote/contact form
-
-This is just a preview for now.
-
-Take a look and let me know what you think. I'd genuinely love your feedback 😊
-
-*{{contact_name}}*`,
-
-    ar: `بالتأكيد! 👋
-
-إليك مفهوم الموقع المخصص الذي أعدتاه لـ *{{businessName}}*:
-
-👉 *{{demo_url}}*
-
-صممته خصيصاً حول نشاطك ومنطقتك وخدماتك.
-
-يتضمن:
-
-• 📱 تصميم متوافق مع الجوال
-• 📞 خيارات الاتصال
-• 💬 WhatsApp
-• ⭐ تقييمات Google
-• 📍 مناطق الخدمة
-• 📝 نموذج طلب عرض سعر
-
-هذه مجرد معاينة الآن.
-
-انظر وأخبرني برأيك. أريد حقاً سماع ملاحظاتك 😊
-
-*{{contact_name}}*`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // MESSAGE 5: Move Toward the Offer
-  // Goal: Get permission to present the price.
-  // =====================================================
-  ask_offer: {
-    fr: `Je suis content que ça vous plaise ! 😊
-
-Je peux tout personnaliser avec vos véritables informations commerciales, photos, logo, services, avis et toutes les modifications que vous souhaitez.
-
-Je peux également m'occuper de la configuration et du lancement pour vous.
-
-Voulez-vous que je vous envoie les détails du pack et le tarif ?`,
-
-    en: `I'm glad you like it! 😊
-
-I can customize everything with your actual business information, photos, logo, services, reviews and any changes you'd like.
-
-I can also take care of the setup and launch for you.
-
-Would you like me to send you the package details and pricing?`,
-
-    ar: `يسعدني أن يكون ذلكعجبك! 😊
-
-يمكنني تخصيص كل شيء بمعلومات عملك الحقيقية وصورك وشعارك وخدماتك وتقييماتك وأي تغييرات تريدها.
-
-كما يمكنني الاعتناء بالإعداد والlaunch لك.
-
-هل تريد أن أرسل لك تفاصيل الحزمة والأسعار؟`,
-  },
-
-  // =====================================================
-  // MESSAGE 6: $249 Offer
-  // Goal: Clearly communicate value and make the next step simple.
+  // MESSAGE 3: Devis + lien de paiement (deposit/final)
   // =====================================================
   quote: {
-    fr: `Pour *{{businessName}}*, je peux transformer le concept en un site web professionnel complet pour *{{price}}*.
+    fr: `Bonjour {{firstName}} 👋
 
-Le pack comprend :
+Voici ma proposition pour *{{businessName}}* :
 
-✅ Site web responsive personnalisé
-✅ Optimisation mobile + desktop
-✅ Services et zones de service
-✅ Formulaire de devis/contact
-✅ Bouton d'appel
-✅ Bouton WhatsApp
-✅ Google Maps
-✅ Section avis Google
-✅ SEO local de base
-✅ SSL / HTTPS
-✅ 1 an d'hébergement
+💰 *Prix total : {{price}}*
+• Acompte : *{{price_deposit}}* (pour démarrer)
+• Solde : *{{price_final}}* (à la livraison)
 
-Livraison estimée : 3 à 5 jours ouvrés.
+📦 *Inclus :*
+• Site web professionnel responsive
+• Design sur-mesure
+• SEO local optimisé
+• Hébergement 1 an
+• Livraison sous 48-72h
 
-Pour commencer, l'acompte est de *{{price_deposit}}*.
-Le solde de *{{price_final}}* est dû avant le lancement final.
+💳 *Payer l'acompte :* {{payment_deposit_url}}
 
-Si ça vous convient, je peux vous envoyer le lien de paiement sécurisé.`,
+Offre valable 7 jours. Des questions ?
 
-    en: `For *{{businessName}}*, I can turn the concept into a complete professional website for *{{price}}*.
+*{{contact_name}}* — {{agency_name}}`,
 
-The package includes:
+    en: `Hi {{firstName}} 👋
 
-✅ Custom responsive website
-✅ Mobile + desktop optimization
-✅ Services & service areas
-✅ Contact/quote form
-✅ Call button
-✅ WhatsApp button
-✅ Google Maps
-✅ Google reviews section
-✅ Basic local SEO
-✅ SSL / HTTPS
-✅ 1 year hosting
+Here's my proposal for *{{businessName}}*:
 
-Estimated delivery: 3–5 business days.
+💰 *Total price: {{price}}*
+• Deposit: *{{price_deposit}}* (to get started)
+• Balance: *{{price_final}}* (on delivery)
 
-To get started, the initial deposit is *{{price_deposit}}*.
-The remaining *{{price_final}}* is due before the final launch.
+📦 *Included:*
+• Professional responsive website
+• Custom design
+• Local SEO optimization
+• 1 year hosting
+• Delivery in 48-72h
 
-If that works for you, I can send you the secure payment link.`,
+💳 *Pay the deposit:* {{payment_deposit_url}}
 
-    ar: `لـ *{{businessName}}*، يمكنني تحويل المفهوم إلى موقع ويب احترافي كامل مقابل *{{price}}*.
+Offer valid for 7 days. Any questions?
 
-الحزمة تشمل:
+*{{contact_name}}* — {{agency_name}}`,
 
-✅ موقع ويب متجاوب مخصص
-✅ تحسين الجوال + سطح المكتب
-✅ الخدمات ومناطق الخدمة
-✅ نموذج طلب عرض سعر/اتصال
-✅ زر الاتصال
-✅ زر WhatsApp
-✅ Google Maps
-✅ قسم تقييمات Google
-✅ تحسين محلي أساسي
-✅ SSL / HTTPS
-✅ سنة واحدة من الاستضافة
+    ar: `مرحبا {{firstName}} 👋
 
-التسليم المقدر: 3-5 أيام عمل.
+إليك عرضي لـ *{{businessName}}*:
 
-للبدء، الدفعة الأولى هي *{{price_deposit}}*.
-الرصيد المتبقي *{{price_final}}* مستحق قبل الإطلاق النهائي.
+💰 *السعر الإجمالي: {{price}}*
+• الدفعة الأولى: *{{price_deposit}}* (للبدء)
+• الرصيد: *{{price_final}}* (عند التسليم)
 
-إذا كان ذلك مناسباً، يمكنني إرسال رابط الدفع الآمن لك.`,
+📦 *مشمول:*
+• موقع ويب احترافي متجاوب
+• تصميم مخصص
+• تحسين محلي لمحركات البحث
+• استضافة لمدة سنة
+• التسليم خلال 48-72 ساعة
+
+💳 *ادفع الدفعة الأولى:* {{payment_deposit_url}}
+
+العرض صالح لمدة 7 أيام. أي سؤال؟
+
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // MESSAGE 7: Deposit
-  // Goal: Convert interest into the $99 deposit.
-  // =====================================================
-  deposit: {
-    fr: `Parfait ! 🙌
-
-L'acompte est de *{{price_deposit}}*.
-
-Vous pouvez effectuer le paiement de manière sécurisée ici :
-
-👉 *{{payment_deposit_url}}*
-
-Une fois le paiement confirmé, je vous envoie les détails d'intégration courts et je commence à préparer votre site.
-
-Merci ! 🙏`,
-
-    en: `Perfect! 🙌
-
-The initial deposit is *{{price_deposit}}*.
-
-You can make the payment securely here:
-
-👉 *{{payment_deposit_url}}*
-
-Once the payment is confirmed, I'll send you the short onboarding details and start preparing your website.
-
-Thank you! 🙏`,
-
-    ar: `مثالي! 🙌
-
-الدفعة الأولى هي *{{price_deposit}}*.
-
-يمكنك إجراء الدفع بشكل آمن هنا:
-
-👉 *{{payment_deposit_url}}*
-
-بمجرد تأكيد الدفع، سأرسل لك تفاصيل التأهيل القصيرة وأبدأ في تحضير موقعك.
-
-شكراً! 🙏`,
-  },
-
-  // =====================================================
-  // MESSAGE 8: Payment Confirmation + Onboarding
-  // Goal: Reassure them and collect everything needed to build the site.
+  // MESSAGE 4: Accusé de réception d'acompte
   // =====================================================
   payment_received: {
     fr: `Bonjour {{firstName}} 👋
 
-Paiement reçu — merci pour votre confiance ! 🙏
+Bien reçu votre acompte, merci pour votre confiance ! 🎉
 
-Nous commençons officiellement le site de *{{businessName}}*.
+Le développement du site pour *{{businessName}}* commence maintenant.
 
-Veuillez m'envoyer ce qui suit quand ce sera possible :
+*Prochaines étapes :*
+1. Je vous envoie une première version pour validation
+2. Vous me faites vos retours
+3. Je finalise et je mets en ligne
 
-📌 Logo
-📌 Numéro de téléphone
-📌 Email du commerce
-📌 Services
-📌 Zones de service
-📌 Horaires d'ouverture
-📌 Photos
-📌 Courte description de l'activité
-📌 Liens réseaux sociaux
-📌 Nom de domaine, si vous en possédez déjà un
+Si vous avez des photos, un logo ou des horaires à me transmettre, envoyez-les-moi ici.
 
-Vous pouvez tout envoyer ici, un élément à la fois.
-
-Je m'occupe du reste. 👍`,
+*{{contact_name}}* — {{agency_name}}`,
 
     en: `Hi {{firstName}} 👋
 
-Payment received — thank you for your trust! 🙏
+Payment received, thank you for your trust! 🎉
 
-We're officially getting started with *{{businessName}}*'s website.
+Development of *{{businessName}}*'s website starts now.
 
-Please send me the following whenever convenient:
+*Next steps:*
+1. I'll send you a first version for approval
+2. You give me your feedback
+3. I finalize and go live
 
-📌 Logo
-📌 Business phone number
-📌 Business email
-📌 Services
-📌 Service areas
-📌 Business hours
-📌 Photos
-📌 Short business description
-📌 Social media links
-📌 Domain name, if you already own one
+If you have any photos, logo, or hours to share, send them here.
 
-You can send everything here, one item at a time.
-
-I'll take care of the rest. 👍`,
+*{{contact_name}}* — {{agency_name}}`,
 
     ar: `مرحبا {{firstName}} 👋
 
-تم استلام الدفع — شكراً على ثقتك! 🙏
+تم استلام الدفعة الأولى، شكراً على ثقتك! 🎉
 
-بدأتنا رسمياً موقع *{{businessName}}*.
+بدأت الآن عملية تطوير موقع *{{businessName}}*.
 
-يرجى إرسال ما يلي متى أمكن:
+*الخطوات التالية:*
+1. أرسل لك نسخة أولى للموافقة
+2. تعطيني ملاحظاتك
+3. أ finalize وأنشر الموقع
 
-📌 شعار
-📌 رقم هاتف العمل
-📌 بريد إلكتروني للعمل
-📌 الخدمات
-📌 مناطق الخدمة
-📌 ساعات العمل
-📌 صور
-📌 وصف قصير للنشاط
-📌 روابط وسائل التواصل الاجتماعي
-📌 اسم النطاق، إذا كان لديك بالفعل
+إذا كان لديك أي صور أو شعار أو أوقات عمل، أرسلها هنا.
 
-يمكنك إرسال كل شيء هنا، عنصر واحد في كل مرة.
-
-سأتولى الباقي. 👍`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // MESSAGE 9: Progress Update
-  // Goal: Maintain trust while you're building.
-  // =====================================================
-  progress_update: {
-    fr: `Bonjour {{firstName}} 👋
-
-Mise à jour rapide : votre site web est en cours de finalisation.
-
-Je travaille sur le contenu, l'expérience mobile et les détails finaux pour *{{businessName}}*.
-
-Je vous envoie l'aperçu dès qu'il sera prêt pour votre validation. 👍`,
-
-    en: `Hi {{firstName}} 👋
-
-Quick update: your website is currently being finalized.
-
-I'm working on the content, mobile experience and final details for *{{businessName}}*.
-
-I'll send you the preview as soon as it's ready for your review. 👍`,
-
-    ar: `مرحبا {{firstName}} 👋
-
-تحديث سريع: موقعك قيد الإنهاء الآن.
-
-أعمل على المحتوى وتجربة الجوال والتفاصيل النهائية لـ *{{businessName}}*.
-
-سأرسل لك المعاينة بمجرد أن تكون جاهزة للمراجعة. 👍`,
-  },
-
-  // =====================================================
-  // MESSAGE 10: Preview
-  // Goal: Get approval and collect revisions.
-  // =====================================================
-  preview: {
-    fr: `Bonjour {{firstName}} 👋
-
-Votre site web est prêt pour révision ! 🎉
-
-👉 *{{preview_url}}*
-
-Veuillez le regarder sur votre téléphone et votre ordinateur si possible.
-
-Si vous souhaitez des modifications, envoyez-les-moi ici et je m'en occupe.
-
-Votre pack comprend *{{revisionCount}}* tours de révisions.
-
-Une fois que tout vous convient, nous procéderons au lancement final.`,
-
-    en: `Hi {{firstName}} 👋
-
-Your website is ready for review! 🎉
-
-👉 *{{preview_url}}*
-
-Please take a look on both your phone and computer if possible.
-
-If you'd like any changes, send them to me here and I'll take care of them.
-
-Your package includes *{{revisionCount}}* rounds of revisions.
-
-Once everything looks good to you, we'll proceed with the final launch.`,
-
-    ar: `مرحبا {{firstName}} 👋
-
-موقعك جاهز للمراجعة! 🎉
-
-👉 *{{preview_url}}*
-
-يرجى الاطلاع عليه على هاتفك و电脑 إذا أمكن.
-
-إذا كنت تريد أي تغييرات، أرسلها إلي هنا وسأتولاها.
-
-حزمة تشمل *{{revisionCount}}* جولات من المراجعات.
-
-بمجرد أن يبدو كل شيء جيداً لك، سنتقدم بالإطلاق النهائي.`,
-  },
-
-  // =====================================================
-  // MESSAGE 11: Confirm Changes
-  // Goal: Show professionalism and prevent endless revisions.
-  // =====================================================
-  confirm_changes: {
-    fr: `Absolument 👍
-
-J'ai noté les modifications suivantes :
-
-• {{change1}}
-• {{change2}}
-• {{change3}}
-
-Je mettrai à jour et vous enverrai la version révisée pour validation.`,
-
-    en: `Absolutely 👍
-
-I've noted the following changes:
-
-• {{change1}}
-• {{change2}}
-• {{change3}}
-
-I'll update these and send you the revised version for approval.`,
-
-    ar: `بالتأكيد 👍
-
-لقد لاحظت التغييرات التالية:
-
-• {{change1}}
-• {{change2}}
-• {{change3}}
-
-سأقوم بتحديث هذه وإرسال النسخة المعدّلة للموافقة.`,
-  },
-
-  // =====================================================
-  // MESSAGE 12: Final $150 Payment
-  // Goal: Collect the remaining balance before final launch.
-  // =====================================================
-  final_payment: {
-    fr: `Bonjour {{firstName}} 👋
-
-Super — je suis content que vous soyez satisfait du site ! 🙌
-
-Tout est maintenant validé et prêt pour le lancement final.
-
-Le solde restant est de *{{price_final}}*.
-
-Vous pouvez finaliser le paiement de manière sécurisée ici :
-
-👉 *{{payment_final_url}}*
-
-Une fois le paiement confirmé, je procéderai au lancement final et à la connexion du domaine.
-
-Merci encore ! 🙏`,
-
-    en: `Hi {{firstName}} 👋
-
-Great — I'm glad you're happy with the website! 🙌
-
-Everything is now approved and ready for the final launch.
-
-The remaining balance is *{{price_final}}*.
-
-You can complete the payment securely here:
-
-👉 *{{payment_final_url}}*
-
-Once the payment is confirmed, I'll proceed with the final launch and domain connection.
-
-Thank you again! 🙏`,
-
-    ar: `مرحبا {{firstName}} 👋
-
-رائع — يسعدني أن تكون سعيداً بالموقع! 🙌
-
-تمت الموافقة على كل شيء والготовة للإطلاق النهائي.
-
-الرصيد المتبقي هو *{{price_final}}*.
-
-يمكنك إكمال الدفع بشكل آمن هنا:
-
-👉 *{{payment_final_url}}*
-
-بمجرد تأكيد الدفع، سأ proceeded by الإطلاق النهائي واتصال النطاق.
-
-شكراً مرة أخرى! 🙏`,
-  },
-
-  // =====================================================
-  // MESSAGE 13: Website Live
-  // Goal: Deliver professionally and reinforce the value.
+  // MESSAGE 5: Livraison du site
   // =====================================================
   delivery: {
     fr: `🎉 *Votre site est en ligne !*
 
-Bonjour {{firstName}} 👋
+Bonjour {{firstName}}, le site de *{{businessName}}* est accessible ici :
+👉 *{{final_site_url}}*
 
-Le nouveau site de *{{businessName}}* est maintenant en ligne :
+✅ Hébergement 1 an inclus
+✅ SSL sécurisé
+✅ Optimisé Google
+✅ Compatible mobile
 
-👉 *{{final_url}}*
+🛠️ *Modifications gratuites pendant 1 an :* texte, images, horaires — dites-moi tout.
 
-Tout a été vérifié :
+Si vous êtes satisfait, un petit avis Google nous aiderait énormément 🙏
 
-✅ Mobile + desktop
-✅ HTTPS / SSL
-✅ Formulaire de contact
-✅ Bouton d'appel
-✅ Bouton WhatsApp
-✅ Google Maps
-✅ Avis Google
-✅ SEO local de base
+*{{contact_name}}* — {{agency_name}}`,
 
-Votre domaine vous appartient, et je reste disponible si vous avez besoin de mises à jour ou d'améliorations.
+    en: `🎉 *Your site is live!*
 
-Félicitations pour votre nouveau site ! 🚀
+Hi {{firstName}}, *{{businessName}}*'s website is live at:
+👉 *{{final_site_url}}*
 
-*{{contact_name}}*
-{{agency_name}}`,
+✅ 1 year hosting included
+✅ Secure SSL
+✅ Google-optimized
+✅ Mobile-friendly
 
-    en: `🎉 *Your website is live!*
+🛠️ *Free changes for 1 year:* text, images, hours — just ask.
 
-Hi {{firstName}} 👋
+If you're happy, a Google review would mean the world to us 🙏
 
-The new website for *{{businessName}}* is now live:
-
-👉 *{{final_url}}*
-
-Everything has been checked:
-
-✅ Mobile + desktop
-✅ HTTPS / SSL
-✅ Contact form
-✅ Call button
-✅ WhatsApp button
-✅ Google Maps
-✅ Google reviews
-✅ Local SEO basics
-
-Your domain remains yours, and I'm here if you need future updates or improvements.
-
-Congratulations on your new website! 🚀
-
-*{{contact_name}}*
-{{agency_name}}`,
+*{{contact_name}}* — {{agency_name}}`,
 
     ar: `🎉 *موقعك الآن مباشر!*
 
-مرحبا {{firstName}} 👋
+مرحبا {{firstName}}، موقع *{{businessName}}* متاح هنا:
+👉 *{{final_site_url}}*
 
-موقع *{{businessName}}* الجديد الآن مباشر:
+✅ استضافة مشمولة لمدة سنة
+✅ SSL آمن
+✅ مُحسّن لـ Google
+✅ متوافق مع الجوال
 
-👉 *{{final_url}}*
+🛠️ *تعديلات مجانية لمدة سنة:* نصوص، صور، أوقات عمل — فقط اسأل.
 
-تم التحقق من كل شيء:
+إذا كنت راضياً، تقييم على Google سيكون مفيداً جداً 🙏
 
-✅ الجوال + سطح المكتب
-✅ HTTPS / SSL
-✅ نموذج الاتصال
-✅ زر الاتصال
-✅ زر WhatsApp
-✅ Google Maps
-✅ تقييمات Google
-✅ تحسين محلي أساسي
-
-نطاقك ملك لك، وأنا هنا إذا كنت تحتاج تحديثات أو تحسينات مستقبلية.
-
-تهانينا على موقعك الجديد! 🚀
-
-*{{contact_name}}*
-{{agency_name}}`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // MESSAGE 14: Customer Check-in (7-14 days after delivery)
-  // Goal: Make sure they're happy and open the door to future work.
+  // MESSAGE 6: Remerciement
   // =====================================================
-  checkin: {
+  thanks: {
+    fr: `Merci beaucoup {{firstName}} 🙏
+
+Votre confiance me touche. Voici ce que vous pouvez retenir :
+
+📅 Je reste dispo pour toute maintenance ou modification.
+
+🎁 *Offre parrainage :* Si vous recommandez un commerce et qu'il commande un site, **votre hébergement et domaine sont OFFERTS la 2ème année !**
+
+Et si vous avez 30 secondes, un petit avis Google serait super 🙏
+
+Belle continuation !
+
+*{{contact_name}}* — {{agency_name}}`,
+
+    en: `Thank you so much {{firstName}} 🙏
+
+Your trust means a lot. Here's what to remember:
+
+📅 I'm available for any maintenance or changes.
+
+🎁 *Referral offer:* If you refer a business and they order a website, **your hosting and domain are FREE for the 2nd year!**
+
+And if you have 30 seconds, a Google review would be amazing 🙏
+
+All the best!
+
+*{{contact_name}}* — {{agency_name}}`,
+
+    ar: `شكراً جزيلاً {{firstName}} 🙏
+
+ثقتك تلمسني. إليك ما يجب تذكره:
+
+📅 أنا متاح لأي صيانة أو تعديل.
+
+🎁 *عرض الإحالة:* إذا أوصيت بشركة وطلبوا موقعًا، **الاستضافة والنطاق ستكون مجانية للسنة الثانية!**
+
+وإذا كان لديك 30 ثانية، تقييم على Google سيكون رائعًا 🙏
+
+أتمنى لك كل خير!
+
+*{{contact_name}}* — {{agency_name}}`,
+  },
+
+  // =====================================================
+  // MESSAGE 7: Relance 1
+  // =====================================================
+  followup: {
     fr: `Bonjour {{firstName}} 👋
 
-Juste pour vérifier que tout se passe bien avec votre nouveau site.
+Juste pour savoir si vous avez eu l'occasion de regarder l'aperçu du site pour *{{businessName}}* ?
 
-Est-ce que tout fonctionne bien pour vous ?
+Si ce n'est pas le bon moment, pas de souci. Sinon, dites-moi et on en discute.
 
-Si vous avez besoin de petits ajustements ou si vous avez des questions, n'hésitez pas à m'écrire à tout moment. 😊`,
+*{{contact_name}}* — {{agency_name}}`,
 
     en: `Hi {{firstName}} 👋
 
-Just checking in to make sure everything is going well with your new website.
+Just checking — did you get a chance to look at the website preview for *{{businessName}}*?
 
-Is everything working well for you?
+If now's not the right time, no worries. Otherwise, let me know and we can chat.
 
-If you need any small adjustments or have any questions, feel free to message me anytime. 😊`,
+*{{contact_name}}* — {{agency_name}}`,
 
     ar: `مرحبا {{firstName}} 👋
 
-مجرد للتأكد من أن كل شيء يسير بشكل جيد مع موقعك الجديد.
+جذر سؤال — هل حصلت على فرصة لمشاهدة معاينة الموقع لـ *{{businessName}}*؟
 
-هل كل شيء يعمل بشكل جيد لديك؟
+إذا لم يكن الوقت المناسب، لا مشكلة. وإلا، أخبرني وسنناقش الأمر.
 
-إذا كنت تحتاج أي تعديلات صغيرة أو لديك أي أسئلة، لا تتردد في مراسلتي في أي وقت. 😊`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // MESSAGE 15: Referral
-  // Goal: Generate another client without cold outreach.
+  // MESSAGE 8: Relance 2 (avec bonus)
   // =====================================================
-  referral: {
-    fr: `C'est super à entendre ! 🙏
+  followup_2: {
+    fr: `Bonjour {{firstName}} 👋
 
-Merci encore de m'avoir fait confiance pour *{{businessName}}*.
+Je reviens vers vous concernant le site web pour *{{businessName}}*.
 
-Si vous connaissez un autre commerçant local qui pourrait bénéficier d'un site web professionnel, je serais ravi de l'aider également.
+J'ai une petite surprise pour vous : si vous validez cette semaine, je vous offre un *bonus supplémentaire* sur votre site.
 
-S'il devient client grâce à votre recommandation, je vous offrirai *{{referral_reward}}* en guise de remerciement.
+Voulez-vous en discuter ? Il suffit de répondre "oui".
 
-Merci beaucoup pour votre soutien ! 🤝`,
+*{{contact_name}}* — {{agency_name}}`,
 
-    en: `That's great to hear! 🙏
+    en: `Hi {{firstName}} 👋
 
-Thank you again for trusting me with *{{businessName}}*.
+Following up on the website for *{{businessName}}*.
 
-If you know another local business owner who could benefit from a professional website, I'd be happy to help them as well.
+I have a little surprise for you: if you approve this week, I'll include a *free bonus* on your website.
 
-If they become a client through your referral, I'll give you *{{referral_reward}}* as a thank-you.
+Want to discuss? Just reply "yes".
 
-Really appreciate your support! 🤝`,
+*{{contact_name}}* — {{agency_name}}`,
 
-    ar: `يسعدني سماع ذلك! 🙏
+    ar: `مرحبا {{firstName}} 👋
 
-شكراً مرة أخرى على ثقتك في *{{businessName}}*.
+أعود بخصوص الموقع لـ *{{businessName}}*.
 
-إذا كنت تعرف صاحب عمل محلي آخر يمكن أن يستفيد من موقع ويب احترافي، يسعدني مساعدته أيضاً.
+لدي مفاجأة صغيرة لك: إذا وافقت هذا الأسبوع، سأضف *مجاناً ميزة إضافية* لموقعك.
 
-إذا أصبح عميلاً من خلال توصيتك، سأعطيك *{{referral_reward}}* كشكر.
+هل تريد مناقشة الأمر؟ فقط رد "نعم".
 
-أقدّر دعمك حقاً! 🤝`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // SPECIAL: "I already have a website"
+  // MESSAGE 9: Relance 3 (dernier message)
   // =====================================================
-  has_website: {
-    fr: `Absolument, aucun problème ! 👍
+  followup_3: {
+    fr: `Bonjour {{firstName}} 👋
 
-Si vous êtes satisfait de votre site actuel, c'est super.
+Dernier petit mot de ma part au sujet du site pour *{{businessName}}*.
 
-Je vous ai contacté car *{{businessName}}* ne semblait pas avoir de site web dédié sur Google.
+Je ne voudrais pas que vous perdiez cette opportunité — vos concurrents investissent de plus en plus dans leur présence en ligne.
 
-Merci de m'avoir répondu, et je vous souhaite une continue réussite !`,
+Si vous changez d'avis, je suis toujours disponible. Bonne continuation ! 🙏
 
-    en: `Absolutely, no problem! 👍
+*{{contact_name}}* — {{agency_name}}`,
 
-If you're happy with your current website, that's great.
+    en: `Hi {{firstName}} 👋
 
-I originally reached out because I noticed *{{businessName}}* didn't appear to have a dedicated website on Google.
+Just a quick final note about the website for *{{businessName}}*.
 
-Thanks for getting back to me, and I wish you continued success!`,
+I'd hate for you to miss this opportunity — your competitors are investing more and more in their online presence.
 
-    ar: `بالتأكيد، لا مشكلة! 👍
+If you change your mind, I'm always here. All the best! 🙏
 
-إذا كنت سعيداً بموقعك الحالي، فهذا رائع.
+*{{contact_name}}* — {{agency_name}}`,
 
-لقد تواصلت في الأصل لأنني لاحظت أن *{{businessName}}* لا يبدو أن لديها موقع ويب مخصص على Google.
+    ar: `مرحبا {{firstName}} 👋
 
-شكراً لتواصلك معي، وأتمنى لك النجاح المستمر!`,
+ملاحظة أخيرة بخصوص الموقع لـ *{{businessName}}*.
+
+لا أريد أن تفوتك هذه الفرصة — منافسوك يستثمرون أكثر فأكثر في حضورهم عبر الإنترنت.
+
+إذا غيرت رأيك، أنا هنا دائماً. كل التمنيات! 🙏
+
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // SPECIAL: "Not interested"
+  // MESSAGE 10: Demande d'avis Google
   // =====================================================
-  not_interested: {
-    fr: `Pas de souci du tout ! 👍
+  review_request: {
+    fr: `Bonjour {{firstName}} 👋
 
-Merci de m'en avoir informé, et je vous souhaite ainsi qu'à *{{businessName}}* une continue réussite.
+J'espère que vous êtes satisfait du site de *{{businessName}}* !
 
-Belle journée !`,
+Un petit geste qui nous aiderait énormément : pourriez-vous nous laisser un avis Google ?
 
-    en: `No worries at all! 👍
+👉 Cliquez ici pour laisser un avis : {{google_review_url}}
 
-Thanks for letting me know, and I wish you and *{{businessName}}* continued success.
+Merci d'avance, ça compte beaucoup pour nous ! 🙏
 
-Have a great day!`,
+*{{contact_name}}* — {{agency_name}}`,
 
-    ar: `لا مشكلة على الإطلاق! 👍
+    en: `Hi {{firstName}} 👋
 
-شكراً لإبلاغي، وأتمنى لك ولـ *{{businessName}}* النجاح المستمر.
+I hope you're happy with *{{businessName}}*'s website!
 
-أتمنى لك يوماً رائعاً!`,
+A small gesture that would mean a lot: could you leave us a Google review?
+
+👉 Click here to leave a review: {{google_review_url}}
+
+Thanks in advance, it really means a lot! 🙏
+
+*{{contact_name}}* — {{agency_name}}`,
+
+    ar: `مرحبا {{firstName}} 👋
+
+أرجو أن تكون راضياً عن موقع *{{businessName}}*!
+
+Gesture صغير سيكون مفيداً جداً: هل يمكنك أن تترك لنا تقييم على Google?
+
+👉 انقر هنا لترك تقييم: {{google_review_url}}
+
+شكراً مقدماً، هذا يعني لنا الكثير! 🙏
+
+*{{contact_name}}* — {{agency_name}}`,
   },
 
   // =====================================================
-  // SPECIAL: "Too expensive"
+  // MESSAGE 11: Demande de témoignage
   // =====================================================
-  too_expensive: {
-    fr: `Je comprends tout à fait.
+  testimonial_request: {
+    fr: `Bonjour {{firstName}} 👋
 
-Les *{{price}}* couvrent la création complète du site, la personnalisation, l'optimisation mobile, le SEO local de base, l'hébergement et le lancement.
+Merci encore pour votre confiance pour le site de *{{businessName}}* !
 
-Si vous le souhaitez, je peux également vous expliquer exactement ce qui est inclus pour que vous puissiez décider si cela a du sens pour votre activité.
+Pourriez-vous me donner un témoignage de 2 lignes que je pourrais utiliser pour mes futurs clients ?
 
-Aucune pression dans un sens ou dans l'autre. 👍`,
+Exemple : "Très satisfait du site, livraison rapide et travail de qualité."
 
-    en: `I completely understand.
+Merci beaucoup ! 🙏
 
-The *{{price}}* covers the complete website setup, customization, mobile optimization, local SEO basics, hosting and launch.
+*{{contact_name}}* — {{agency_name}}`,
 
-If you'd like, I can also explain exactly what's included so you can decide whether it makes sense for your business.
+    en: `Hi {{firstName}} 👋
 
-No pressure either way. 👍`,
+Thank you again for trusting me with *{{businessName}}*'s website!
 
-    ar: `أتفهم تماماً.
+Could you give me a short 2-line testimonial I could use for future clients?
 
-*{{price}}* تغطي إعداد الموقع الكامل والتخصيص وتحسين الجوال وتحسين محلي الأساسي والاستضافة والإطلاق.
+Example: "Very happy with the website, fast delivery and quality work."
 
-إذا كنت ترغب، يمكنني أيضاً شرح ما هو مشمول بالضبط حتى تقرر ما إذا كان مناسباً لعملك.
+Thanks so much! 🙏
 
-لا ضغط بأي شكل من الأشكال. 👍`,
-  },
+*{{contact_name}}* — {{agency_name}}`,
 
-  // =====================================================
-  // SPECIAL: "Can you do it cheaper?"
-  // =====================================================
-  cheaper: {
-    fr: `Je comprends 👍
+    ar: `مرحبا {{firstName}} 👋
 
-*{{price}}* est déjà mon tarif de lancement pour le pack complet.
+شكراً مرة أخرى على ثقتك في موقع *{{businessName}}*!
 
-Je préfère garder un prix clair plutôt que de supprimer des parties importantes du site juste pour le rendre moins cher.
+هل يمكنك أن تعطيني شهادة قصيرة من سطرين يمكنني استخدامها لعملائي المستقبليين?
 
-Si vous souhaitez avancer, je m'assurerai que vous obteniez le meilleur résultat possible dans ce pack.`,
+مثال: "راضٍ جداً عن الموقع، تسليم سريع وجودة عمل."
 
-    en: `I understand 👍
+شكراً جزيلاً! 🙏
 
-*{{price}}* is already my introductory price for the complete package.
-
-I prefer to keep the price straightforward rather than remove important parts of the website just to make it cheaper.
-
-If you'd like to move forward, I'll make sure you get the best possible result within that package.`,
-
-    ar: `أفهم 👍
-
-*{{price}}* هي بالفعل سعر_introductory للحزمة الكاملة.
-
-أفضل الحفاظ على السعر بدلاً من إزالة أجزاء مهمة من الموقع فقط لجعله أقل سعراً.
-
-إذا كنت ت想iola التقدم، سأتأكد من حصولك على أفضل نتيجة ممكنة في هذه الحزمة.`,
+*{{contact_name}}* — {{agency_name}}`,
   },
 };
 
@@ -998,24 +626,16 @@ export function detectProspectLanguage(
 export function generateDefaultWhatsAppMessages(b: any) {
   return {
     intro: { fr: DEFAULT_TEMPLATES.intro.fr, en: DEFAULT_TEMPLATES.intro.en, ar: DEFAULT_TEMPLATES.intro.ar },
+    demo: { fr: DEFAULT_TEMPLATES.demo.fr, en: DEFAULT_TEMPLATES.demo.en, ar: DEFAULT_TEMPLATES.demo.ar },
+    quote: { fr: DEFAULT_TEMPLATES.quote.fr, en: DEFAULT_TEMPLATES.quote.en, ar: DEFAULT_TEMPLATES.quote.ar },
+    payment_received: { fr: DEFAULT_TEMPLATES.payment_received.fr, en: DEFAULT_TEMPLATES.payment_received.en, ar: DEFAULT_TEMPLATES.payment_received.ar },
+    delivery: { fr: DEFAULT_TEMPLATES.delivery.fr, en: DEFAULT_TEMPLATES.delivery.en, ar: DEFAULT_TEMPLATES.delivery.ar },
+    thanks: { fr: DEFAULT_TEMPLATES.thanks.fr, en: DEFAULT_TEMPLATES.thanks.en, ar: DEFAULT_TEMPLATES.thanks.ar },
     followup: { fr: DEFAULT_TEMPLATES.followup.fr, en: DEFAULT_TEMPLATES.followup.en, ar: DEFAULT_TEMPLATES.followup.ar },
     followup_2: { fr: DEFAULT_TEMPLATES.followup_2.fr, en: DEFAULT_TEMPLATES.followup_2.en, ar: DEFAULT_TEMPLATES.followup_2.ar },
-    demo: { fr: DEFAULT_TEMPLATES.demo.fr, en: DEFAULT_TEMPLATES.demo.en, ar: DEFAULT_TEMPLATES.demo.ar },
-    ask_offer: { fr: DEFAULT_TEMPLATES.ask_offer.fr, en: DEFAULT_TEMPLATES.ask_offer.en, ar: DEFAULT_TEMPLATES.ask_offer.ar },
-    quote: { fr: DEFAULT_TEMPLATES.quote.fr, en: DEFAULT_TEMPLATES.quote.en, ar: DEFAULT_TEMPLATES.quote.ar },
-    deposit: { fr: DEFAULT_TEMPLATES.deposit.fr, en: DEFAULT_TEMPLATES.deposit.en, ar: DEFAULT_TEMPLATES.deposit.ar },
-    payment_received: { fr: DEFAULT_TEMPLATES.payment_received.fr, en: DEFAULT_TEMPLATES.payment_received.en, ar: DEFAULT_TEMPLATES.payment_received.ar },
-    progress_update: { fr: DEFAULT_TEMPLATES.progress_update.fr, en: DEFAULT_TEMPLATES.progress_update.en, ar: DEFAULT_TEMPLATES.progress_update.ar },
-    preview: { fr: DEFAULT_TEMPLATES.preview.fr, en: DEFAULT_TEMPLATES.preview.en, ar: DEFAULT_TEMPLATES.preview.ar },
-    confirm_changes: { fr: DEFAULT_TEMPLATES.confirm_changes.fr, en: DEFAULT_TEMPLATES.confirm_changes.en, ar: DEFAULT_TEMPLATES.confirm_changes.ar },
-    final_payment: { fr: DEFAULT_TEMPLATES.final_payment.fr, en: DEFAULT_TEMPLATES.final_payment.en, ar: DEFAULT_TEMPLATES.final_payment.ar },
-    delivery: { fr: DEFAULT_TEMPLATES.delivery.fr, en: DEFAULT_TEMPLATES.delivery.en, ar: DEFAULT_TEMPLATES.delivery.ar },
-    checkin: { fr: DEFAULT_TEMPLATES.checkin.fr, en: DEFAULT_TEMPLATES.checkin.en, ar: DEFAULT_TEMPLATES.checkin.ar },
-    referral: { fr: DEFAULT_TEMPLATES.referral.fr, en: DEFAULT_TEMPLATES.referral.en, ar: DEFAULT_TEMPLATES.referral.ar },
-    has_website: { fr: DEFAULT_TEMPLATES.has_website.fr, en: DEFAULT_TEMPLATES.has_website.en, ar: DEFAULT_TEMPLATES.has_website.ar },
-    not_interested: { fr: DEFAULT_TEMPLATES.not_interested.fr, en: DEFAULT_TEMPLATES.not_interested.en, ar: DEFAULT_TEMPLATES.not_interested.ar },
-    too_expensive: { fr: DEFAULT_TEMPLATES.too_expensive.fr, en: DEFAULT_TEMPLATES.too_expensive.en, ar: DEFAULT_TEMPLATES.too_expensive.ar },
-    cheaper: { fr: DEFAULT_TEMPLATES.cheaper.fr, en: DEFAULT_TEMPLATES.cheaper.en, ar: DEFAULT_TEMPLATES.cheaper.ar },
+    followup_3: { fr: DEFAULT_TEMPLATES.followup_3.fr, en: DEFAULT_TEMPLATES.followup_3.en, ar: DEFAULT_TEMPLATES.followup_3.ar },
+    review_request: { fr: DEFAULT_TEMPLATES.review_request.fr, en: DEFAULT_TEMPLATES.review_request.en, ar: DEFAULT_TEMPLATES.review_request.ar },
+    testimonial_request: { fr: DEFAULT_TEMPLATES.testimonial_request.fr, en: DEFAULT_TEMPLATES.testimonial_request.en, ar: DEFAULT_TEMPLATES.testimonial_request.ar },
   };
 }
 

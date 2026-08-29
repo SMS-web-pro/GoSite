@@ -125,25 +125,12 @@ export const prospects = pgTable(
     quoteCurrency: varchar("quote_currency", { length: 8 }).default("EUR"),
     // WhatsApp messages (bilingual: fr + en)
     whatsappMessages: jsonb("whatsapp_messages").$type<{
-      intro: { fr: string; en: string; ar: string };
-      followup: { fr: string; en: string; ar: string };
-      followup_2: { fr: string; en: string; ar: string };
-      demo: { fr: string; en: string; ar: string };
-      ask_offer: { fr: string; en: string; ar: string };
-      quote: { fr: string; en: string; ar: string };
-      deposit: { fr: string; en: string; ar: string };
-      payment_received: { fr: string; en: string; ar: string };
-      progress_update: { fr: string; en: string; ar: string };
-      preview: { fr: string; en: string; ar: string };
-      confirm_changes: { fr: string; en: string; ar: string };
-      final_payment: { fr: string; en: string; ar: string };
-      delivery: { fr: string; en: string; ar: string };
-      checkin: { fr: string; en: string; ar: string };
-      referral: { fr: string; en: string; ar: string };
-      has_website: { fr: string; en: string; ar: string };
-      not_interested: { fr: string; en: string; ar: string };
-      too_expensive: { fr: string; en: string; ar: string };
-      cheaper: { fr: string; en: string; ar: string };
+      intro: { fr: string; en: string };
+      demo: { fr: string; en: string };
+      quote: { fr: string; en: string };
+      delivery: { fr: string; en: string };
+      thanks: { fr: string; en: string };
+      followup?: { fr: string; en: string };
     } | null>(),
     // Payment simulation
     paymentStatus: varchar("payment_status", { length: 32 }).default("pending"),
@@ -281,24 +268,12 @@ export const settings = pgTable("settings", {
   // Message templates (overridable)
   messageTemplates: jsonb("message_templates").$type<{
     intro: string | { fr: string; en: string; ar: string };
-    followup: string | { fr: string; en: string; ar: string };
-    followup_2: string | { fr: string; en: string; ar: string };
     demo: string | { fr: string; en: string; ar: string };
-    ask_offer: string | { fr: string; en: string; ar: string };
     quote: string | { fr: string; en: string; ar: string };
-    deposit: string | { fr: string; en: string; ar: string };
     payment_received: string | { fr: string; en: string; ar: string };
-    progress_update: string | { fr: string; en: string; ar: string };
-    preview: string | { fr: string; en: string; ar: string };
-    confirm_changes: string | { fr: string; en: string; ar: string };
-    final_payment: string | { fr: string; en: string; ar: string };
     delivery: string | { fr: string; en: string; ar: string };
-    checkin: string | { fr: string; en: string; ar: string };
-    referral: string | { fr: string; en: string; ar: string };
-    has_website: string | { fr: string; en: string; ar: string };
-    not_interested: string | { fr: string; en: string; ar: string };
-    too_expensive: string | { fr: string; en: string; ar: string };
-    cheaper: string | { fr: string; en: string; ar: string };
+    thanks: string | { fr: string; en: string; ar: string };
+    followup: string | { fr: string; en: string; ar: string };
   }>(),
   // Custom branding
   brandColor: varchar("brand_color", { length: 16 }).default("#2563eb"),

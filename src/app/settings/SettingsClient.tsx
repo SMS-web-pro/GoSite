@@ -33,24 +33,12 @@ type Settings = {
   paymentLinkFinalMAD: string | null;
   messageTemplates: {
     intro: string | { fr: string; en: string; ar: string };
-    followup: string | { fr: string; en: string; ar: string };
-    followup_2: string | { fr: string; en: string; ar: string };
     demo: string | { fr: string; en: string; ar: string };
-    ask_offer: string | { fr: string; en: string; ar: string };
     quote: string | { fr: string; en: string; ar: string };
-    deposit: string | { fr: string; en: string; ar: string };
     payment_received: string | { fr: string; en: string; ar: string };
-    progress_update: string | { fr: string; en: string; ar: string };
-    preview: string | { fr: string; en: string; ar: string };
-    confirm_changes: string | { fr: string; en: string; ar: string };
-    final_payment: string | { fr: string; en: string; ar: string };
     delivery: string | { fr: string; en: string; ar: string };
-    checkin: string | { fr: string; en: string; ar: string };
-    referral: string | { fr: string; en: string; ar: string };
-    has_website: string | { fr: string; en: string; ar: string };
-    not_interested: string | { fr: string; en: string; ar: string };
-    too_expensive: string | { fr: string; en: string; ar: string };
-    cheaper: string | { fr: string; en: string; ar: string };
+    thanks: string | { fr: string; en: string; ar: string };
+    followup: string | { fr: string; en: string; ar: string };
   } | null;
   brandColor: string;
   logoUrl: string | null;
@@ -108,7 +96,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
   const [templates, setTemplates] = useState(() => {
     const raw: Record<string, any> = initialSettings.messageTemplates || {};
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    const stageKeys = ["intro", "followup", "followup_2", "demo", "ask_offer", "quote", "deposit", "payment_received", "progress_update", "preview", "confirm_changes", "final_payment", "delivery", "checkin", "referral", "has_website", "not_interested", "too_expensive", "cheaper"];
+    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
     for (const key of stageKeys) {
       const val = raw[key];
       const defaultVal = DEFAULT_TEMPLATES[key as keyof typeof DEFAULT_TEMPLATES];
@@ -459,28 +447,15 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             </div>
           </div>
           <div className="mt-4 space-y-4">
-            {(["intro", "followup", "followup_2", "demo", "ask_offer", "quote", "deposit", "payment_received", "progress_update", "preview", "confirm_changes", "final_payment", "delivery", "checkin", "referral", "has_website", "not_interested", "too_expensive", "cheaper"] as const).map((stage) => (
+            {(["intro", "demo", "quote", "payment_received", "delivery", "thanks"] as const).map((stage) => (
               <div key={stage}>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
                   {stage === "intro" ? "Message 1 — Premier contact" :
-                   stage === "followup" ? "Message 2 — Follow-up #1" :
-                   stage === "followup_2" ? "Message 3 — Follow-up #2 / Final" :
-                   stage === "demo" ? "Message 4 — Envoi de la démo" :
-                   stage === "ask_offer" ? "Message 5 — Demande d'offre" :
-                   stage === "quote" ? "Message 6 — Devis $249" :
-                   stage === "deposit" ? "Message 7 — Acompte" :
-                   stage === "payment_received" ? "Message 8 — Paiement reçu + Onboarding" :
-                   stage === "progress_update" ? "Message 9 — Mise à jour progression" :
-                   stage === "preview" ? "Message 10 — Aperçu" :
-                   stage === "confirm_changes" ? "Message 11 — Confirmer modifications" :
-                   stage === "final_payment" ? "Message 12 — Paiement final $150" :
-                   stage === "delivery" ? "Message 13 — Site en ligne" :
-                   stage === "checkin" ? "Message 14 — Check-in client" :
-                   stage === "referral" ? "Message 15 — Parrainage" :
-                   stage === "has_website" ? "Spécial — A déjà un site" :
-                   stage === "not_interested" ? "Spécial — Pas intéressé" :
-                   stage === "too_expensive" ? "Spécial — Trop cher" :
-                   "Spécial — Moins cher?"}
+                   stage === "demo" ? "Message 2 — Envoi de la démo" :
+                   stage === "quote" ? "Message 3 — Devis et lien de paiement" :
+                   stage === "payment_received" ? "Message 4 — Accusé de paiement" :
+                   stage === "delivery" ? "Message 5 — Livraison du site" :
+                   "Message 6 — Remerciement & fidélisation"}
                   <span className="ml-2 text-[10px] text-slate-400 font-normal">
                     ({editLang === "fr" ? "🇫🇷 Français" : editLang === "en" ? "🇬🇧 English" : "🇸🇦 العربية"})
                   </span>
