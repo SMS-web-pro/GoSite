@@ -136,6 +136,11 @@ export const prospects = pgTable(
     paymentStatus: varchar("payment_status", { length: 32 }).default("pending"),
     paymentDate: timestamp("payment_date", { withTimezone: true }),
     paymentAmount: integer("payment_amount"),
+    // Deposit/final payment tracking
+    depositPaid: boolean("deposit_paid").default(false),
+    depositPaidAt: timestamp("deposit_paid_at", { withTimezone: true }),
+    finalPaid: boolean("final_paid").default(false),
+    finalPaidAt: timestamp("final_paid_at", { withTimezone: true }),
     // Delivery date (24h after payment)
     deliveryDate: timestamp("delivery_date", { withTimezone: true }),
     // Legacy demo token (kept for backwards compat)
@@ -222,10 +227,32 @@ export const settings = pgTable("settings", {
   priceEUR: integer("price_eur").default(89900),
   priceUSD: integer("price_usd").default(99900),
   priceMAD: integer("price_mad").default(99900),
+
+  // Deposit pricing (stored in cents)
+  priceDepositEUR: integer("price_deposit_eur").default(9900),
+  priceDepositUSD: integer("price_deposit_usd").default(9900),
+  priceDepositMAD: integer("price_deposit_mad").default(9900),
+
+  // Final pricing (stored in cents)
+  priceFinalEUR: integer("price_final_eur").default(15000),
+  priceFinalUSD: integer("price_final_usd").default(15000),
+  priceFinalMAD: integer("price_final_mad").default(15000),
+
   // Payment links per currency
   paymentLinkEUR: text("payment_link_eur"),
   paymentLinkUSD: text("payment_link_usd"),
   paymentLinkMAD: text("payment_link_mad"),
+
+  // Deposit payment links
+  paymentLinkDepositEUR: text("payment_link_deposit_eur"),
+  paymentLinkDepositUSD: text("payment_link_deposit_usd"),
+  paymentLinkDepositMAD: text("payment_link_deposit_mad"),
+
+  // Final payment links
+  paymentLinkFinalEUR: text("payment_link_final_eur"),
+  paymentLinkFinalUSD: text("payment_link_final_usd"),
+  paymentLinkFinalMAD: text("payment_link_final_mad"),
+
   // Payment link (used in messages as {{payment_url}})
   paymentLink: text("payment_link"),
   // Default pricing tiers
@@ -304,6 +331,18 @@ export const messageLogs = pgTable(
   })
 );
 
+// Scheduled messages for automatic follow-ups
+export const scheduledMessages = pgTable("scheduled_messages", {
+  id: serial("id").primaryKey(),
+  prospectId: integer("prospect_id").notNull().references(() => prospects.id, { onDelete: "cascade" }),
+  campaignId: integer("campaign_id").references(() => campaigns.id, { onDelete: "set null" }),
+  messageType: varchar("message_type", { length: 32 }).notNull(),
+  scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull(),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
+  status: varchar("status", { length: 16 }).default("pending"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
 export type Search = typeof searches.$inferSelect;
 export type NewSearch = typeof searches.$inferInsert;
 export type Business = typeof businesses.$inferSelect;
@@ -316,3 +355,5 @@ export type Settings = typeof settings.$inferSelect;
 export type NewSettings = typeof settings.$inferInsert;
 export type MessageLog = typeof messageLogs.$inferSelect;
 export type NewMessageLog = typeof messageLogs.$inferInsert;
+export type ScheduledMessage = typeof scheduledMessages.$inferSelect;
+export type NewScheduledMessage = typeof scheduledMessages.$inferInsert;
