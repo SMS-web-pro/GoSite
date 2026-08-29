@@ -51,10 +51,6 @@ export type AppSettings = {
     delivery: string | { fr: string; en: string; ar: string };
     thanks: string | { fr: string; en: string; ar: string };
     followup: string | { fr: string; en: string; ar: string };
-    followup_2: string | { fr: string; en: string; ar: string };
-    followup_3: string | { fr: string; en: string; ar: string };
-    review_request: string | { fr: string; en: string; ar: string };
-    testimonial_request: string | { fr: string; en: string; ar: string };
   } | null;
   brandColor: string;
   logoUrl: string | null;

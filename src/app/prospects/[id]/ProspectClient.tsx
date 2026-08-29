@@ -23,7 +23,6 @@ type Business = {
   openingHours: string | null;
   facebook: string | null;
   instagram: string | null;
-  googleMapsUrl: string | null;
 };
 
 type Settings = {
@@ -46,18 +45,6 @@ type Settings = {
   paymentLinkEUR: string | null;
   paymentLinkUSD: string | null;
   paymentLinkMAD: string | null;
-  priceDepositEUR: number | null;
-  priceDepositUSD: number | null;
-  priceDepositMAD: number | null;
-  priceFinalEUR: number | null;
-  priceFinalUSD: number | null;
-  priceFinalMAD: number | null;
-  paymentLinkDepositEUR: string | null;
-  paymentLinkDepositUSD: string | null;
-  paymentLinkDepositMAD: string | null;
-  paymentLinkFinalEUR: string | null;
-  paymentLinkFinalUSD: string | null;
-  paymentLinkFinalMAD: string | null;
   brandColor: string;
   logoUrl: string | null;
   messageTemplates: {
@@ -68,10 +55,6 @@ type Settings = {
     delivery: string | { fr: string; en: string; ar: string };
     thanks: string | { fr: string; en: string; ar: string };
     followup: string | { fr: string; en: string; ar: string };
-    followup_2: string | { fr: string; en: string; ar: string };
-    followup_3: string | { fr: string; en: string; ar: string };
-    review_request: string | { fr: string; en: string; ar: string };
-    testimonial_request: string | { fr: string; en: string; ar: string };
   } | null;
 };
 
@@ -95,20 +78,12 @@ type Prospect = {
     delivery: string | { fr: string; en: string; ar: string };
     thanks: string | { fr: string; en: string; ar: string };
     followup: string | { fr: string; en: string; ar: string };
-    followup_2: string | { fr: string; en: string; ar: string };
-    followup_3: string | { fr: string; en: string; ar: string };
-    review_request: string | { fr: string; en: string; ar: string };
-    testimonial_request: string | { fr: string; en: string; ar: string };
   } | null;
   paymentStatus: string | null;
   paymentDate: Date | string | null;
   deliveryDate: Date | string | null;
   demoHtml: string | null;
   demoToken: string | null;
-  depositPaid: boolean | null;
-  depositPaidAt: Date | string | null;
-  finalPaid: boolean | null;
-  finalPaidAt: Date | string | null;
 };
 
 type Props = {
@@ -124,14 +99,9 @@ const STAGES = [
   { id: "contacted", label: "Contacté", icon: "💬" },
   { id: "demo_sent", label: "Démo envoyée", icon: "🎨" },
   { id: "quoted", label: "Devis envoyé", icon: "💰" },
-  { id: "negotiating", label: "En discussion", icon: "🤝" },
-  { id: "deposit_paid", label: "Acompte reçu", icon: "💳" },
-  { id: "in_development", label: "En développement", icon: "🔨" },
-  { id: "awaiting_review", label: "En attente validation", icon: "👀" },
-  { id: "revision", label: "En révision", icon: "✏️" },
+  { id: "paid", label: "Payé", icon: "✅" },
   { id: "delivered", label: "Livré", icon: "🚀" },
   { id: "completed", label: "Terminé", icon: "🎉" },
-  { id: "lost", label: "Perdu", icon: "❌" },
 ];
 
 export default function ProspectClient({ prospect: initialProspect, business: initialBusiness, settings, campaignLanguage, campaignCurrency }: Props) {
@@ -211,29 +181,6 @@ export default function ProspectClient({ prospect: initialProspect, business: in
 
     const tierPrice = detectedPrice;
 
-    const depositPrice = currency === "USD"
-      ? (settings.priceDepositUSD ?? 9900)
-      : currency === "MAD"
-      ? (settings.priceDepositMAD ?? 9900)
-      : (settings.priceDepositEUR ?? 9900);
-    const finalPrice = currency === "USD"
-      ? (settings.priceFinalUSD ?? 15000)
-      : currency === "MAD"
-      ? (settings.priceFinalMAD ?? 15000)
-      : (settings.priceFinalEUR ?? 15000);
-    const totalPrice = depositPrice + finalPrice;
-
-    const paymentDepositUrl = currency === "USD"
-      ? settings.paymentLinkDepositUSD
-      : currency === "MAD"
-      ? settings.paymentLinkDepositMAD
-      : settings.paymentLinkDepositEUR;
-    const paymentFinalUrl = currency === "USD"
-      ? settings.paymentLinkFinalUSD
-      : currency === "MAD"
-      ? settings.paymentLinkFinalMAD
-      : settings.paymentLinkFinalEUR;
-
     return {
       firstName: business.name.split(" ")[0] || "Bonjour",
       name: business.name,
@@ -250,12 +197,7 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       demo_url: prospect.externalDemoUrl || "",
       payment_url: detectedPaymentLink,
       final_site_url: prospect.externalSiteUrl || "",
-      price: tierPrice > 0 ? formatPrice(totalPrice, currency) : "",
-      price_deposit: formatPrice(depositPrice, currency),
-      price_final: formatPrice(finalPrice, currency),
-      payment_deposit_url: paymentDepositUrl || "",
-      payment_final_url: paymentFinalUrl || "",
-      google_review_url: (business as any).googleMapsUrl || "",
+      price: tierPrice > 0 ? formatPrice(tierPrice, currency) : "",
       features: "",
       tiers_block: "",
       agency_name: settings.agencyName || "Mon Agence",
@@ -332,9 +274,6 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       });
       if (res.ok) {
         showToast("✅ Message envoyé avec succès", "success");
-        if (messageStage === "intro") {
-          scheduleFollowups();
-        }
         return;
       }
       const data = await res.json();
@@ -428,14 +367,10 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       intro: "contacted",
       demo: "demo_sent",
       quote: "quoted",
-      payment_received: "deposit_paid",
+      payment_received: "paid",
       delivery: "delivered",
       thanks: "completed",
       followup: "contacted",
-      followup_2: "contacted",
-      followup_3: "contacted",
-      review_request: "completed",
-      testimonial_request: "completed",
     };
     const nextStage = stageMap[messageStage];
     if (nextStage) {
@@ -446,20 +381,6 @@ export default function ProspectClient({ prospect: initialProspect, business: in
   // Copy a clickable wa.me link to clipboard (for cases where the
   // direct WhatsApp URL is blocked by the browser)
   const stageIndex = STAGES.findIndex((s) => s.id === prospect.workflowStage);
-
-  const scheduleFollowups = async () => {
-    try {
-      await fetch(`/api/prospects/${prospect.id}/schedule-followups`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          campaignId: prospect.campaignId,
-        }),
-      });
-    } catch (e) {
-      console.error("Failed to schedule follow-ups", e);
-    }
-  };
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -796,7 +717,7 @@ function WhatsAppTab({
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, { fr: string; en: string; ar: string }>>(() => {
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks", "followup", "followup_2", "followup_3", "review_request", "testimonial_request"];
+    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
     for (const key of stageKeys) {
       const val = settingsTemplates[key];
       if (typeof val === "string") {
@@ -852,11 +773,6 @@ function WhatsAppTab({
     { id: "payment_received", title: "Message 4 — Accusé de paiement", desc: "Confirme la réception du paiement et annonce la livraison du site dans 24h.", icon: "✅" },
     { id: "delivery", title: "Message 5 — Livraison du site", desc: "Annonce la mise en ligne du site avec le lien final.", icon: "🚀" },
     { id: "thanks", title: "Message 6 — Remerciement & fidélisation", desc: "Message post-livraison pour fidéliser et offrir un avantage parrainage.", icon: "🙏" },
-    { id: "followup", title: "Message 7 — Relance J+3", desc: "Première relance si pas de réponse après l'envoi de la démo.", icon: "📬" },
-    { id: "followup_2", title: "Message 8 — Relance J+7", desc: "Deuxième relance avec offre bonus pour inciter à valider.", icon: "🎁" },
-    { id: "followup_3", title: "Message 9 — Relance finale J+14", desc: "Dernière relance avant clôture — mencionner la concurrence.", icon: "⏰" },
-    { id: "review_request", title: "Message 10 — Demande d'avis Google", desc: "Demande un avis Google après livraison du site.", icon: "⭐" },
-    { id: "testimonial_request", title: "Message 11 — Demande de témoignage", desc: "Demande un court témoignage pour les futurs clients.", icon: "📝" },
   ] as const;
 
   return (
