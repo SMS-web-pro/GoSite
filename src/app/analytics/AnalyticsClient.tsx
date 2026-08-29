@@ -34,10 +34,20 @@ const STAGE_INFO: Record<string, { label: string; color: string; icon: string }>
   delivered: { label: "Livré", color: "bg-emerald-100 text-emerald-700", icon: "🚀" },
   completed: { label: "Terminé", color: "bg-emerald-100 text-emerald-700", icon: "🎉" },
   intro: { label: "Premier contact", color: "bg-blue-100 text-blue-700", icon: "💬" },
+  followup: { label: "Follow-up #1", color: "bg-blue-100 text-blue-700", icon: "📬" },
+  followup_2: { label: "Follow-up #2", color: "bg-blue-100 text-blue-700", icon: "⏰" },
   demo: { label: "Démo", color: "bg-violet-100 text-violet-700", icon: "🎨" },
+  ask_offer: { label: "Demande d'offre", color: "bg-violet-100 text-violet-700", icon: "🤝" },
   quote: { label: "Devis", color: "bg-amber-100 text-amber-700", icon: "💰" },
+  deposit: { label: "Acompte", color: "bg-amber-100 text-amber-700", icon: "💳" },
+  payment_received: { label: "Paiement reçu", color: "bg-emerald-100 text-emerald-700", icon: "✅" },
+  progress_update: { label: "Progression", color: "bg-emerald-100 text-emerald-700", icon: "🔧" },
+  preview: { label: "Aperçu", color: "bg-violet-100 text-violet-700", icon: "👁️" },
+  confirm_changes: { label: "Modifications", color: "bg-violet-100 text-violet-700", icon: "📋" },
+  final_payment: { label: "Paiement final", color: "bg-amber-100 text-amber-700", icon: "💵" },
   delivery: { label: "Livraison", color: "bg-emerald-100 text-emerald-700", icon: "🚀" },
-  thanks: { label: "Remerciement", color: "bg-emerald-100 text-emerald-700", icon: "🙏" },
+  checkin: { label: "Check-in", color: "bg-emerald-100 text-emerald-700", icon: "😊" },
+  referral: { label: "Parrainage", color: "bg-emerald-100 text-emerald-700", icon: "🤝" },
 };
 
 export default function AnalyticsClient({

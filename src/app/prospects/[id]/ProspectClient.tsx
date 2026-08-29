@@ -62,16 +62,24 @@ type Settings = {
   logoUrl: string | null;
   messageTemplates: {
     intro: string | { fr: string; en: string; ar: string };
-    demo: string | { fr: string; en: string; ar: string };
-    quote: string | { fr: string; en: string; ar: string };
-    payment_received: string | { fr: string; en: string; ar: string };
-    delivery: string | { fr: string; en: string; ar: string };
-    thanks: string | { fr: string; en: string; ar: string };
     followup: string | { fr: string; en: string; ar: string };
     followup_2: string | { fr: string; en: string; ar: string };
-    followup_3: string | { fr: string; en: string; ar: string };
-    review_request: string | { fr: string; en: string; ar: string };
-    testimonial_request: string | { fr: string; en: string; ar: string };
+    demo: string | { fr: string; en: string; ar: string };
+    ask_offer: string | { fr: string; en: string; ar: string };
+    quote: string | { fr: string; en: string; ar: string };
+    deposit: string | { fr: string; en: string; ar: string };
+    payment_received: string | { fr: string; en: string; ar: string };
+    progress_update: string | { fr: string; en: string; ar: string };
+    preview: string | { fr: string; en: string; ar: string };
+    confirm_changes: string | { fr: string; en: string; ar: string };
+    final_payment: string | { fr: string; en: string; ar: string };
+    delivery: string | { fr: string; en: string; ar: string };
+    checkin: string | { fr: string; en: string; ar: string };
+    referral: string | { fr: string; en: string; ar: string };
+    has_website: string | { fr: string; en: string; ar: string };
+    not_interested: string | { fr: string; en: string; ar: string };
+    too_expensive: string | { fr: string; en: string; ar: string };
+    cheaper: string | { fr: string; en: string; ar: string };
   } | null;
 };
 
@@ -89,16 +97,24 @@ type Prospect = {
   paymentAmount: number | null;
   whatsappMessages: {
     intro: string | { fr: string; en: string; ar: string };
-    demo: string | { fr: string; en: string; ar: string };
-    quote: string | { fr: string; en: string; ar: string };
-    payment_received: string | { fr: string; en: string; ar: string };
-    delivery: string | { fr: string; en: string; ar: string };
-    thanks: string | { fr: string; en: string; ar: string };
     followup: string | { fr: string; en: string; ar: string };
     followup_2: string | { fr: string; en: string; ar: string };
-    followup_3: string | { fr: string; en: string; ar: string };
-    review_request: string | { fr: string; en: string; ar: string };
-    testimonial_request: string | { fr: string; en: string; ar: string };
+    demo: string | { fr: string; en: string; ar: string };
+    ask_offer: string | { fr: string; en: string; ar: string };
+    quote: string | { fr: string; en: string; ar: string };
+    deposit: string | { fr: string; en: string; ar: string };
+    payment_received: string | { fr: string; en: string; ar: string };
+    progress_update: string | { fr: string; en: string; ar: string };
+    preview: string | { fr: string; en: string; ar: string };
+    confirm_changes: string | { fr: string; en: string; ar: string };
+    final_payment: string | { fr: string; en: string; ar: string };
+    delivery: string | { fr: string; en: string; ar: string };
+    checkin: string | { fr: string; en: string; ar: string };
+    referral: string | { fr: string; en: string; ar: string };
+    has_website: string | { fr: string; en: string; ar: string };
+    not_interested: string | { fr: string; en: string; ar: string };
+    too_expensive: string | { fr: string; en: string; ar: string };
+    cheaper: string | { fr: string; en: string; ar: string };
   } | null;
   paymentStatus: string | null;
   paymentDate: Date | string | null;
@@ -796,7 +812,7 @@ function WhatsAppTab({
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, { fr: string; en: string; ar: string }>>(() => {
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks", "followup", "followup_2", "followup_3", "review_request", "testimonial_request"];
+    const stageKeys = ["intro", "followup", "followup_2", "demo", "ask_offer", "quote", "deposit", "payment_received", "progress_update", "preview", "confirm_changes", "final_payment", "delivery", "checkin", "referral", "has_website", "not_interested", "too_expensive", "cheaper"];
     for (const key of stageKeys) {
       const val = settingsTemplates[key];
       if (typeof val === "string") {
@@ -847,16 +863,24 @@ function WhatsAppTab({
 
   const stages = [
     { id: "intro", title: "Message 1 — Premier contact", desc: "Accroche personnalisée qui mentionne le business, ses avis et l'absence de site web.", icon: "💬" },
-    { id: "demo", title: "Message 2 — Envoi de la démo", desc: "Présente la démo et explique pourquoi ce business a besoin d'un site.", icon: "🎨" },
-    { id: "quote", title: "Message 3 — Devis et lien de paiement", desc: "Propose une offre tarifaire avec lien de paiement sécurisé.", icon: "💰" },
-    { id: "payment_received", title: "Message 4 — Accusé de paiement", desc: "Confirme la réception du paiement et annonce la livraison du site dans 24h.", icon: "✅" },
-    { id: "delivery", title: "Message 5 — Livraison du site", desc: "Annonce la mise en ligne du site avec le lien final.", icon: "🚀" },
-    { id: "thanks", title: "Message 6 — Remerciement & fidélisation", desc: "Message post-livraison pour fidéliser et offrir un avantage parrainage.", icon: "🙏" },
-    { id: "followup", title: "Message 7 — Relance J+3", desc: "Première relance si pas de réponse après l'envoi de la démo.", icon: "📬" },
-    { id: "followup_2", title: "Message 8 — Relance J+7", desc: "Deuxième relance avec offre bonus pour inciter à valider.", icon: "🎁" },
-    { id: "followup_3", title: "Message 9 — Relance finale J+14", desc: "Dernière relance avant clôture — mencionner la concurrence.", icon: "⏰" },
-    { id: "review_request", title: "Message 10 — Demande d'avis Google", desc: "Demande un avis Google après livraison du site.", icon: "⭐" },
-    { id: "testimonial_request", title: "Message 11 — Demande de témoignage", desc: "Demande un court témoignage pour les futurs clients.", icon: "📝" },
+    { id: "followup", title: "Message 2 — Follow-up #1 (J+2-3)", desc: "Première relance sans pression.", icon: "📬" },
+    { id: "followup_2", title: "Message 3 — Follow-up #2 / Final (J+4-5)", desc: "Dernier message de relance.", icon: "⏰" },
+    { id: "demo", title: "Message 4 — Envoi de la démo", desc: "Présente la démo et les fonctionnalités.", icon: "🎨" },
+    { id: "ask_offer", title: "Message 5 — Demande d'offre", desc: "Obtenir la permission de présenter le prix.", icon: "🤝" },
+    { id: "quote", title: "Message 6 — Devis $249", desc: "Propose l'offre tarifaire complète.", icon: "💰" },
+    { id: "deposit", title: "Message 7 — Acompte $99", desc: "Convertir l'intérêt en acompte.", icon: "💳" },
+    { id: "payment_received", title: "Message 8 — Paiement reçu + Onboarding", desc: "Confirme le paiement et collecte les infos.", icon: "✅" },
+    { id: "progress_update", title: "Message 9 — Mise à jour progression", desc: "Maintenir la confiance pendant la construction.", icon: "🔧" },
+    { id: "preview", title: "Message 10 — Aperçu", desc: "Obtenir l'approbation et collecter les révisions.", icon: "👁️" },
+    { id: "confirm_changes", title: "Message 11 — Confirmer modifications", desc: "Montrer le professionnalisme.", icon: "📋" },
+    { id: "final_payment", title: "Message 12 — Paiement final $150", desc: "Collecter le solde avant lancement.", icon: "💵" },
+    { id: "delivery", title: "Message 13 — Site en ligne", desc: "Livrer professionnellement et renforcer la valeur.", icon: "🚀" },
+    { id: "checkin", title: "Message 14 — Check-in client (7-14j)", desc: "Vérifier la satisfaction.", icon: "😊" },
+    { id: "referral", title: "Message 15 — Parrainage", desc: "Générer un autre client.", icon: "🤝" },
+    { id: "has_website", title: "Spécial — A déjà un site", desc: "Réponse si le client a déjà un site.", icon: "🌐" },
+    { id: "not_interested", title: "Spécial — Pas intéressé", desc: "Réponse si pas intéressé.", icon: "❌" },
+    { id: "too_expensive", title: "Spécial — Trop cher", desc: "Réponse si trop cher.", icon: "💲" },
+    { id: "cheaper", title: "Spécial — Moins cher?", desc: "Réponse si demande de réduction.", icon: "🤔" },
   ] as const;
 
   return (

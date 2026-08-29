@@ -21,11 +21,10 @@ export async function POST(
 
   const now = new Date();
 
-  // Schedule 3 follow-ups: J+3, J+7, J+14
+  // Schedule 2 follow-ups: J+3, J+7
   const followUps = [
     { messageType: "followup",   delayDays: 3  },
     { messageType: "followup_2", delayDays: 7  },
-    { messageType: "followup_3", delayDays: 14 },
   ];
 
   try {
