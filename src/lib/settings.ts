@@ -27,22 +27,6 @@ export type AppSettings = {
   paymentLinkEUR: string | null;
   paymentLinkUSD: string | null;
   paymentLinkMAD: string | null;
-  // Deposit pricing (cents)
-  priceDepositEUR: number | null;
-  priceDepositUSD: number | null;
-  priceDepositMAD: number | null;
-  // Final pricing (cents)
-  priceFinalEUR: number | null;
-  priceFinalUSD: number | null;
-  priceFinalMAD: number | null;
-  // Deposit payment links
-  paymentLinkDepositEUR: string | null;
-  paymentLinkDepositUSD: string | null;
-  paymentLinkDepositMAD: string | null;
-  // Final payment links
-  paymentLinkFinalEUR: string | null;
-  paymentLinkFinalUSD: string | null;
-  paymentLinkFinalMAD: string | null;
   messageTemplates: {
     intro: string | { fr: string; en: string; ar: string };
     demo: string | { fr: string; en: string; ar: string };
@@ -86,18 +70,6 @@ const DEFAULT_SETTINGS: Omit<AppSettings, "id" | "updatedAt"> = {
   paymentLinkEUR: null,
   paymentLinkUSD: null,
   paymentLinkMAD: null,
-  priceDepositEUR: 9900,
-  priceDepositUSD: 9900,
-  priceDepositMAD: 9900,
-  priceFinalEUR: 15000,
-  priceFinalUSD: 15000,
-  priceFinalMAD: 15000,
-  paymentLinkDepositEUR: null,
-  paymentLinkDepositUSD: null,
-  paymentLinkDepositMAD: null,
-  paymentLinkFinalEUR: null,
-  paymentLinkFinalUSD: null,
-  paymentLinkFinalMAD: null,
   messageTemplates: null,
   brandColor: "#2563eb",
   logoUrl: null,
@@ -140,18 +112,6 @@ export async function getSettings(): Promise<AppSettings> {
         paymentLinkEUR: (local as any).paymentLinkEUR ?? DEFAULT_SETTINGS.paymentLinkEUR,
         paymentLinkUSD: (local as any).paymentLinkUSD ?? DEFAULT_SETTINGS.paymentLinkUSD,
         paymentLinkMAD: (local as any).paymentLinkMAD ?? DEFAULT_SETTINGS.paymentLinkMAD,
-        priceDepositEUR: (local as any).priceDepositEUR ?? DEFAULT_SETTINGS.priceDepositEUR,
-        priceDepositUSD: (local as any).priceDepositUSD ?? DEFAULT_SETTINGS.priceDepositUSD,
-        priceDepositMAD: (local as any).priceDepositMAD ?? DEFAULT_SETTINGS.priceDepositMAD,
-        priceFinalEUR: (local as any).priceFinalEUR ?? DEFAULT_SETTINGS.priceFinalEUR,
-        priceFinalUSD: (local as any).priceFinalUSD ?? DEFAULT_SETTINGS.priceFinalUSD,
-        priceFinalMAD: (local as any).priceFinalMAD ?? DEFAULT_SETTINGS.priceFinalMAD,
-        paymentLinkDepositEUR: (local as any).paymentLinkDepositEUR ?? DEFAULT_SETTINGS.paymentLinkDepositEUR,
-        paymentLinkDepositUSD: (local as any).paymentLinkDepositUSD ?? DEFAULT_SETTINGS.paymentLinkDepositUSD,
-        paymentLinkDepositMAD: (local as any).paymentLinkDepositMAD ?? DEFAULT_SETTINGS.paymentLinkDepositMAD,
-        paymentLinkFinalEUR: (local as any).paymentLinkFinalEUR ?? DEFAULT_SETTINGS.paymentLinkFinalEUR,
-        paymentLinkFinalUSD: (local as any).paymentLinkFinalUSD ?? DEFAULT_SETTINGS.paymentLinkFinalUSD,
-        paymentLinkFinalMAD: (local as any).paymentLinkFinalMAD ?? DEFAULT_SETTINGS.paymentLinkFinalMAD,
       } as AppSettings;
     }
     // Last resort: return defaults
