@@ -9,46 +9,57 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
+  const { id } = await params;
   const prospectId = parseInt(id, 10);
   if (Number.isNaN(prospectId)) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid prospect ID" }, { status: 400 });
   }
+
+  const body = await req.json().catch(() => ({}));
+  const paymentType = body.type || "deposit"; // "deposit" or "final"
 
   const now = new Date();
-  const updates = {
-    paymentStatus: "paid",
-    paymentDate: now.toISOString(),
-    deliveryDate: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
-    workflowStage: "paid",
-  };
+  const updateData: any = {};
 
-  // Try DB first
+  if (paymentType === "deposit") {
+    updateData.depositPaid = true;
+    updateData.depositPaidAt = now;
+    updateData.paymentStatus = "deposit_paid";
+    updateData.workflowStage = "deposit_paid";
+  } else {
+    updateData.finalPaid = true;
+    updateData.finalPaidAt = now;
+    updateData.paymentStatus = "paid";
+    updateData.workflowStage = "paid";
+    updateData.deliveryDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  }
+
+  let updated;
   try {
-    const [updated] = await db
+    [updated] = await db
       .update(prospects)
-      .set({
-        ...updates,
-        paymentDate: now,
-        deliveryDate: new Date(now.getTime() + 24 * 60 * 60 * 1000),
-        updatedAt: now,
-      })
+      .set(updateData)
       .where(eq(prospects.id, prospectId))
       .returning();
-    if (updated) {
-      localStore.updateProspect(prospectId, updates);
-      return NextResponse.json({ prospect: updated, ok: true });
-    }
   } catch {
-    // DB unreachable — fall through to localStore
+    updated = null;
   }
 
-  const updated = localStore.updateProspect(prospectId, updates);
-  if (updated) {
-    return NextResponse.json({ prospect: updated, ok: true });
+  if (!updated) {
+    const data = localStore.get();
+    const p = data.prospects.find((p: any) => p.id === prospectId);
+    if (p) {
+      Object.assign(p, updateData);
+      localStore.save(data);
+      updated = p;
+    }
   }
 
-  return NextResponse.json({ error: "Prospect not found" }, { status: 404 });
+  if (!updated) {
+    return NextResponse.json({ error: "Prospect not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ prospect: updated, ok: true });
 }
