@@ -21,12 +21,10 @@ export async function POST(
 
   const now = new Date();
 
-  // Schedule 2 follow-ups per the WhatsApp Sales Workflow:
-  // MESSAGE 2 — Follow-up #1: Send after 2–3 days
-  // MESSAGE 3 — Follow-up #2 / Final: Send around 4–5 days later (J+7-8 total)
+  // Schedule 2 follow-ups: J+3, J+7
   const followUps = [
     { messageType: "followup",   delayDays: 3  },
-    { messageType: "followup_2", delayDays: 8  },
+    { messageType: "followup_2", delayDays: 7  },
   ];
 
   try {
