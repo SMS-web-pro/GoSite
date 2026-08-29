@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import { startAutoMessenger } from "@/lib/auto-messenger";
+
+// Start the auto-messenger cron on server startup
+if (typeof window === "undefined") {
+  startAutoMessenger();
+}
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"] });
