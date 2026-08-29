@@ -19,18 +19,6 @@ type Settings = {
   whatsappSessionName: string | null;
   whatsappConnectedAt: Date | string | null;
   paymentLink: string | null;
-  priceDepositEUR: number | null;
-  priceDepositUSD: number | null;
-  priceDepositMAD: number | null;
-  priceFinalEUR: number | null;
-  priceFinalUSD: number | null;
-  priceFinalMAD: number | null;
-  paymentLinkDepositEUR: string | null;
-  paymentLinkDepositUSD: string | null;
-  paymentLinkDepositMAD: string | null;
-  paymentLinkFinalEUR: string | null;
-  paymentLinkFinalUSD: string | null;
-  paymentLinkFinalMAD: string | null;
   messageTemplates: {
     intro: string | { fr: string; en: string; ar: string };
     demo: string | { fr: string; en: string; ar: string };
@@ -72,26 +60,6 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
   const [paymentLinkEUR, setPaymentLinkEUR] = useState((initialSettings as any).paymentLinkEUR || "");
   const [paymentLinkUSD, setPaymentLinkUSD] = useState((initialSettings as any).paymentLinkUSD || "");
   const [paymentLinkMAD, setPaymentLinkMAD] = useState((initialSettings as any).paymentLinkMAD || "");
-
-  // Deposit pricing (cents)
-  const [priceDepositEUR, setPriceDepositEUR] = useState(((initialSettings as any).priceDepositEUR ?? 9900) / 100);
-  const [priceDepositUSD, setPriceDepositUSD] = useState(((initialSettings as any).priceDepositUSD ?? 9900) / 100);
-  const [priceDepositMAD, setPriceDepositMAD] = useState(((initialSettings as any).priceDepositMAD ?? 9900) / 100);
-
-  // Final pricing (cents)
-  const [priceFinalEUR, setPriceFinalEUR] = useState(((initialSettings as any).priceFinalEUR ?? 15000) / 100);
-  const [priceFinalUSD, setPriceFinalUSD] = useState(((initialSettings as any).priceFinalUSD ?? 15000) / 100);
-  const [priceFinalMAD, setPriceFinalMAD] = useState(((initialSettings as any).priceFinalMAD ?? 15000) / 100);
-
-  // Deposit payment links
-  const [paymentLinkDepositEUR, setPaymentLinkDepositEUR] = useState((initialSettings as any).paymentLinkDepositEUR || "");
-  const [paymentLinkDepositUSD, setPaymentLinkDepositUSD] = useState((initialSettings as any).paymentLinkDepositUSD || "");
-  const [paymentLinkDepositMAD, setPaymentLinkDepositMAD] = useState((initialSettings as any).paymentLinkDepositMAD || "");
-
-  // Final payment links
-  const [paymentLinkFinalEUR, setPaymentLinkFinalEUR] = useState((initialSettings as any).paymentLinkFinalEUR || "");
-  const [paymentLinkFinalUSD, setPaymentLinkFinalUSD] = useState((initialSettings as any).paymentLinkFinalUSD || "");
-  const [paymentLinkFinalMAD, setPaymentLinkFinalMAD] = useState((initialSettings as any).paymentLinkFinalMAD || "");
 
   const [templates, setTemplates] = useState(() => {
     const raw: Record<string, any> = initialSettings.messageTemplates || {};
@@ -156,18 +124,6 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
           paymentLinkEUR: paymentLinkEUR || null,
           paymentLinkUSD: paymentLinkUSD || null,
           paymentLinkMAD: paymentLinkMAD || null,
-          priceDepositEUR: Math.round(priceDepositEUR * 100),
-          priceDepositUSD: Math.round(priceDepositUSD * 100),
-          priceDepositMAD: Math.round(priceDepositMAD * 100),
-          priceFinalEUR: Math.round(priceFinalEUR * 100),
-          priceFinalUSD: Math.round(priceFinalUSD * 100),
-          priceFinalMAD: Math.round(priceFinalMAD * 100),
-          paymentLinkDepositEUR: paymentLinkDepositEUR || null,
-          paymentLinkDepositUSD: paymentLinkDepositUSD || null,
-          paymentLinkDepositMAD: paymentLinkDepositMAD || null,
-          paymentLinkFinalEUR: paymentLinkFinalEUR || null,
-          paymentLinkFinalUSD: paymentLinkFinalUSD || null,
-          paymentLinkFinalMAD: paymentLinkFinalMAD || null,
           brandColor,
           messageTemplates: safeTemplates,
         }),
@@ -250,9 +206,9 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
       {activeTab === "pricing" && (
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <div className="mb-4">
-            <h2 className="text-sm font-semibold text-slate-900">💰 Tarifs & Paiement</h2>
+            <h2 className="text-sm font-semibold text-slate-900">💰 Prix par marché</h2>
             <p className="text-xs text-slate-500">
-              Définissez l'acompte et le solde final par devise. Les liens de paiement seront utilisés dans les templates de messages.
+              Définissez un seul prix par marché. Le prix et le lien de paiement seront détectés automatiquement selon la langue du prospect.
             </p>
           </div>
 
@@ -265,43 +221,21 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Acompte (€)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Prix (€)</label>
                   <input
                     type="number"
-                    value={priceDepositEUR}
-                    onChange={(e) => setPriceDepositEUR(parseFloat(e.target.value) || 0)}
-                    step="1"
+                    value={priceEUR}
+                    onChange={(e) => setPriceEUR(parseFloat(e.target.value) || 0)}
+                    step="10"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceDepositEUR * 100} centimes</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{priceEUR * 100} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Solde final (€)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien de paiement EUR</label>
                   <input
-                    type="number"
-                    value={priceFinalEUR}
-                    onChange={(e) => setPriceFinalEUR(parseFloat(e.target.value) || 0)}
-                    step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-                  />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceFinalEUR * 100} centimes</p>
-                </div>
-              </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien paiement acompte</label>
-                  <input
-                    value={paymentLinkDepositEUR}
-                    onChange={(e) => setPaymentLinkDepositEUR(e.target.value)}
-                    placeholder="https://buy.stripe.com/..."
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien paiement solde</label>
-                  <input
-                    value={paymentLinkFinalEUR}
-                    onChange={(e) => setPaymentLinkFinalEUR(e.target.value)}
+                    value={paymentLinkEUR}
+                    onChange={(e) => setPaymentLinkEUR(e.target.value)}
                     placeholder="https://buy.stripe.com/..."
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
@@ -317,43 +251,21 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit ($)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Prix ($)</label>
                   <input
                     type="number"
-                    value={priceDepositUSD}
-                    onChange={(e) => setPriceDepositUSD(parseFloat(e.target.value) || 0)}
-                    step="1"
+                    value={priceUSD}
+                    onChange={(e) => setPriceUSD(parseFloat(e.target.value) || 0)}
+                    step="10"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceDepositUSD * 100} cents</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{priceUSD * 100} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Final payment ($)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien de paiement USD</label>
                   <input
-                    type="number"
-                    value={priceFinalUSD}
-                    onChange={(e) => setPriceFinalUSD(parseFloat(e.target.value) || 0)}
-                    step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-                  />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceFinalUSD * 100} cents</p>
-                </div>
-              </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit payment link</label>
-                  <input
-                    value={paymentLinkDepositUSD}
-                    onChange={(e) => setPaymentLinkDepositUSD(e.target.value)}
-                    placeholder="https://buy.stripe.com/..."
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Final payment link</label>
-                  <input
-                    value={paymentLinkFinalUSD}
-                    onChange={(e) => setPaymentLinkFinalUSD(e.target.value)}
+                    value={paymentLinkUSD}
+                    onChange={(e) => setPaymentLinkUSD(e.target.value)}
                     placeholder="https://buy.stripe.com/..."
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
@@ -369,43 +281,21 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Acompte (DH)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Prix (DH)</label>
                   <input
                     type="number"
-                    value={priceDepositMAD}
-                    onChange={(e) => setPriceDepositMAD(parseFloat(e.target.value) || 0)}
-                    step="1"
+                    value={priceMAD}
+                    onChange={(e) => setPriceMAD(parseFloat(e.target.value) || 0)}
+                    step="10"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceDepositMAD * 100} centimes</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{priceMAD * 100} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Solde final (DH)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien de paiement MAD</label>
                   <input
-                    type="number"
-                    value={priceFinalMAD}
-                    onChange={(e) => setPriceFinalMAD(parseFloat(e.target.value) || 0)}
-                    step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-                  />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceFinalMAD * 100} centimes</p>
-                </div>
-              </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien paiement acompte</label>
-                  <input
-                    value={paymentLinkDepositMAD}
-                    onChange={(e) => setPaymentLinkDepositMAD(e.target.value)}
-                    placeholder="https://buy.stripe.com/..."
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien paiement solde</label>
-                  <input
-                    value={paymentLinkFinalMAD}
-                    onChange={(e) => setPaymentLinkFinalMAD(e.target.value)}
+                    value={paymentLinkMAD}
+                    onChange={(e) => setPaymentLinkMAD(e.target.value)}
                     placeholder="https://buy.stripe.com/..."
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
