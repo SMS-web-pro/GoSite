@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { messageLogs, prospects, scheduledMessages } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { messageLogs, prospects } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { localStore } from "@/lib/local-store";
 
 export const runtime = "nodejs";
@@ -47,19 +47,6 @@ export async function POST(
         phone: prospect.externalDemoUrl || null,
       })
       .returning();
-
-    // Cancel pending follow-ups for this prospect
-    try {
-      await db
-        .update(scheduledMessages)
-        .set({ status: "cancelled" })
-        .where(
-          and(
-            eq(scheduledMessages.prospectId, prospectId),
-            eq(scheduledMessages.status, "pending")
-          )
-        );
-    } catch {}
 
     return NextResponse.json({ log });
   } catch (err) {
