@@ -51042,39 +51042,80 @@
   ],
   "settings": {
     "agencyName": "GoSite",
-    "contactName": "youssef",
+    "contactName": "Youssef Sahab",
     "contactEmail": "contact@gosite.digital",
-    "contactPhone": "+212751134318",
-    "websiteUrl": "gosite.digital",
-    "portfolioUrl": null,
-    "whatsappNumber": "+212669549933",
-    "whatsappSessionId": null,
-    "whatsappSessionPhone": null,
-    "whatsappSessionName": null,
-    "whatsappConnectedAt": null,
+    "contactPhone": "+212725360133",
+    "websiteUrl": "https://gosite.digital",
+    "portfolioUrl": "https://gosite.digital/portfolio",
+    "whatsappNumber": "+212725360133",
+    "whatsappSessionId": "wa_1788012891277",
+    "whatsappSessionPhone": "212725360133s.whatsapp.net",
+    "whatsappSessionName": "gosite",
+    "whatsappConnectedAt": "2026-08-29T14:14:51.277Z",
     "whatsappCloudPhoneId": null,
     "whatsappCloudAccessToken": null,
     "whatsappCloudBusinessId": null,
     "paymentLink": null,
     "priceEUR": 24900,
-    "priceUSD": 34900,
+    "priceUSD": 24900,
     "priceMAD": 130000,
-    "paymentLinkEUR": "https://whop.com/checkout/plan_eur",
-    "paymentLinkUSD": "https://whop.com/checkout/plan_usd",
-    "paymentLinkMAD": "https://whop.com/checkout/plan_mad",
+    "paymentLinkEUR": "https://whop.com/checkout/plan_7NDYwhNbClHLY",
+    "paymentLinkUSD": "https://whop.com/checkout/plan_Amgh3S6nMFvrV",
+    "paymentLinkMAD": "https://whop.com/checkout/plan_uuDkgGzruf2QK",
     "messageTemplates": {
-      "intro": "Bonjour {{firstName}} 👋\n\nJe me permets de vous contacter car je suis tombé(e) sur votre {{sector}} à {{city}} et j'ai été vraiment impressionné(e) par ce que vous proposez{{#if rating}} (note {{rating}}/5 sur Google — bravo !){{/if}}{{#if cuisine}}, notamment votre cuisine {{cuisine}}{{/if}}.\n\nJ'ai remarqué que vous n'avez pas encore de site web, et c'est un vrai manque aujourd'hui : la majorité de vos futurs clients vous cherchent sur Google avant de venir.\n\n👉 J'ai préparé **gratuitement** une démo personnalisée de ce que pourrait être votre site web professionnel. Vous la trouverez ici :\n{{demo_url}}\n\nHâte d'avoir votre avis 😊\n{{#if phone}}Si vous préférez qu'on en parle de vive voix : {{phone}}{{/if}}",
-      "demo": "Comme promis, voici la démo personnalisée pour **{{name}}** :\n🌐 {{demo_url}}\n\n✨ Ce que j'ai mis en avant :\n• Votre {{sector}} situé à {{city}}{{#if cuisine}}\n• Votre spécialité {{cuisine}}{{/if}}{{#if rating}}\n• Votre note {{rating}}/5 sur Google{{/if}}\n• Un design moderne adapté à votre image\n• Un bouton pour vous appeler en 1 clic{{#if openingHours}}\n• Vos horaires : {{openingHours}}{{/if}}\n• Une carte Google Maps intégrée\n\nLe site est responsive (parfait sur mobile) et optimisé pour Google. Vous voyez ce que ça donnerait concrètement ?",
-      "quote": "Suite à votre intérêt pour le site, voici ma proposition :\n\n📦 **{{name}} — Site web professionnel clé en main**\n\n💰 **Tarif : {{price}}**\n{{features}}\n\nPour accepter et démarrer aujourd'hui :\n💳 {{payment_url}}\n\n⚠️ Cette offre est valable 7 jours. Au plaisir de travailler ensemble !",
-      "delivery": "🎉 **Votre site est en ligne !**\n\nBonjour {{firstName}}, votre site web professionnel est désormais accessible à l'adresse :\n🌐 {{final_site_url}}\n\n✅ Hébergement inclus pour 1 an\n✅ Domaine personnalisé\n✅ Certificat SSL (sécurisé HTTPS)\n✅ Optimisé pour Google\n\n📊 Un petit guide PDF avec toutes les instructions pour le modifier vous-même est en pièce jointe.\n\nN'hésitez pas si vous avez la moindre question, je reste disponible !\nBelle continuation à {{name}} 🚀",
-      "thanks": "Un grand merci {{firstName}} 🙏\n\nVotre confiance me touche sincèrement. Quelques infos pour la suite :\n\n📅 Je vous recontacte dans 3 mois pour voir comment se passe le site et s'il y a des ajustements à faire.\n\n💌 Si dans votre entourage un commerce a besoin d'un site, n'hésitez pas à me recommander — je vous offrirai une réduction sur votre abonnement annuel en guise de remerciement.\n\nAu plaisir, et encore merci !\nBelle journée ☀️",
-      "payment_received": "Bonjour {{firstName}} 👋\n\nBien reçu votre paiement, un grand merci pour votre confiance ! 🎉\n\nLe développement et la mise en ligne du site web pour *{{name}}* sont désormais lancés.\n\nVous recevrez le lien final de votre site internet ici même sous *24h*.\n\nSi vous avez la moindre question d'ici là, n'hésitez pas à me contacter.",
-      "followup": "Bonjour {{firstName}} 👋\n\nJe me permets de revenir vers vous au sujet de la démo de site web que je vous avais envoyée pour *{{name}}*.\n\nAvez-vous eu le temps de la regarder ? Si ce n'est pas le bon moment, pas de souci — je peux aussi simplement vous appeler pour en discuter en 5 minutes.\n\nSinon, dites-moi ce qui vous ferait hésiter (budget, délais, fonctionnalités...) et j'adapte la proposition."
+      "demo": {
+        "ar": "Demo AR",
+        "en": "Demo EN",
+        "fr": "Demo FR"
+      },
+      "intro": {
+        "ar": "مرحبا TEST",
+        "en": "Hi TEST",
+        "fr": "Bonjour TEST"
+      },
+      "quote": {
+        "ar": "Quote AR",
+        "en": "Quote EN",
+        "fr": "Quote FR"
+      },
+      "thanks": {
+        "ar": "Thx AR",
+        "en": "Thx EN",
+        "fr": "Thx FR"
+      },
+      "delivery": {
+        "ar": "Del AR",
+        "en": "Del EN",
+        "fr": "Del FR"
+      },
+      "followup": {
+        "ar": "Fu AR",
+        "en": "Fu EN",
+        "fr": "Fu FR"
+      },
+      "payment_received": {
+        "ar": "Pay AR",
+        "en": "Pay EN",
+        "fr": "Pay FR"
+      }
     },
-    "brandColor": "#2563eb",
+    "brandColor": "#E8622A",
     "logoUrl": null,
     "id": 1,
-    "updatedAt": "2026-08-15T23:11:15.897Z",
-    "messageLanguage": "fr"
+    "updatedAt": "2026-08-30T22:21:47.358Z",
+    "messageLanguage": "en",
+    "depositPriceEUR": 12450,
+    "depositPriceUSD": 12450,
+    "depositPriceMAD": 65000,
+    "finalPriceEUR": 15000,
+    "finalPriceUSD": 15000,
+    "finalPriceMAD": 65000,
+    "depositPaymentLinkEUR": null,
+    "depositPaymentLinkUSD": null,
+    "depositPaymentLinkMAD": null,
+    "finalPaymentLinkEUR": null,
+    "finalPaymentLinkUSD": null,
+    "finalPaymentLinkMAD": null,
+    "pricingTiers": null
   }
 }
