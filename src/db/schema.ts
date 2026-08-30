@@ -123,6 +123,13 @@ export const prospects = pgTable(
     // Quote / pricing
     quoteAmount: integer("quote_amount"),
     quoteCurrency: varchar("quote_currency", { length: 8 }).default("EUR"),
+    totalAmount: integer("total_amount"),
+    depositAmount: integer("deposit_amount"),
+    finalAmount: integer("final_amount"),
+    depositStatus: varchar("deposit_status", { length: 32 }).default("pending"),
+    finalPaymentStatus: varchar("final_payment_status", { length: 32 }).default("pending"),
+    depositDate: timestamp("deposit_date", { withTimezone: true }),
+    finalPaymentDate: timestamp("final_payment_date", { withTimezone: true }),
     // WhatsApp messages (bilingual: fr + en)
     whatsappMessages: jsonb("whatsapp_messages").$type<{
       intro: { fr: string; en: string };
@@ -226,6 +233,18 @@ export const settings = pgTable("settings", {
   paymentLinkEUR: text("payment_link_eur"),
   paymentLinkUSD: text("payment_link_usd"),
   paymentLinkMAD: text("payment_link_mad"),
+  depositPriceEUR: integer("deposit_price_eur").default(9900),
+  depositPriceUSD: integer("deposit_price_usd").default(9900),
+  depositPriceMAD: integer("deposit_price_mad").default(99000),
+  finalPriceEUR: integer("final_price_eur").default(15000),
+  finalPriceUSD: integer("final_price_usd").default(15000),
+  finalPriceMAD: integer("final_price_mad").default(150000),
+  depositPaymentLinkEUR: text("deposit_payment_link_eur"),
+  depositPaymentLinkUSD: text("deposit_payment_link_usd"),
+  depositPaymentLinkMAD: text("deposit_payment_link_mad"),
+  finalPaymentLinkEUR: text("final_payment_link_eur"),
+  finalPaymentLinkUSD: text("final_payment_link_usd"),
+  finalPaymentLinkMAD: text("final_payment_link_mad"),
   // Payment link (used in messages as {{payment_url}})
   paymentLink: text("payment_link"),
   // Default pricing tiers

@@ -15,6 +15,13 @@
       "when": 1787308845386,
       "tag": "0001_add_pricing_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1724970000000,
+      "tag": "0004_split_payment",
+      "breakpoints": true
     }
   ]
 }
