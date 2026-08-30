@@ -452,7 +452,7 @@ Merci pour votre confiance !`,
 🚀 Launching now, you'll get {{final_site_url}} within 24h.`,
     ar: `ممتاز {{firstName}} — تم استلام {{final_price}} ✅
 
-🚀 جارٍ الإطلاق...`,
+🚀 جارٍ الإطلاق، ستتلقى {{final_site_url}} خلال 24 ساعة.`,
   },
 
   // =====================================================
