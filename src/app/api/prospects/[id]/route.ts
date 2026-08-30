@@ -63,7 +63,7 @@ export async function PATCH(
   if (body.notes !== undefined) updates.notes = body.notes;
   if (body.vibecoderPrompt) updates.vibecoderPrompt = body.vibecoderPrompt;
   if (body.whatsappMessages) updates.whatsappMessages = body.whatsappMessages;
-  // Payment
+  // Payment — legacy + 2-step split
   if (body.paymentStatus) updates.paymentStatus = body.paymentStatus;
   if (body.paymentAmount !== undefined) updates.paymentAmount = body.paymentAmount;
   if (body.paymentStatus === "paid") {
@@ -71,6 +71,23 @@ export async function PATCH(
     updates.deliveryDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
     updates.workflowStage = "paid";
   }
+  if (body.depositStatus) updates.depositStatus = body.depositStatus;
+  if (body.finalPaymentStatus) updates.finalPaymentStatus = body.finalPaymentStatus;
+  if (body.depositStatus === "paid") {
+    updates.depositDate = new Date();
+    updates.workflowStage = "deposit_paid";
+  }
+  if (body.finalPaymentStatus === "paid") {
+    updates.finalPaymentDate = new Date();
+    updates.paymentDate = new Date();
+    updates.paymentStatus = "paid";
+    updates.workflowStage = "paid";
+  }
+  if (body.totalAmount !== undefined) updates.totalAmount = body.totalAmount;
+  if (body.depositAmount !== undefined) updates.depositAmount = body.depositAmount;
+  if (body.finalAmount !== undefined) updates.finalAmount = body.finalAmount;
+  if (body.depositDate !== undefined) updates.depositDate = body.depositDate ? new Date(body.depositDate) : null;
+  if (body.finalPaymentDate !== undefined) updates.finalPaymentDate = body.finalPaymentDate ? new Date(body.finalPaymentDate) : null;
   // Quotes & external links
   if (body.quoteAmount !== undefined) updates.quoteAmount = body.quoteAmount;
   if (body.quoteCurrency) updates.quoteCurrency = body.quoteCurrency;
@@ -86,11 +103,14 @@ export async function PATCH(
   if (body.quoteTier) {
     const settings = await getSettings();
     const currency = detectProspectCurrency(body.country || null, body.city || null);
-    const tierPrice = currency === "EUR" ? (settings.priceEUR || 0)
-      : currency === "USD" ? (settings.priceUSD || 0)
-      : (settings.priceMAD || 0);
-    updates.quoteAmount = tierPrice;
+    const deposit = currency === "EUR" ? (settings as any).depositPriceEUR || 9900 : currency === "USD" ? (settings as any).depositPriceUSD || 9900 : (settings as any).depositPriceMAD || 99000;
+    const final = currency === "EUR" ? (settings as any).finalPriceEUR || 15000 : currency === "USD" ? (settings as any).finalPriceUSD || 15000 : (settings as any).finalPriceMAD || 150000;
+    const total = deposit + final;
+    updates.quoteAmount = total;
     updates.quoteCurrency = currency;
+    updates.totalAmount = total;
+    updates.depositAmount = deposit;
+    updates.finalAmount = final;
   }
 
   try {

@@ -45,6 +45,18 @@ type Settings = {
   paymentLinkEUR: string | null;
   paymentLinkUSD: string | null;
   paymentLinkMAD: string | null;
+  depositPriceEUR: number | null;
+  depositPriceUSD: number | null;
+  depositPriceMAD: number | null;
+  finalPriceEUR: number | null;
+  finalPriceUSD: number | null;
+  finalPriceMAD: number | null;
+  depositPaymentLinkEUR: string | null;
+  depositPaymentLinkUSD: string | null;
+  depositPaymentLinkMAD: string | null;
+  finalPaymentLinkEUR: string | null;
+  finalPaymentLinkUSD: string | null;
+  finalPaymentLinkMAD: string | null;
   brandColor: string;
   logoUrl: string | null;
   messageTemplates: {
@@ -69,12 +81,22 @@ type Prospect = {
   externalSiteUrl: string | null;
   quoteAmount: number | null;
   quoteCurrency: string | null;
+  totalAmount: number | null;
+  depositAmount: number | null;
+  finalAmount: number | null;
+  depositStatus: string | null;
+  finalPaymentStatus: string | null;
+  depositDate: string | Date | null;
+  finalPaymentDate: string | Date | null;
   paymentAmount: number | null;
   whatsappMessages: {
     intro: string | { fr: string; en: string; ar: string };
     demo: string | { fr: string; en: string; ar: string };
     quote: string | { fr: string; en: string; ar: string };
+    deposit_received: string | { fr: string; en: string; ar: string };
     payment_received: string | { fr: string; en: string; ar: string };
+    final_payment_request: string | { fr: string; en: string; ar: string };
+    final_payment_received: string | { fr: string; en: string; ar: string };
     delivery: string | { fr: string; en: string; ar: string };
     thanks: string | { fr: string; en: string; ar: string };
     followup: string | { fr: string; en: string; ar: string };
@@ -165,21 +187,15 @@ export default function ProspectClient({ prospect: initialProspect, business: in
     return out;
   };
 
-  // Compute template variables for this prospect
+  // Compute template variables for this prospect — 2-step split payment
   const getTemplateVars = () => {
     const currency = campaignCurrency || "EUR";
-
-    let detectedPrice = 0;
-    if (currency === "EUR") detectedPrice = (settings as any).priceEUR || 89900;
-    else if (currency === "USD") detectedPrice = (settings as any).priceUSD || 99900;
-    else if (currency === "MAD") detectedPrice = (settings as any).priceMAD || 99900;
-
-    let detectedPaymentLink = settings.paymentLink || "";
-    if (currency === "EUR" && (settings as any).paymentLinkEUR) detectedPaymentLink = (settings as any).paymentLinkEUR;
-    else if (currency === "USD" && (settings as any).paymentLinkUSD) detectedPaymentLink = (settings as any).paymentLinkUSD;
-    else if (currency === "MAD" && (settings as any).paymentLinkMAD) detectedPaymentLink = (settings as any).paymentLinkMAD;
-
-    const tierPrice = detectedPrice;
+    const isEUR = currency === "EUR", isUSD = currency === "USD";
+    const total = isEUR ? ((settings as any).depositPriceEUR || 9900) + ((settings as any).finalPriceEUR || 15000) : isUSD ? ((settings as any).depositPriceUSD || 9900) + ((settings as any).finalPriceUSD || 15000) : ((settings as any).depositPriceMAD || 99000) + ((settings as any).finalPriceMAD || 150000);
+    const deposit = isEUR ? (settings as any).depositPriceEUR || 9900 : isUSD ? (settings as any).depositPriceUSD || 9900 : (settings as any).depositPriceMAD || 99000;
+    const final = isEUR ? (settings as any).finalPriceEUR || 15000 : isUSD ? (settings as any).finalPriceUSD || 15000 : (settings as any).finalPriceMAD || 150000;
+    const depositUrl = isEUR ? (settings as any).depositPaymentLinkEUR : isUSD ? (settings as any).depositPaymentLinkUSD : (settings as any).depositPaymentLinkMAD;
+    const finalUrl = isEUR ? (settings as any).finalPaymentLinkEUR : isUSD ? (settings as any).finalPaymentLinkUSD : (settings as any).finalPaymentLinkMAD;
 
     return {
       firstName: business.name.split(" ")[0] || "Bonjour",
@@ -195,9 +211,14 @@ export default function ProspectClient({ prospect: initialProspect, business: in
       description: business.description || "",
       website: business.website || "",
       demo_url: prospect.externalDemoUrl || "",
-      payment_url: detectedPaymentLink,
+      payment_url: depositUrl || "",
       final_site_url: prospect.externalSiteUrl || "",
-      price: tierPrice > 0 ? formatPrice(tierPrice, currency) : "",
+      price: formatPrice(deposit, currency),
+      total_price: formatPrice(total, currency),
+      deposit_price: formatPrice(deposit, currency),
+      final_price: formatPrice(final, currency),
+      deposit_payment_url: depositUrl || "",
+      final_payment_url: finalUrl || "",
       features: "",
       tiers_block: "",
       agency_name: settings.agencyName || "Mon Agence",
@@ -361,13 +382,16 @@ export default function ProspectClient({ prospect: initialProspect, business: in
     window.location.href = mobileUrl;
   };
 
-  // Advance the workflow stage based on the message being sent
+  // Advance the workflow stage based on the message being sent — 2-step split payment
   const advanceWorkflow = (messageStage: string) => {
     const stageMap: Record<string, string> = {
       intro: "contacted",
       demo: "demo_sent",
       quote: "quoted",
-      payment_received: "paid",
+      deposit_received: "deposit_paid",
+      payment_received: "deposit_paid",
+      final_payment_request: "quoted",
+      final_payment_received: "paid",
       delivery: "delivered",
       thanks: "completed",
       followup: "contacted",
@@ -717,7 +741,7 @@ function WhatsAppTab({
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, { fr: string; en: string; ar: string }>>(() => {
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
+    const stageKeys = ["intro", "demo", "quote", "deposit_received", "payment_received", "final_payment_request", "final_payment_received", "delivery", "thanks"];
     for (const key of stageKeys) {
       const val = settingsTemplates[key];
       if (typeof val === "string") {
@@ -768,11 +792,13 @@ function WhatsAppTab({
 
   const stages = [
     { id: "intro", title: "Message 1 — Premier contact", desc: "Accroche personnalisée qui mentionne le business, ses avis et l'absence de site web.", icon: "💬" },
-    { id: "demo", title: "Message 2 — Envoi de la démo", desc: "Présente la démo et explique pourquoi ce business a besoin d'un site.", icon: "🎨" },
-    { id: "quote", title: "Message 3 — Devis et lien de paiement", desc: "Propose une offre tarifaire avec lien de paiement sécurisé.", icon: "💰" },
-    { id: "payment_received", title: "Message 4 — Accusé de paiement", desc: "Confirme la réception du paiement et annonce la livraison du site dans 24h.", icon: "✅" },
-    { id: "delivery", title: "Message 5 — Livraison du site", desc: "Annonce la mise en ligne du site avec le lien final.", icon: "🚀" },
-    { id: "thanks", title: "Message 6 — Remerciement & fidélisation", desc: "Message post-livraison pour fidéliser et offrir un avantage parrainage.", icon: "🙏" },
+    { id: "demo", title: "Message 2 — Démo", desc: "Présente la démo personnalisée du site.", icon: "🎨" },
+    { id: "quote", title: "Message 3 — Devis (Total + Deposit link)", desc: "Propose une offre tarifaire Total = Deposit + Final avec lien deposit.", icon: "💰" },
+    { id: "deposit_received", title: "Message 4 — Deposit reçu (99)", desc: "Confirme la réception du deposit et annonce le développement.", icon: "✅" },
+    { id: "final_payment_request", title: "Message 5 — Demande solde (150)", desc: "Demande le solde final avec lien final.", icon: "💳" },
+    { id: "final_payment_received", title: "Message 6 — Solde reçu", desc: "Confirme la réception du solde final.", icon: "✅" },
+    { id: "delivery", title: "Message 7 — Livraison", desc: "Annonce la mise en ligne du site avec le lien final.", icon: "🚀" },
+    { id: "thanks", title: "Message 8 — Merci", desc: "Message post-livraison pour fidéliser et offrir un avantage parrainage.", icon: "🙏" },
   ] as const;
 
   return (
@@ -781,7 +807,7 @@ function WhatsAppTab({
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
             <p className="text-sm text-slate-700">
-              💡 <strong>Variables</strong> : {"{{firstName}}"} {"{{name}}"} {"{{sector}}"} {"{{city}}"} {"{{phone}}"} {"{{rating}}"} {"{{demo_url}}"} {"{{payment_url}}"} {"{{final_site_url}}"} {"{{price}}"} {"{{features}}"}
+              💡 <strong>Variables</strong> : {"{{firstName}}"} {"{{name}}"} {"{{sector}}"} {"{{city}}"} {"{{phone}}"} {"{{rating}}"} {"{{demo_url}}"} {"{{payment_url}}"} {"{{deposit_payment_url}}"} {"{{final_payment_url}}"} {"{{final_site_url}}"} {"{{price}}"} {"{{total_price}}"} {"{{deposit_price}}"} {"{{final_price}}"} {"{{features}}"}
               <br />
               <span className="text-xs text-slate-500">Conditionnels : {"{{#if var}}"} ... {"{{/if}}"}</span>
             </p>
@@ -929,8 +955,12 @@ function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: 
 
   const currency = campaignCurrency || "EUR";
   const currencySymbol = currency === "EUR" ? "€" : currency === "USD" ? "$" : "DH";
-  const priceKey = `price${currency}` as "priceEUR" | "priceUSD" | "priceMAD";
-  const marketPrice = (settings as any)[priceKey] || 0;
+  const isEUR = currency === "EUR", isUSD = currency === "USD";
+  const depositPrice = isEUR ? (settings as any).depositPriceEUR || 9900 : isUSD ? (settings as any).depositPriceUSD || 9900 : (settings as any).depositPriceMAD || 99000;
+  const finalPrice = isEUR ? (settings as any).finalPriceEUR || 15000 : isUSD ? (settings as any).finalPriceUSD || 15000 : (settings as any).finalPriceMAD || 150000;
+  const totalPrice = depositPrice + finalPrice;
+  const depositUrl = isEUR ? (settings as any).depositPaymentLinkEUR : isUSD ? (settings as any).depositPaymentLinkUSD : (settings as any).depositPaymentLinkMAD;
+  const finalUrl = isEUR ? (settings as any).finalPaymentLinkEUR : isUSD ? (settings as any).finalPaymentLinkUSD : (settings as any).finalPaymentLinkMAD;
 
   const save = async () => {
     setSaving(true);
@@ -995,39 +1025,77 @@ function LinksTab({ prospect, business, settings, campaignCurrency, onUpdate }: 
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h3 className="text-sm font-semibold text-slate-900">💰 Tarification & Paiement</h3>
+        <h3 className="text-sm font-semibold text-slate-900">💰 Tarification & Paiement — 2x</h3>
         <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
           <p className="text-sm font-medium text-blue-900">
-            Prix du marché : <span className="text-xl font-bold">{formatPrice(marketPrice, currency)}</span>
+            Total : <span className="text-xl font-bold">{formatPrice(totalPrice, currency)}</span> <span className="text-xs font-normal">= {formatPrice(depositPrice, currency)} deposit + {formatPrice(finalPrice, currency)} solde</span>
           </p>
           <p className="mt-1 text-xs text-blue-600">
-            Devise de la campagne : {currency} {currencySymbol}
+            Deposit: {formatPrice(depositPrice, currency)} — Final: {formatPrice(finalPrice, currency)} — Devise: {currency} {currencySymbol}
           </p>
+          {depositUrl && (
+            <p className="mt-1 text-[11px] text-blue-700 truncate">Deposit link: {depositUrl}</p>
+          )}
+          {finalUrl && (
+            <p className="mt-1 text-[11px] text-blue-700 truncate">Final link: {finalUrl}</p>
+          )}
         </div>
-        {(settings.paymentLink || (settings as any).paymentLinkEUR || (settings as any).paymentLinkUSD || (settings as any).paymentLinkMAD) ? (
-          <p className="mt-3 text-sm text-emerald-700">✓ Lien de paiement configuré dans Settings</p>
+        {(depositUrl || finalUrl) ? (
+          <p className="mt-3 text-sm text-emerald-700">✓ Liens de paiement configurés dans Settings</p>
         ) : (
-          <p className="mt-3 text-sm text-amber-600">⚠️ Lien de paiement non configuré. <Link href="/settings" className="underline">Configurer dans Settings</Link></p>
+          <p className="mt-3 text-sm text-amber-600">⚠️ Liens de paiement non configurés. <Link href="/settings" className="underline">Configurer dans Settings</Link></p>
         )}
-        {prospect.paymentStatus === "paid" && (
+        <div className="mt-3 flex flex-wrap gap-3">
+          <div className="flex flex-col gap-1">
+            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${(prospect as any).depositStatus === "paid" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+              {(prospect as any).depositStatus === "paid" ? "✅ Deposit payé" : "⏳ Deposit pending"}
+            </span>
+            {(prospect as any).depositStatus !== "paid" ? (
+              <button
+                onClick={async () => {
+                  if (!confirm("Marquer le deposit comme payé ?")) return;
+                  const res = await fetch(`/api/prospects/${prospect.id}/pay`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "deposit" }) });
+                  if (res.ok) {
+                    const data = await res.json();
+                    if (data.prospect) onUpdate(data.prospect);
+                  }
+                }}
+                className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+              >
+                ✅ Marquer deposit payé ({formatPrice(depositPrice, currency)})
+              </button>
+            ) : (
+              <p className="text-xs text-emerald-700">Payé le {(prospect as any).depositDate ? new Date((prospect as any).depositDate).toLocaleString("fr-FR") : "—"}</p>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${(prospect as any).finalPaymentStatus === "paid" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+              {(prospect as any).finalPaymentStatus === "paid" ? "✅ Final payé" : "⏳ Final pending"}
+            </span>
+            {(prospect as any).finalPaymentStatus !== "paid" ? (
+              <button
+                onClick={async () => {
+                  if (!confirm("Marquer le final comme payé ?")) return;
+                  const res = await fetch(`/api/prospects/${prospect.id}/pay`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "final" }) });
+                  if (res.ok) {
+                    const data = await res.json();
+                    if (data.prospect) onUpdate(data.prospect);
+                  }
+                }}
+                className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              >
+                ✅ Marquer final payé ({formatPrice(finalPrice, currency)})
+              </button>
+            ) : (
+              <p className="text-xs text-emerald-700">Payé le {(prospect as any).finalPaymentDate ? new Date((prospect as any).finalPaymentDate).toLocaleString("fr-FR") : "—"}</p>
+            )}
+          </div>
+        </div>
+        {/* Legacy fallback */}
+        {(prospect as any).paymentStatus === "paid" && !(prospect as any).depositStatus && (
           <p className="mt-3 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">
-            ✅ Paiement reçu le {prospect.paymentDate ? new Date(prospect.paymentDate).toLocaleString("fr-FR") : "—"}
+            ✅ Paiement (legacy) reçu le {prospect.paymentDate ? new Date(prospect.paymentDate).toLocaleString("fr-FR") : "—"}
           </p>
-        )}
-        {prospect.paymentStatus !== "paid" && (
-          <button
-            onClick={async () => {
-              if (!confirm("Marquer ce prospect comme payé ?")) return;
-              const res = await fetch(`/api/prospects/${prospect.id}/pay`, { method: "POST" });
-              if (res.ok) {
-                const data = await res.json();
-                if (data.prospect) onUpdate(data.prospect);
-              }
-            }}
-            className="mt-3 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
-          >
-            ✅ Marquer comme payé
-          </button>
         )}
       </div>
 

@@ -80,9 +80,10 @@ export async function POST(req: Request) {
   }
 
   const currency = campaignCurrency;
-  const quoteAmount = currency === "EUR" ? (settings.priceEUR || 0)
-    : currency === "USD" ? (settings.priceUSD || 0)
-    : (settings.priceMAD || 0);
+  const depositAmount = currency === "EUR" ? (settings as any).depositPriceEUR || 9900 : currency === "USD" ? (settings as any).depositPriceUSD || 9900 : (settings as any).depositPriceMAD || 99000;
+  const finalAmount = currency === "EUR" ? (settings as any).finalPriceEUR || 15000 : currency === "USD" ? (settings as any).finalPriceUSD || 15000 : (settings as any).finalPriceMAD || 150000;
+  const totalAmount = depositAmount + finalAmount;
+  const quoteAmount = totalAmount;
 
   const vibecoderPrompt = generateVibecoderPrompt(business as any, campaignLanguage);
   const whatsappMessages = generateDefaultWhatsAppMessages(business as any);
@@ -107,6 +108,11 @@ export async function POST(req: Request) {
           demoToken,
           quoteAmount,
           quoteCurrency: currency,
+          totalAmount,
+          depositAmount,
+          finalAmount,
+          depositStatus: "pending",
+          finalPaymentStatus: "pending",
           updatedAt: new Date(),
         })
         .where(eq(prospects.id, existing.id))
@@ -125,6 +131,11 @@ export async function POST(req: Request) {
         demoToken,
         quoteAmount,
         quoteCurrency: currency,
+        totalAmount,
+        depositAmount,
+        finalAmount,
+        depositStatus: "pending",
+        finalPaymentStatus: "pending",
       })
       .returning();
 
@@ -143,6 +154,11 @@ export async function POST(req: Request) {
       demoToken,
       quoteAmount,
       quoteCurrency: currency,
+      totalAmount,
+      depositAmount,
+      finalAmount,
+      depositStatus: "pending",
+      finalPaymentStatus: "pending",
     });
     return NextResponse.json({ prospect: createdLocally });
   }
