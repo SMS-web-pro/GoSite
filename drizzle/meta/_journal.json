@@ -17,9 +17,23 @@
       "breakpoints": true
     },
     {
+      "idx": 2,
+      "version": "7",
+      "when": 1788088094600,
+      "tag": "0002_make_search_id_nullable",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788088095600,
+      "tag": "0003_add_photos_reviews_services",
+      "breakpoints": true
+    },
+    {
       "idx": 4,
       "version": "7",
-      "when": 1724970000000,
+      "when": 1788088096600,
       "tag": "0004_split_payment",
       "breakpoints": true
     }
