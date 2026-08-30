@@ -105,6 +105,8 @@ export const localStore = {
       id,
       workflowStage: "discovered",
       paymentStatus: "pending",
+      depositStatus: "pending",
+      finalPaymentStatus: "pending",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       ...p,
@@ -208,7 +210,8 @@ export const localStore = {
 
   saveSettings(s: any) {
     const data = ensureStore() as any;
-    data.settings = { ...s, updatedAt: new Date().toISOString() };
+    // Merge with existing settings to preserve 12 split-payment fields when partial updates occur
+    data.settings = { ...(data.settings || {}), ...s, updatedAt: new Date().toISOString() };
     saveStore(data);
     return data.settings;
   },

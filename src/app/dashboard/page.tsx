@@ -22,6 +22,12 @@ export default async function HomePage({
   try {
     await db.execute("select 1" as never);
     const saleStages = ["paid", "delivered", "completed"];
+    const isPaidProspect = (p: any) =>
+      p.paymentStatus === "paid" ||
+      p.depositStatus === "paid" ||
+      p.finalPaymentStatus === "paid" ||
+      saleStages.includes(p.workflowStage) ||
+      p.workflowStage === "deposit_paid";
     const [prospectCount] = await db.select({ count: sql<number>`count(*)::int` }).from(prospects);
 
     const allProspectRows = await db
@@ -30,19 +36,44 @@ export default async function HomePage({
       .innerJoin(businesses, eq(prospects.businessId, businesses.id));
 
     totalProspectsCount = prospectCount?.count || 0;
-    totalPaidCount = allProspectRows.filter(
-      (row: any) => row.prospect.paymentStatus === "paid" || saleStages.includes(row.prospect.workflowStage)
-    ).length;
+    totalPaidCount = allProspectRows.filter((row: any) => isPaidProspect(row.prospect)).length;
 
     const settings = await getSettings();
     for (const row of allProspectRows) {
       const p = row.prospect as any;
-      if (p.paymentStatus !== "paid" && !saleStages.includes(p.workflowStage)) continue;
       const curr = p.quoteCurrency || detectProspectCurrency(row.business.country || null, row.business.city || null);
-      const amount = p.paymentAmount || p.quoteAmount || (curr === "EUR" ? (settings.priceEUR || 0) : curr === "USD" ? (settings.priceUSD || 0) : (settings.priceMAD || 0));
-      if (curr === "EUR") revenueByCurrency.eur += amount;
-      else if (curr === "USD") revenueByCurrency.usd += amount;
-      else revenueByCurrency.mad += amount;
+      let revenue = 0;
+      if (p.depositStatus === "paid") {
+        const fallbackDeposit =
+          curr === "EUR"
+            ? (settings as any).depositPriceEUR ?? 9900
+            : curr === "USD"
+              ? (settings as any).depositPriceUSD ?? 9900
+              : (settings as any).depositPriceMAD ?? 99000;
+        revenue += p.depositAmount ?? fallbackDeposit;
+      }
+      if (p.finalPaymentStatus === "paid") {
+        const fallbackFinal =
+          curr === "EUR"
+            ? (settings as any).finalPriceEUR ?? 15000
+            : curr === "USD"
+              ? (settings as any).finalPriceUSD ?? 15000
+              : (settings as any).finalPriceMAD ?? 150000;
+        revenue += p.finalAmount ?? fallbackFinal;
+      }
+      // Fallback legacy single payment if no split payment recorded
+      if (revenue === 0 && (p.paymentStatus === "paid" || saleStages.includes(p.workflowStage) || p.workflowStage === "deposit_paid")) {
+        const legacyAmount =
+          p.paymentAmount ||
+          p.quoteAmount ||
+          p.totalAmount ||
+          (curr === "EUR" ? ((settings as any).priceEUR || 0) : curr === "USD" ? ((settings as any).priceUSD || 0) : ((settings as any).priceMAD || 0));
+        revenue = legacyAmount || 0;
+      }
+      if (revenue === 0) continue;
+      if (curr === "EUR") revenueByCurrency.eur += revenue;
+      else if (curr === "USD") revenueByCurrency.usd += revenue;
+      else revenueByCurrency.mad += revenue;
     }
   } catch {
     const data = localStore.get();
@@ -50,20 +81,48 @@ export default async function HomePage({
     const allBusinesses = data.businesses || [];
     const settings = await getSettings();
     const saleStages = ["paid", "delivered", "completed"];
+    const isPaidProspect = (p: any) =>
+      p.paymentStatus === "paid" ||
+      p.depositStatus === "paid" ||
+      p.finalPaymentStatus === "paid" ||
+      saleStages.includes((p as any).workflowStage) ||
+      (p as any).workflowStage === "deposit_paid";
 
     totalProspectsCount = allProspects.length;
-    totalPaidCount = allProspects.filter(
-      (p: any) => p.paymentStatus === "paid" || saleStages.includes((p as any).workflowStage)
-    ).length;
+    totalPaidCount = allProspects.filter((p: any) => isPaidProspect(p)).length;
 
     for (const p of allProspects) {
-      if ((p as any).paymentStatus !== "paid" && !saleStages.includes((p as any).workflowStage)) continue;
-      const biz = allBusinesses.find((b: any) => b.id === (p as any).businessId);
-      const curr = (p as any).quoteCurrency || detectProspectCurrency(biz?.country || null, biz?.city || null);
-      const amount = (p as any).paymentAmount || (p as any).quoteAmount || (curr === "EUR" ? (settings.priceEUR || 0) : curr === "USD" ? (settings.priceUSD || 0) : (settings.priceMAD || 0));
-      if (curr === "EUR") revenueByCurrency.eur += amount;
-      else if (curr === "USD") revenueByCurrency.usd += amount;
-      else revenueByCurrency.mad += amount;
+      const pp = p as any;
+      const biz = allBusinesses.find((b: any) => b.id === pp.businessId);
+      const curr = pp.quoteCurrency || detectProspectCurrency(biz?.country || null, biz?.city || null);
+      let revenue = 0;
+      if (pp.depositStatus === "paid") {
+        const fallbackDeposit =
+          curr === "EUR"
+            ? (settings as any).depositPriceEUR ?? 9900
+            : curr === "USD"
+              ? (settings as any).depositPriceUSD ?? 9900
+              : (settings as any).depositPriceMAD ?? 99000;
+        revenue += pp.depositAmount ?? fallbackDeposit;
+      }
+      if (pp.finalPaymentStatus === "paid") {
+        const fallbackFinal =
+          curr === "EUR"
+            ? (settings as any).finalPriceEUR ?? 15000
+            : curr === "USD"
+              ? (settings as any).finalPriceUSD ?? 15000
+              : (settings as any).finalPriceMAD ?? 150000;
+        revenue += pp.finalAmount ?? fallbackFinal;
+      }
+      if (revenue === 0 && (pp.paymentStatus === "paid" || saleStages.includes(pp.workflowStage) || pp.workflowStage === "deposit_paid")) {
+        const legacyAmount =
+          pp.paymentAmount || pp.quoteAmount || pp.totalAmount || (curr === "EUR" ? ((settings as any).priceEUR || 0) : curr === "USD" ? ((settings as any).priceUSD || 0) : ((settings as any).priceMAD || 0));
+        revenue = legacyAmount || 0;
+      }
+      if (revenue === 0) continue;
+      if (curr === "EUR") revenueByCurrency.eur += revenue;
+      else if (curr === "USD") revenueByCurrency.usd += revenue;
+      else revenueByCurrency.mad += revenue;
     }
   }
 
