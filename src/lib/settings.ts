@@ -192,6 +192,17 @@ export async function getSettings(): Promise<AppSettings> {
 export async function saveSettingsToDb(updates: Partial<AppSettings>): Promise<AppSettings> {
   const current = await getSettings();
 
+  // Merge messageTemplates so we don't lose keys the client didn't send
+  if (updates.messageTemplates && current.messageTemplates) {
+    updates = {
+      ...updates,
+      messageTemplates: {
+        ...current.messageTemplates,
+        ...updates.messageTemplates,
+      },
+    };
+  }
+
   // Try DB first
   try {
     const [existing] = await db.select().from(settings).limit(1);
