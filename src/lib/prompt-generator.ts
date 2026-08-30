@@ -20,7 +20,10 @@ export type MessageTemplateKey =
   | "intro"
   | "demo"
   | "quote"
+  | "deposit_received"
   | "payment_received"
+  | "final_payment_request"
+  | "final_payment_received"
   | "delivery"
   | "thanks"
   | "followup";
@@ -224,7 +227,8 @@ Prefer to discuss first? I'm available — just reply to this message.
 
 Merci pour votre intérêt pour nos services. Voici ma proposition personnalisée pour *{{businessName}}* :
 
-💰 *Prix : {{price}}*
+💰 *Total : {{total_price}}*
+({{deposit_price}} deposit pour démarrer + {{final_price}} solde à la livraison)
 
 📦 *Ce qui est inclus :*
 • Site web professionnel responsive (mobile + desktop)
@@ -234,7 +238,7 @@ Merci pour votre intérêt pour nos services. Voici ma proposition personnalisé
 • Hébergement 1 an inclus
 • Livraison sous *48h à 72h* après validation
 
-💳 *Payer ici :* {{payment_url}}
+💳 *Payer l'acompte ici :* {{deposit_payment_url}}
 
 ⚠️ Offre valable 7 jours. Pour toute question ou personnalisation, je suis disponible.
 
@@ -248,7 +252,7 @@ Merci pour votre intérêt pour nos services. Voici ma proposition personnalisé
 
 Thank you for your interest in our services. Here's my personalized proposal for *{{businessName}}*:
 
-💰 *Price: {{price}}*
+💰 *Total: {{total_price}}* (Deposit {{deposit_price}} to get started + Final {{final_price}} on delivery)
 
 📦 *What's included:*
 • Professional responsive website (mobile + desktop)
@@ -258,7 +262,7 @@ Thank you for your interest in our services. Here's my personalized proposal for
 • 1 year hosting included
 • Delivery within *48h to 72h* after validation
 
-💳 *Pay here:* {{payment_url}}
+💳 *Pay deposit here:* {{deposit_payment_url}}
 
 ⚠️ Offer valid for 7 days. For any questions or customization, I'm available.
 
@@ -272,7 +276,7 @@ Thank you for your interest in our services. Here's my personalized proposal for
 
 شكراً لاهتمامك بخدماتنا. إليك عرضي المخصص لـ *{{businessName}}*:
 
-💰 *السعر: {{price}}*
+💰 *الإجمالي: {{total_price}}* ({{deposit_price}} عربون للبدء + {{final_price}} نهائي)
 
 📦 *ما هو مشمول:*
 • موقع ويب احترافي متجاوب (جوال + سطح مكتب)
@@ -282,7 +286,7 @@ Thank you for your interest in our services. Here's my personalized proposal for
 • استضافة مشمولة لمدة سنة
 • التسليم خلال *48 إلى 72 ساعة* بعد التحقق
 
-💳 *ادفع هنا:* {{payment_url}}
+💳 *ادفع العربون هنا:* {{deposit_payment_url}}
 
 ⚠️ العرض صالح لمدة 7 أيام. لأي سؤال أو تخصيص، أنا متاح.
 
@@ -294,8 +298,59 @@ Thank you for your interest in our services. Here's my personalized proposal for
   },
 
   // =====================================================
-  // MESSAGE 4: Accusé de paiement (Lien sous 24h)
+  // MESSAGE 4: Accusé de paiement — Deposit reçu (99)
   // =====================================================
+  deposit_received: {
+    fr: `Bonjour {{firstName}} 👋
+
+Bien reçu votre paiement, un grand merci pour votre confiance ! 🎉
+
+Le développement et la mise en ligne du site web pour *{{businessName}}* sont désormais lancés.
+
+Vous recevrez le lien final de votre site internet ici même sous *24h*.
+
+Si vous avez la moindre question d'ici là, n'hésitez pas à me contacter.
+
+*{{contact_name}}* — {{agency_name}}
+{{#if contact_email}}✉️ {{contact_email}}
+{{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}💼 {{portfolio_url}}
+{{/if}}`,
+
+    en: `Hi {{firstName}} 👋
+
+Payment received, thank you so much for your trust! 🎉
+
+Development and deployment of *{{businessName}}*'s website are now underway.
+
+You will receive the final link to your website right here within *24 hours*.
+
+If you have any questions in the meantime, feel free to reach out.
+
+*{{contact_name}}* — {{agency_name}}
+{{#if contact_email}}✉️ {{contact_email}}
+{{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}💼 {{portfolio_url}}
+{{/if}}`,
+
+    ar: `مرحبا {{firstName}} 👋
+
+تم استلام الدفع، شكراً جزيلاً على ثقتك! 🎉
+
+تم الآن بدء تطوير ونشر موقع الويب لـ *{{businessName}}*.
+
+ستتلقى الرابط النهائي لموقع الويب هنا مباشرة خلال *24 ساعة*.
+
+إذا كان لديك أي سؤال في هذه الأثناء، لا تتردد في التواصل معي.
+
+*{{contact_name}}* — {{agency_name}}
+{{#if contact_email}}✉️ {{contact_email}}
+{{/if}}{{#if agency_website}}🌐 {{agency_website}}
+{{/if}}{{#if portfolio_url}}💼 {{portfolio_url}}
+{{/if}}`,
+  },
+
+  // Alias compat — keep payment_received identical to deposit_received
   payment_received: {
     fr: `Bonjour {{firstName}} 👋
 
@@ -344,6 +399,60 @@ If you have any questions in the meantime, feel free to reach out.
 {{/if}}{{#if agency_website}}🌐 {{agency_website}}
 {{/if}}{{#if portfolio_url}}💼 {{portfolio_url}}
 {{/if}}`,
+  },
+
+  // =====================================================
+  // MESSAGE 5: Demande solde final
+  // =====================================================
+  final_payment_request: {
+    fr: `Bonjour {{firstName}} 👋
+
+Votre site pour *{{businessName}}* est prêt ! 🎉
+
+💰 *Solde final : {{final_price}}*
+
+Pour la mise en ligne immédiate, réglez le solde ici :
+💳 *{{final_payment_url}}*
+
+Dès réception, je mets en ligne sous 24h sur {{final_site_url}}.
+
+*{{contact_name}}* — {{agency_name}}`,
+    en: `Hi {{firstName}} 👋
+
+Your site for *{{businessName}}* is ready! 🎉
+
+💰 *Final balance: {{final_price}}*
+
+Pay the final balance here for immediate launch:
+💳 *{{final_payment_url}}*
+
+Once received, I’ll launch within 24h.
+
+*{{contact_name}}* — {{agency_name}}`,
+    ar: `مرحبا {{firstName}} 👋
+
+موقع *{{businessName}}* جاهز! 🎉
+
+💰 *الرصيد النهائي: {{final_price}}*
+
+ادفع الرصيد النهائي هنا: {{final_payment_url}}`,
+  },
+
+  // =====================================================
+  // MESSAGE 6: Solde final reçu
+  // =====================================================
+  final_payment_received: {
+    fr: `Parfait {{firstName}} — solde {{final_price}} bien reçu ! ✅
+
+🚀 Mise en ligne en cours, vous recevez {{final_site_url}} sous 24h.
+
+Merci pour votre confiance !`,
+    en: `Perfect {{firstName}} — final {{final_price}} received! ✅
+
+🚀 Launching now, you'll get {{final_site_url}} within 24h.`,
+    ar: `ممتاز {{firstName}} — تم استلام {{final_price}} ✅
+
+🚀 جارٍ الإطلاق...`,
   },
 
   // =====================================================
@@ -601,7 +710,10 @@ export function generateDefaultWhatsAppMessages(b: any) {
     intro: { fr: DEFAULT_TEMPLATES.intro.fr, en: DEFAULT_TEMPLATES.intro.en, ar: DEFAULT_TEMPLATES.intro.ar },
     demo: { fr: DEFAULT_TEMPLATES.demo.fr, en: DEFAULT_TEMPLATES.demo.en, ar: DEFAULT_TEMPLATES.demo.ar },
     quote: { fr: DEFAULT_TEMPLATES.quote.fr, en: DEFAULT_TEMPLATES.quote.en, ar: DEFAULT_TEMPLATES.quote.ar },
-    payment_received: { fr: DEFAULT_TEMPLATES.payment_received.fr, en: DEFAULT_TEMPLATES.payment_received.en, ar: DEFAULT_TEMPLATES.payment_received.ar },
+    deposit_received: { fr: DEFAULT_TEMPLATES.deposit_received.fr, en: DEFAULT_TEMPLATES.deposit_received.en, ar: DEFAULT_TEMPLATES.deposit_received.ar },
+    payment_received: { fr: DEFAULT_TEMPLATES.deposit_received.fr, en: DEFAULT_TEMPLATES.deposit_received.en, ar: DEFAULT_TEMPLATES.deposit_received.ar },
+    final_payment_request: { fr: DEFAULT_TEMPLATES.final_payment_request.fr, en: DEFAULT_TEMPLATES.final_payment_request.en, ar: DEFAULT_TEMPLATES.final_payment_request.ar },
+    final_payment_received: { fr: DEFAULT_TEMPLATES.final_payment_received.fr, en: DEFAULT_TEMPLATES.final_payment_received.en, ar: DEFAULT_TEMPLATES.final_payment_received.ar },
     delivery: { fr: DEFAULT_TEMPLATES.delivery.fr, en: DEFAULT_TEMPLATES.delivery.en, ar: DEFAULT_TEMPLATES.delivery.ar },
     thanks: { fr: DEFAULT_TEMPLATES.thanks.fr, en: DEFAULT_TEMPLATES.thanks.en, ar: DEFAULT_TEMPLATES.thanks.ar },
     followup: { fr: DEFAULT_TEMPLATES.followup.fr, en: DEFAULT_TEMPLATES.followup.en, ar: DEFAULT_TEMPLATES.followup.ar },
