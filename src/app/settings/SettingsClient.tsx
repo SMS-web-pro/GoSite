@@ -51,22 +51,40 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
   const [paymentLink, setPaymentLink] = useState(initialSettings.paymentLink || "");
   const [brandColor, setBrandColor] = useState(initialSettings.brandColor);
 
-  // Per-currency pricing
+  // Per-currency pricing (legacy single price, kept for back-compat)
   const [priceEUR, setPriceEUR] = useState(((initialSettings as any).priceEUR || 89900) / 100);
   const [priceUSD, setPriceUSD] = useState(((initialSettings as any).priceUSD || 99900) / 100);
   const [priceMAD, setPriceMAD] = useState(((initialSettings as any).priceMAD || 99900) / 100);
 
-  // Per-currency payment links
+  // Per-currency payment links (legacy)
   const [paymentLinkEUR, setPaymentLinkEUR] = useState((initialSettings as any).paymentLinkEUR || "");
   const [paymentLinkUSD, setPaymentLinkUSD] = useState((initialSettings as any).paymentLinkUSD || "");
   const [paymentLinkMAD, setPaymentLinkMAD] = useState((initialSettings as any).paymentLinkMAD || "");
 
+  // Split payment 2x — Deposit + Final (6 amounts + 6 links)
+  const [depositPriceEUR, setDepositPriceEUR] = useState(((initialSettings as any).depositPriceEUR || 9900) / 100);
+  const [depositPriceUSD, setDepositPriceUSD] = useState(((initialSettings as any).depositPriceUSD || 9900) / 100);
+  const [depositPriceMAD, setDepositPriceMAD] = useState(((initialSettings as any).depositPriceMAD || 99000) / 100);
+  const [finalPriceEUR, setFinalPriceEUR] = useState(((initialSettings as any).finalPriceEUR || 15000) / 100);
+  const [finalPriceUSD, setFinalPriceUSD] = useState(((initialSettings as any).finalPriceUSD || 15000) / 100);
+  const [finalPriceMAD, setFinalPriceMAD] = useState(((initialSettings as any).finalPriceMAD || 150000) / 100);
+  const [depositPaymentLinkEUR, setDepositPaymentLinkEUR] = useState((initialSettings as any).depositPaymentLinkEUR || "");
+  const [depositPaymentLinkUSD, setDepositPaymentLinkUSD] = useState((initialSettings as any).depositPaymentLinkUSD || "");
+  const [depositPaymentLinkMAD, setDepositPaymentLinkMAD] = useState((initialSettings as any).depositPaymentLinkMAD || "");
+  const [finalPaymentLinkEUR, setFinalPaymentLinkEUR] = useState((initialSettings as any).finalPaymentLinkEUR || "");
+  const [finalPaymentLinkUSD, setFinalPaymentLinkUSD] = useState((initialSettings as any).finalPaymentLinkUSD || "");
+  const [finalPaymentLinkMAD, setFinalPaymentLinkMAD] = useState((initialSettings as any).finalPaymentLinkMAD || "");
+
   const [templates, setTemplates] = useState(() => {
     const raw: Record<string, any> = initialSettings.messageTemplates || {};
     const normalized: Record<string, { fr: string; en: string; ar: string }> = {};
-    const stageKeys = ["intro", "demo", "quote", "payment_received", "delivery", "thanks"];
+    const stageKeys = ["intro", "demo", "quote", "deposit_received", "final_payment_request", "final_payment_received", "delivery", "thanks"];
     for (const key of stageKeys) {
-      const val = raw[key];
+      let val = raw[key];
+      // Alias handling: legacy payment_received -> deposit_received
+      if (key === "deposit_received" && !val && raw["payment_received"]) {
+        val = raw["payment_received"];
+      }
       const defaultVal = DEFAULT_TEMPLATES[key as keyof typeof DEFAULT_TEMPLATES];
       if (val && typeof val === "object" && "fr" in val) {
         // Merge with defaults to ensure portfolio_url always exists
@@ -106,6 +124,10 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
         }
         safeTemplates[key] = fixed;
       }
+      // Back-compat alias: keep payment_received identical to deposit_received
+      if (safeTemplates["deposit_received"] && !safeTemplates["payment_received"]) {
+        safeTemplates["payment_received"] = { ...safeTemplates["deposit_received"] };
+      }
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -124,6 +146,18 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
           paymentLinkEUR: paymentLinkEUR || null,
           paymentLinkUSD: paymentLinkUSD || null,
           paymentLinkMAD: paymentLinkMAD || null,
+          depositPriceEUR: Math.round(depositPriceEUR * 100),
+          depositPriceUSD: Math.round(depositPriceUSD * 100),
+          depositPriceMAD: Math.round(depositPriceMAD * 100),
+          finalPriceEUR: Math.round(finalPriceEUR * 100),
+          finalPriceUSD: Math.round(finalPriceUSD * 100),
+          finalPriceMAD: Math.round(finalPriceMAD * 100),
+          depositPaymentLinkEUR: depositPaymentLinkEUR || null,
+          depositPaymentLinkUSD: depositPaymentLinkUSD || null,
+          depositPaymentLinkMAD: depositPaymentLinkMAD || null,
+          finalPaymentLinkEUR: finalPaymentLinkEUR || null,
+          finalPaymentLinkUSD: finalPaymentLinkUSD || null,
+          finalPaymentLinkMAD: finalPaymentLinkMAD || null,
           brandColor,
           messageTemplates: safeTemplates,
         }),
@@ -206,9 +240,9 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
       {activeTab === "pricing" && (
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <div className="mb-4">
-            <h2 className="text-sm font-semibold text-slate-900">💰 Prix par marché</h2>
+            <h2 className="text-sm font-semibold text-slate-900">💰 Prix par marché — 2 paiements</h2>
             <p className="text-xs text-slate-500">
-              Définissez un seul prix par marché. Le prix et le lien de paiement seront détectés automatiquement selon la langue du prospect.
+              Définissez le <strong>deposit</strong> (acompte) + <strong>final</strong> (solde) par marché. Le total est calculé automatiquement. Les montants et liens seront injectés selon la langue du prospect (fr→EUR, en→USD, ar→MAD).
             </p>
           </div>
 
@@ -217,26 +251,48 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-900">
                 <span className="rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold">EUR</span>
-                Marché francophone
+                Marché francophone — Total {depositPriceEUR + finalPriceEUR}€
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Prix (€)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit (€)</label>
                   <input
                     type="number"
-                    value={priceEUR}
-                    onChange={(e) => setPriceEUR(parseFloat(e.target.value) || 0)}
-                    step="10"
+                    value={depositPriceEUR}
+                    onChange={(e) => setDepositPriceEUR(parseFloat(e.target.value) || 0)}
+                    step="1"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceEUR * 100} centimes</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(depositPriceEUR * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien de paiement EUR</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien deposit EUR</label>
                   <input
-                    value={paymentLinkEUR}
-                    onChange={(e) => setPaymentLinkEUR(e.target.value)}
-                    placeholder="https://buy.stripe.com/..."
+                    value={depositPaymentLinkEUR}
+                    onChange={(e) => setDepositPaymentLinkEUR(e.target.value)}
+                    placeholder="https://buy.stripe.com/... (acompte)"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 mt-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Final (€)</label>
+                  <input
+                    type="number"
+                    value={finalPriceEUR}
+                    onChange={(e) => setFinalPriceEUR(parseFloat(e.target.value) || 0)}
+                    step="1"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                  />
+                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(finalPriceEUR * 100)} centimes</p>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien final EUR</label>
+                  <input
+                    value={finalPaymentLinkEUR}
+                    onChange={(e) => setFinalPaymentLinkEUR(e.target.value)}
+                    placeholder="https://buy.stripe.com/... (solde)"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
                 </div>
@@ -247,26 +303,48 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-900">
                 <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-bold">USD</span>
-                Marché anglophone
+                Marché anglophone — Total ${depositPriceUSD + finalPriceUSD}
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Prix ($)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit ($)</label>
                   <input
                     type="number"
-                    value={priceUSD}
-                    onChange={(e) => setPriceUSD(parseFloat(e.target.value) || 0)}
-                    step="10"
+                    value={depositPriceUSD}
+                    onChange={(e) => setDepositPriceUSD(parseFloat(e.target.value) || 0)}
+                    step="1"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceUSD * 100} centimes</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(depositPriceUSD * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien de paiement USD</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien deposit USD</label>
                   <input
-                    value={paymentLinkUSD}
-                    onChange={(e) => setPaymentLinkUSD(e.target.value)}
-                    placeholder="https://buy.stripe.com/..."
+                    value={depositPaymentLinkUSD}
+                    onChange={(e) => setDepositPaymentLinkUSD(e.target.value)}
+                    placeholder="https://buy.stripe.com/... (deposit)"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 mt-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Final ($)</label>
+                  <input
+                    type="number"
+                    value={finalPriceUSD}
+                    onChange={(e) => setFinalPriceUSD(parseFloat(e.target.value) || 0)}
+                    step="1"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                  />
+                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(finalPriceUSD * 100)} centimes</p>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien final USD</label>
+                  <input
+                    value={finalPaymentLinkUSD}
+                    onChange={(e) => setFinalPaymentLinkUSD(e.target.value)}
+                    placeholder="https://buy.stripe.com/... (final)"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
                 </div>
@@ -277,26 +355,48 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-amber-900">
                 <span className="rounded-md bg-amber-100 px-2 py-0.5 text-xs font-bold">MAD</span>
-                Marché arabophone
+                Marché arabophone — Total {depositPriceMAD + finalPriceMAD} DH
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Prix (DH)</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit (DH)</label>
                   <input
                     type="number"
-                    value={priceMAD}
-                    onChange={(e) => setPriceMAD(parseFloat(e.target.value) || 0)}
-                    step="10"
+                    value={depositPriceMAD}
+                    onChange={(e) => setDepositPriceMAD(parseFloat(e.target.value) || 0)}
+                    step="1"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{priceMAD * 100} centimes</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(depositPriceMAD * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien de paiement MAD</label>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien deposit MAD</label>
                   <input
-                    value={paymentLinkMAD}
-                    onChange={(e) => setPaymentLinkMAD(e.target.value)}
-                    placeholder="https://buy.stripe.com/..."
+                    value={depositPaymentLinkMAD}
+                    onChange={(e) => setDepositPaymentLinkMAD(e.target.value)}
+                    placeholder="https://buy.stripe.com/... (عربون)"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 mt-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Final (DH)</label>
+                  <input
+                    type="number"
+                    value={finalPriceMAD}
+                    onChange={(e) => setFinalPriceMAD(parseFloat(e.target.value) || 0)}
+                    step="1"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                  />
+                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(finalPriceMAD * 100)} centimes</p>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien final MAD</label>
+                  <input
+                    value={finalPaymentLinkMAD}
+                    onChange={(e) => setFinalPaymentLinkMAD(e.target.value)}
+                    placeholder="https://buy.stripe.com/... (نهائي)"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                   />
                 </div>
@@ -312,7 +412,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             <div>
               <h2 className="text-sm font-semibold text-slate-900">💬 Templates de messages WhatsApp</h2>
               <p className="text-xs text-slate-500">
-                Variables : <code className="rounded bg-slate-100 px-1">{"{{firstName}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{name}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{sector}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{city}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{phone}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{rating}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{demo_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_site_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{price}}"}</code>
+                Variables : <code className="rounded bg-slate-100 px-1">{"{{firstName}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{name}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{sector}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{city}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{phone}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{rating}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{demo_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_site_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{total_price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{deposit_price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{deposit_payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_payment_url}}"}</code>
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Conditionnels : <code className="rounded bg-slate-100 px-1">{"{{#if rating}}"}...{"{{/if}}"}</code>
@@ -337,15 +437,17 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             </div>
           </div>
           <div className="mt-4 space-y-4">
-            {(["intro", "demo", "quote", "payment_received", "delivery", "thanks"] as const).map((stage) => (
+            {(["intro", "demo", "quote", "deposit_received", "final_payment_request", "final_payment_received", "delivery", "thanks"] as const).map((stage) => (
               <div key={stage}>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
                   {stage === "intro" ? "Message 1 — Premier contact" :
                    stage === "demo" ? "Message 2 — Envoi de la démo" :
-                   stage === "quote" ? "Message 3 — Devis et lien de paiement" :
-                   stage === "payment_received" ? "Message 4 — Accusé de paiement" :
-                   stage === "delivery" ? "Message 5 — Livraison du site" :
-                   "Message 6 — Remerciement & fidélisation"}
+                   stage === "quote" ? "Message 3 — Devis et lien de paiement (Total + Deposit)" :
+                   stage === "deposit_received" ? "Message 4 — Deposit reçu (99)" :
+                   stage === "final_payment_request" ? "Message 5 — Demande solde final (150)" :
+                   stage === "final_payment_received" ? "Message 6 — Solde reçu" :
+                   stage === "delivery" ? "Message 7 — Livraison du site" :
+                   "Message 8 — Remerciement & fidélisation"}
                   <span className="ml-2 text-[10px] text-slate-400 font-normal">
                     ({editLang === "fr" ? "🇫🇷 Français" : editLang === "en" ? "🇬🇧 English" : "🇸🇦 العربية"})
                   </span>
