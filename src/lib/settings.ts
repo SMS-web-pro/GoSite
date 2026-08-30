@@ -27,6 +27,18 @@ export type AppSettings = {
   paymentLinkEUR: string | null;
   paymentLinkUSD: string | null;
   paymentLinkMAD: string | null;
+  depositPriceEUR: number | null;
+  depositPriceUSD: number | null;
+  depositPriceMAD: number | null;
+  finalPriceEUR: number | null;
+  finalPriceUSD: number | null;
+  finalPriceMAD: number | null;
+  depositPaymentLinkEUR: string | null;
+  depositPaymentLinkUSD: string | null;
+  depositPaymentLinkMAD: string | null;
+  finalPaymentLinkEUR: string | null;
+  finalPaymentLinkUSD: string | null;
+  finalPaymentLinkMAD: string | null;
   messageTemplates: {
     intro: string | { fr: string; en: string; ar: string };
     demo: string | { fr: string; en: string; ar: string };
@@ -70,12 +82,69 @@ const DEFAULT_SETTINGS: Omit<AppSettings, "id" | "updatedAt"> = {
   paymentLinkEUR: null,
   paymentLinkUSD: null,
   paymentLinkMAD: null,
+  depositPriceEUR: 9900,
+  depositPriceUSD: 9900,
+  depositPriceMAD: 99000,
+  finalPriceEUR: 15000,
+  finalPriceUSD: 15000,
+  finalPriceMAD: 150000,
+  depositPaymentLinkEUR: null,
+  depositPaymentLinkUSD: null,
+  depositPaymentLinkMAD: null,
+  finalPaymentLinkEUR: null,
+  finalPaymentLinkUSD: null,
+  finalPaymentLinkMAD: null,
   messageTemplates: null,
   brandColor: "#2563eb",
   logoUrl: null,
 };
 
 const DEFAULT_TEMPLATES = generateDefaultWhatsAppMessages({});
+
+/**
+ * Back-compat: when a row has old priceEUR/USD/MAD but new deposit/final fields are null,
+ * derive deposit = round(oldPrice * 0.396) (~99/249) and final = oldPrice - deposit.
+ * Also ensures defaults for cents and links when both old and new are missing.
+ */
+function applySettingsFallbacks(raw: any): any {
+  const depositPriceEUR =
+    raw.depositPriceEUR ?? (raw.priceEUR ? Math.round(raw.priceEUR * 0.396) : 9900);
+  const depositPriceUSD =
+    raw.depositPriceUSD ?? (raw.priceUSD ? Math.round(raw.priceUSD * 0.396) : 9900);
+  const depositPriceMAD =
+    raw.depositPriceMAD ?? (raw.priceMAD ? Math.round(raw.priceMAD * 0.396) : 99000);
+
+  const finalPriceEUR =
+    raw.finalPriceEUR ?? (raw.priceEUR ? raw.priceEUR - depositPriceEUR : 15000);
+  const finalPriceUSD =
+    raw.finalPriceUSD ?? (raw.priceUSD ? raw.priceUSD - depositPriceUSD : 15000);
+  const finalPriceMAD =
+    raw.finalPriceMAD ?? (raw.priceMAD ? raw.priceMAD - depositPriceMAD : 150000);
+
+  return {
+    ...DEFAULT_SETTINGS,
+    ...raw,
+    depositPriceEUR,
+    depositPriceUSD,
+    depositPriceMAD,
+    finalPriceEUR,
+    finalPriceUSD,
+    finalPriceMAD,
+    depositPaymentLinkEUR: raw.depositPaymentLinkEUR ?? null,
+    depositPaymentLinkUSD: raw.depositPaymentLinkUSD ?? null,
+    depositPaymentLinkMAD: raw.depositPaymentLinkMAD ?? null,
+    finalPaymentLinkEUR: raw.finalPaymentLinkEUR ?? null,
+    finalPaymentLinkUSD: raw.finalPaymentLinkUSD ?? null,
+    finalPaymentLinkMAD: raw.finalPaymentLinkMAD ?? null,
+    // Ensure old fields retain defaults if missing
+    priceEUR: raw.priceEUR ?? DEFAULT_SETTINGS.priceEUR,
+    priceUSD: raw.priceUSD ?? DEFAULT_SETTINGS.priceUSD,
+    priceMAD: raw.priceMAD ?? DEFAULT_SETTINGS.priceMAD,
+    paymentLinkEUR: raw.paymentLinkEUR ?? DEFAULT_SETTINGS.paymentLinkEUR,
+    paymentLinkUSD: raw.paymentLinkUSD ?? DEFAULT_SETTINGS.paymentLinkUSD,
+    paymentLinkMAD: raw.paymentLinkMAD ?? DEFAULT_SETTINGS.paymentLinkMAD,
+  };
+}
 
 /**
  * Returns the app settings. Tries DB first, then local-store, then defaults.
@@ -87,7 +156,7 @@ export async function getSettings(): Promise<AppSettings> {
     if (row) {
       // Sync to local-store for offline fallback
       localStore.saveSettings(row);
-      return { ...DEFAULT_SETTINGS, ...row } as AppSettings;
+      return applySettingsFallbacks(row) as AppSettings;
     }
     // No settings row exists yet — create one with defaults
     const [created] = await db
@@ -98,21 +167,12 @@ export async function getSettings(): Promise<AppSettings> {
       })
       .returning();
     localStore.saveSettings(created);
-    return { ...DEFAULT_SETTINGS, ...created } as AppSettings;
+    return applySettingsFallbacks(created) as AppSettings;
   } catch (err) {
     // DB unreachable — try local-store
     const local = localStore.getSettings();
     if (local) {
-      return {
-        ...DEFAULT_SETTINGS,
-        ...local,
-        priceEUR: (local as any).priceEUR ?? DEFAULT_SETTINGS.priceEUR,
-        priceUSD: (local as any).priceUSD ?? DEFAULT_SETTINGS.priceUSD,
-        priceMAD: (local as any).priceMAD ?? DEFAULT_SETTINGS.priceMAD,
-        paymentLinkEUR: (local as any).paymentLinkEUR ?? DEFAULT_SETTINGS.paymentLinkEUR,
-        paymentLinkUSD: (local as any).paymentLinkUSD ?? DEFAULT_SETTINGS.paymentLinkUSD,
-        paymentLinkMAD: (local as any).paymentLinkMAD ?? DEFAULT_SETTINGS.paymentLinkMAD,
-      } as AppSettings;
+      return applySettingsFallbacks(local) as AppSettings;
     }
     // Last resort: return defaults
     const defaults = {
@@ -142,18 +202,18 @@ export async function saveSettingsToDb(updates: Partial<AppSettings>): Promise<A
         .where(eq(settings.id, existing.id))
         .returning();
       localStore.saveSettings(updated);
-      return { ...DEFAULT_SETTINGS, ...updated } as AppSettings;
+      return applySettingsFallbacks(updated) as AppSettings;
     }
     // No row — insert
     const [created] = await db
-      .insert(settings)
-      .values({ ...DEFAULT_SETTINGS, ...updates, messageTemplates: DEFAULT_TEMPLATES })
-      .returning();
+        .insert(settings)
+        .values({ ...DEFAULT_SETTINGS, ...updates, messageTemplates: DEFAULT_TEMPLATES })
+        .returning();
     localStore.saveSettings(created);
-    return { ...DEFAULT_SETTINGS, ...created } as AppSettings;
+    return applySettingsFallbacks(created) as AppSettings;
   } catch (err) {
     // DB unreachable — save to local-store only
-    const merged = { ...current, ...updates, updatedAt: new Date() };
+    const merged = applySettingsFallbacks({ ...current, ...updates, updatedAt: new Date() });
     localStore.saveSettings(merged);
     return merged as AppSettings;
   }
