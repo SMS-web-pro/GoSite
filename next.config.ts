@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         source: "/portfolio",
         destination: "/portfolio.html",
       },
+      {
+        source: "/radar",
+        destination: "/radar/index.html",
+      },
     ];
   },
 };
