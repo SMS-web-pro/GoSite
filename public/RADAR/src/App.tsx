@@ -147,6 +147,17 @@ export default function App() {
 
   return (
     <div className="noise min-h-screen bg-ink font-sans text-zinc-100">
+      {/* Lien retour Dashboard */}
+      <a
+        href="/dashboard"
+        className="fixed bottom-5 left-5 z-50 flex items-center gap-2 rounded-xl border border-line-strong bg-panel/90 px-4 py-2.5 text-[12.5px] font-medium text-mist backdrop-blur-md transition-colors hover:border-lime/40 hover:text-zinc-100"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" />
+        </svg>
+        Dashboard
+      </a>
+
       <AnimatePresence mode="wait">
         {phase === "brief" && (
           <motion.div key="brief" {...pageMotion}>

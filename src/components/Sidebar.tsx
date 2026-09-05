@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: <ChartIcon /> },
+  { href: "/radar", label: "Radar", icon: <RadarIcon /> },
   { href: "/prospects", label: "Prospects", icon: <TargetIcon /> },
   { href: "/campaigns", label: "Campagnes", icon: <ClipboardIcon /> },
   { href: "/analytics", label: "Analytics", icon: <SearchIcon /> },
@@ -200,6 +201,13 @@ function ChartIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
       <line x1="18" x2="18" y1="20" y2="10" /><line x1="12" x2="12" y1="20" y2="4" /><line x1="6" x2="6" y1="20" y2="14" />
+    </svg>
+  );
+}
+function RadarIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+      <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /><line x1="12" x2="12" y1="2" y2="4" />
     </svg>
   );
 }
