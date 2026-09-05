@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/radar",
-        destination: "/radar/index.html",
+        destination: "/RADAR/dist/index.html",
       },
     ];
   },
