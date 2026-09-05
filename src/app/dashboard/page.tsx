@@ -155,21 +155,21 @@ export default async function HomePage({
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#F8FAFC", position: "relative", overflow: "hidden" }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle,rgba(26,86,219,.04) 1px,transparent 1px)", backgroundSize: "30px 30px" }} />
+    <div className="min-h-screen" style={{ background: "#0a0d0b", position: "relative", overflow: "hidden" }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle,rgba(74,222,128,.03) 1px,transparent 1px)", backgroundSize: "30px 30px" }} />
       <div className="relative z-10 mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
         {campaign && (
-          <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-[rgba(37,99,235,.2)] bg-white p-4" style={{ boxShadow: "0 2px 7px rgba(37,99,235,.06)" }}>
+          <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-4" style={{ boxShadow: "0 2px 7px rgba(0,0,0,.2)" }}>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-xl">📋</span>
               <div>
-                <p className="font-semibold text-[#0F172A]">Vous prospectez pour « {campaign.name} »</p>
+                <p className="font-semibold text-[#e8efe8]">Vous prospectez pour « {campaign.name} »</p>
                 {campaign.sector && campaign.location && (
-                  <p className="text-xs text-[#475569]">{campaign.sector} à {campaign.location}</p>
+                  <p className="text-xs text-[#9fb3a4]">{campaign.sector} à {campaign.location}</p>
                 )}
               </div>
             </div>
-            <Link href={`/campaigns/${campaign.id}`} className="rounded-lg bg-[#E8622A] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#d4561f]" style={{ boxShadow: "0 6px 22px rgba(232,98,42,.35)" }}>
+            <Link href={`/campaigns/${campaign.id}`} className="rounded-lg bg-[#d9ff4d] px-4 py-2 text-xs font-bold text-[#0a0d0b] transition hover:bg-[#4ade80]">
               Voir la campagne
             </Link>
           </div>
@@ -177,35 +177,35 @@ export default async function HomePage({
 
         <header className="mb-8">
           <div className="mb-6 flex items-center gap-2">
-            <div className="h-[2px] w-6 rounded bg-[#E8622A]" />
-            <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#E8622A]">Dashboard</span>
+            <div className="h-[2px] w-6 rounded bg-[#d9ff4d]" />
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#d9ff4d]">Dashboard</span>
           </div>
           <div className="flex items-center gap-4 mb-8">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl text-white" style={{ background: "linear-gradient(135deg, #2563EB, #3B82F6)", boxShadow: "0 8px 24px rgba(37,99,235,.3)" }}>
+            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d9ff4d]/10 text-[#d9ff4d]">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-[#0F172A] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Importez · Vibecodez · Vendez</h1>
-              <p className="mt-1 text-sm text-[#64748B]">Importez vos prospects · Workflow WhatsApp automatisé</p>
+              <h1 className="text-3xl font-extrabold text-[#e8efe8] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Importez · Vibecodez · Vendez</h1>
+              <p className="mt-1 text-sm text-[#67766a]">Importez vos prospects · Workflow WhatsApp automatisé</p>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3 mb-8">
             <KPICard label="Prospects créés" value={totalProspectsCount} icon="🎯" tone="blue" />
             <KPICard label="Ventes conclues" value={totalPaidCount} icon="✅" tone="green" subtitle={`${conversionRate}% conversion`} />
-            <KPICard label="CA généré" value={revenueDisplay} icon="💰" tone="orange" subtitle={`${totalPaidCount} vente${totalPaidCount > 1 ? "s" : ""}`} breakdown={breakdown} />
+            <KPICard label="CA généré" value={revenueDisplay} icon="💰" tone="lime" subtitle={`${totalPaidCount} vente${totalPaidCount > 1 ? "s" : ""}`} breakdown={breakdown} />
           </div>
         </header>
 
-        <section className="relative overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white p-6 sm:p-8" style={{ boxShadow: "0 2px 7px rgba(0,0,0,.04)" }}>
-          <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #2563EB, #3B82F6)" }} />
+        <section className="relative overflow-hidden rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6 sm:p-8">
+          <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #d9ff4d, #4ade80)" }} />
           <div className="text-center">
-            <p className="text-sm text-[#64748B] mb-4">Créez une campagne pour lancer votre prospection</p>
+            <p className="text-sm text-[#67766a] mb-4">Créez une campagne pour lancer votre prospection</p>
             <Link
               href="/campaigns"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:from-blue-700 hover:to-indigo-700"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-6 py-3 text-sm font-bold text-[#0a0d0b] transition hover:bg-[#4ade80]"
             >
               + Nouvelle campagne
             </Link>

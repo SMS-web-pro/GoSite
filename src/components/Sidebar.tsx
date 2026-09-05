@@ -67,12 +67,12 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
   const sidebarContent = (
     <div className={`flex h-full flex-col ${width} transition-all duration-200`}>
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 border-b border-[rgba(255,255,255,.08)] px-4">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E8622A] text-white text-sm font-bold">
+      <div className="flex h-16 items-center gap-2 border-b border-[rgba(236,255,220,0.09)] px-4">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#d9ff4d] text-[#0a0d0b] text-sm font-bold">
           ⚡
         </div>
         {!collapsed && (
-          <span className="text-sm font-bold text-white whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>GoSite</span>
+          <span className="text-sm font-bold text-[#e8efe8] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>GoSite</span>
         )}
       </div>
 
@@ -85,12 +85,12 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
             onClick={() => setMobileOpen(false)}
             className={`relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition
               ${isActive(l.href)
-                ? "bg-[rgba(232,98,42,.15)] text-[#E8622A]"
+                ? "bg-[rgba(217,255,77,.1)] text-[#d9ff4d]"
                 : "text-[rgba(255,255,255,.7)] hover:bg-[rgba(255,255,255,.07)] hover:text-white"
               }`}
           >
             {isActive(l.href) && (
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-[#E8622A]" />
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-[#d9ff4d]" />
             )}
             <span className="shrink-0">{l.icon}</span>
             {!collapsed && <span>{l.label}</span>}
@@ -100,36 +100,36 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
 
       {/* Stats */}
       {!collapsed && stats && (
-        <div className="border-t border-[rgba(255,255,255,.08)] px-4 py-3 space-y-1">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[rgba(255,255,255,.4)]">Stats rapides</p>
-          <div className="flex items-center justify-between text-xs text-[rgba(255,255,255,.7)]">
+        <div className="border-t border-[rgba(236,255,220,0.09)] px-4 py-3 space-y-1">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[rgba(255,255,255,.35)]">Stats rapides</p>
+          <div className="flex items-center justify-between text-xs text-[rgba(255,255,255,.6)]">
             <span>Prospects</span>
-            <span className="font-semibold text-white">{stats.prospects}</span>
+            <span className="font-semibold text-[#e8efe8]">{stats.prospects}</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-[rgba(255,255,255,.7)]">
+          <div className="flex items-center justify-between text-xs text-[rgba(255,255,255,.6)]">
             <span>Campagnes</span>
-            <span className="font-semibold text-white">{stats.campaigns}</span>
+            <span className="font-semibold text-[#e8efe8]">{stats.campaigns}</span>
           </div>
         </div>
       )}
 
       {/* WhatsApp status */}
-      <div className="border-t border-[rgba(255,255,255,.08)] px-4 py-3">
+      <div className="border-t border-[rgba(236,255,220,0.09)] px-4 py-3">
         <div className={`flex items-center gap-2 ${collapsed ? "justify-center" : ""}`}>
-          <span className={`h-2 w-2 rounded-full ${waConnected ? "bg-[#10B981]" : "bg-red-400"}`} />
+          <span className={`h-2 w-2 rounded-full ${waConnected ? "bg-[#4ade80]" : "bg-red-400"}`} />
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="text-xs text-[rgba(255,255,255,.6)]">
+              <span className="text-xs text-[rgba(255,255,255,.5)]">
                 WhatsApp {waConnected ? "connecté" : "déconnecté"}
               </span>
               {waConnected && waPhone && (
-                <span className="text-[11px] text-[rgba(255,255,255,.4)]">+{waPhone}</span>
+                <span className="text-[11px] text-[rgba(255,255,255,.35)]">+{waPhone}</span>
               )}
               {waConnected && waProfileName && (
-                <span className="text-[11px] text-[rgba(255,255,255,.4)]">{waProfileName}</span>
+                <span className="text-[11px] text-[rgba(255,255,255,.35)]">{waProfileName}</span>
               )}
               {!waConnected && (
-                <Link href="/settings" className="text-[11px] text-[#E8622A] hover:underline mt-0.5">
+                <Link href="/settings" className="text-[11px] text-[#d9ff4d] hover:underline mt-0.5">
                   → Reconnecter
                 </Link>
               )}
@@ -141,7 +141,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
       {/* Collapse toggle (desktop only) */}
       <button
         onClick={onToggle}
-        className="hidden lg:flex items-center justify-center border-t border-[rgba(255,255,255,.08)] py-3 text-[rgba(255,255,255,.4)] hover:text-white transition"
+        className="hidden lg:flex items-center justify-center border-t border-[rgba(236,255,220,0.09)] py-3 text-[rgba(255,255,255,.35)] hover:text-white transition"
       >
         {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
       </button>
@@ -153,7 +153,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
       {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-4 left-4 z-50 flex h-10 w-10 items-center justify-center rounded-xl bg-[#0A1628] shadow-md border border-[rgba(255,255,255,.1)] lg:hidden"
+        className="fixed top-4 left-4 z-50 flex h-10 w-10 items-center justify-center rounded-xl bg-[#0a0d0b] shadow-md border border-[rgba(236,255,220,0.09)] lg:hidden"
       >
         <HamburgerIcon />
       </button>
@@ -162,14 +162,14 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-full w-60 bg-[#0A1628] shadow-2xl border-r border-[rgba(255,255,255,.08)]">
+          <aside className="absolute left-0 top-0 h-full w-60 bg-[#0a0d0b] shadow-2xl border-r border-[rgba(236,255,220,0.09)]">
             {sidebarContent}
           </aside>
         </div>
       )}
 
       {/* Desktop sidebar */}
-      <aside className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:flex-col bg-[#0A1628] border-r border-[rgba(255,255,255,.08)] ${width} transition-all duration-200`}>
+      <aside className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:flex-col bg-[#0a0d0b] border-r border-[rgba(236,255,220,0.09)] ${width} transition-all duration-200`}>
         {sidebarContent}
       </aside>
     </>

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" dir="ltr">
-      <body className={`${inter.className} ${spaceGrotesk.variable} ${notoSansArabic.variable}`} style={{ background: "#fff", color: "#0F172A", lineHeight: 1.6, overflowX: "hidden" }}>
+      <body className={`${inter.className} ${spaceGrotesk.variable} ${notoSansArabic.variable}`} style={{ background: "#0a0d0b", color: "#e8efe8", lineHeight: 1.6, overflowX: "hidden" }}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>

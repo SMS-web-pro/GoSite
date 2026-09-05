@@ -32,7 +32,7 @@
 [data-public] button, [data-public] input, [data-public] select, [data-public] textarea { font: inherit; color: inherit; background: none; border: none; outline: none; }
 [data-public] ul, [data-public] ol { list-style: none; margin: 0; padding: 0; }
 
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0A1628}::-webkit-scrollbar-thumb{background:#E8622A;border-radius:10px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0a0d0b}::-webkit-scrollbar-thumb{background:#d9ff4d;border-radius:10px}
 
 .reveal,.reveal-l,.reveal-r{opacity:0;transition:opacity .65s ease,transform .65s ease}
 .reveal{transform:translateY(24px)}.reveal-l{transform:translateX(-20px)}.reveal-r{transform:translateX(20px)}
@@ -49,7 +49,7 @@
 .orb2{animation:orbf2 12s ease-in-out infinite}
 .orb3{animation:orbf3 8s ease-in-out infinite}
 
-::selection{background:rgba(37,99,235,.15);color:#1A56DB}
+::selection{background:rgba(217,255,77,.15);color:#d9ff4d}
 
 /* Card hover effects */
 [data-card-hover]{transition:all .3s}
