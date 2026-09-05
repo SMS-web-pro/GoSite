@@ -12,6 +12,7 @@ import {
   Globe2,
   History,
   KeyRound,
+  LayoutDashboard,
   Link2Off,
   MapPin,
   MessageCircle,
@@ -231,6 +232,13 @@ export default function BriefScreen({ onLaunch, apiKeyReady, onOpenKey, initial 
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
+            <a
+              href="/dashboard"
+              className="flex items-center gap-2 rounded-xl border border-line bg-panel/80 px-4 py-2.5 text-[12.5px] font-medium text-mist backdrop-blur transition-colors hover:border-line-strong hover:text-zinc-100"
+            >
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              Dashboard
+            </a>
             <button
               onClick={() => setGatewayOpen(true)}
               className={`flex items-center gap-2 rounded-xl border px-3.5 py-2 text-[12px] font-medium transition-colors ${
