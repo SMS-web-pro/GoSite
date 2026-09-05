@@ -288,3 +288,93 @@ export async function validateProspectWhatsApp(opts: {
     jid,
   };
 }
+
+/* ------------------------------------------------------------------ */
+/*  4. Validation via l'API GoSite (/api/whatsapp/check-numbers)      */
+/*     Utilise Baileys côté serveur — même système que le projet      */
+/* ------------------------------------------------------------------ */
+
+export async function validateProspectWhatsAppViaApi(opts: {
+  rawPhone: string | null | undefined;
+  businessName: string;
+  countryCode: string;
+}): Promise<WaValidationDetail> {
+  const parsed = parsePhoneE164(opts.rawPhone, opts.countryCode);
+
+  if (!parsed.valid || !parsed.digits) {
+    return {
+      status: "non",
+      method: "format_only",
+      lineType: "unknown",
+      reason: "Aucun numéro de téléphone valide à vérifier",
+      confidence: 100,
+      verified: true,
+      e164: null,
+      jid: null,
+    };
+  }
+
+  try {
+    const res = await fetch("/api/whatsapp/check-numbers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        numbers: [{ phone: parsed.e164 ?? parsed.digits, country: opts.countryCode }],
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      return {
+        status: "non",
+        method: "format_only",
+        lineType: parsed.isMobile ? "mobile" : "fixed",
+        reason: `API GoSite indisponible: ${data.error || res.statusText}`,
+        confidence: 0,
+        verified: false,
+        e164: parsed.e164,
+        jid: null,
+      };
+    }
+
+    const result = data.results?.[0];
+    if (!result) {
+      return {
+        status: "non",
+        method: "format_only",
+        lineType: parsed.isMobile ? "mobile" : "fixed",
+        reason: "Aucune réponse de l'API GoSite",
+        confidence: 0,
+        verified: false,
+        e164: parsed.e164,
+        jid: null,
+      };
+    }
+
+    const exists = result.exists === true;
+    return {
+      status: exists ? "oui" : "non",
+      method: "baileys",
+      lineType: parsed.isMobile ? "mobile" : "fixed",
+      reason: exists
+        ? `WhatsApp actif — vérifié via Baileys (GoSite)`
+        : `WhatsApp non disponible — ${opts.businessName}`,
+      confidence: exists ? 100 : 95,
+      verified: true,
+      e164: parsed.e164,
+      jid: result.jid ?? `${parsed.digits}@s.whatsapp.net`,
+    };
+  } catch (err) {
+    return {
+      status: "non",
+      method: "format_only",
+      lineType: parsed.isMobile ? "mobile" : "fixed",
+      reason: `Erreur réseau GoSite: ${err instanceof Error ? err.message : "inconnue"}`,
+      confidence: 0,
+      verified: false,
+      e164: parsed.e164,
+      jid: null,
+    };
+  }
+}

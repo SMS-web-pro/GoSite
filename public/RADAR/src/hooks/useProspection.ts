@@ -35,7 +35,7 @@ import {
   sleep,
   webSearchBusiness,
 } from "../lib/api";
-import { validateProspectWhatsApp } from "../lib/whatsappValidator";
+import { validateProspectWhatsAppViaApi } from "../lib/whatsappValidator";
 import { baremeString, evaluateBusiness, reasonLabelFor } from "../lib/evaluate";
 
 const WA_STORAGE = "prospectradar_wa_v1";
@@ -572,12 +572,10 @@ export function useProspection() {
         for (const b of targetBiz) {
           if (isCancelled()) return;
 
-          const waResult = await validateProspectWhatsApp({
+          const waResult = await validateProspectWhatsAppViaApi({
             rawPhone: b.phone ?? b.phoneDigits,
             businessName: b.name,
             countryCode: gl,
-            serperApiKey: apiKey,
-            proxy,
           });
 
           setWaMap((m) => ({ ...m, [b.id]: waResult.status }));
