@@ -51,39 +51,6 @@
 
 ::selection{background:rgba(217,255,77,.15);color:#d9ff4d}
 
-/* ── Dashboard background: dot grid + noise (matches RADAR) ──── */
-body:not([data-public])::before,
-body:not([data-public])::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
-body:not([data-public])::before {
-  z-index: 0;
-  background-image: radial-gradient(circle, rgba(74,222,128,.045) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-body:not([data-public])::after {
-  z-index: 70;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Ping dot animation — matches RADAR */
-@keyframes ping-dot {
-  0% { transform: scale(1); opacity: 0.7; }
-  80%, 100% { transform: scale(2.4); opacity: 0; }
-}
-.ping-dot::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: currentColor;
-  animation: ping-dot 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
 /* Card hover effects */
 [data-card-hover]{transition:all .3s}
 [data-card-hover]:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.09)}
