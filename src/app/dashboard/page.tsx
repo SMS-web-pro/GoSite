@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db";
-import { prospects, businesses } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
-import HomeClient from "./HomeClient";
+import { prospects, businesses, campaigns } from "@/db/schema";
+import { desc, eq, sql, ne } from "drizzle-orm";
 import { localStore } from "@/lib/local-store";
 import { getSettings } from "@/lib/settings";
 import { detectProspectCurrency, formatPrice } from "@/lib/prompt-generator";
@@ -17,6 +16,8 @@ export default async function HomePage({
 }) {
   let totalProspectsCount = 0;
   let totalPaidCount = 0;
+  let pipelineCount = 0;
+  let activeCampaignsCount = 0;
   let revenueByCurrency = { eur: 0, usd: 0, mad: 0 };
 
   try {
@@ -28,7 +29,9 @@ export default async function HomePage({
       p.finalPaymentStatus === "paid" ||
       saleStages.includes(p.workflowStage) ||
       p.workflowStage === "deposit_paid";
+
     const [prospectCount] = await db.select({ count: sql<number>`count(*)::int` }).from(prospects);
+    const [campaignCount] = await db.select({ count: sql<number>`count(*)::int` }).from(campaigns).where(eq(campaigns.status, "active"));
 
     const allProspectRows = await db
       .select({ prospect: prospects, business: businesses })
@@ -36,7 +39,9 @@ export default async function HomePage({
       .innerJoin(businesses, eq(prospects.businessId, businesses.id));
 
     totalProspectsCount = prospectCount?.count || 0;
+    activeCampaignsCount = campaignCount?.count || 0;
     totalPaidCount = allProspectRows.filter((row: any) => isPaidProspect(row.prospect)).length;
+    pipelineCount = totalProspectsCount - totalPaidCount;
 
     const settings = await getSettings();
     for (const row of allProspectRows) {
@@ -58,10 +63,9 @@ export default async function HomePage({
             ? (settings as any).finalPriceEUR ?? 15000
             : curr === "USD"
               ? (settings as any).finalPriceUSD ?? 15000
-              : (settings as any).finalPriceMAD ?? 150000;
+              : (settings as any).finalPaymentMAD ?? 150000;
         revenue += p.finalAmount ?? fallbackFinal;
       }
-      // Fallback legacy single payment if no split payment recorded
       if (revenue === 0 && (p.paymentStatus === "paid" || saleStages.includes(p.workflowStage) || p.workflowStage === "deposit_paid")) {
         const legacyAmount =
           p.paymentAmount ||
@@ -90,6 +94,14 @@ export default async function HomePage({
 
     totalProspectsCount = allProspects.length;
     totalPaidCount = allProspects.filter((p: any) => isPaidProspect(p)).length;
+    pipelineCount = totalProspectsCount - totalPaidCount;
+
+    try {
+      const [campaignCount] = await db.select({ count: sql<number>`count(*)::int` }).from(campaigns).where(eq(campaigns.status, "active"));
+      activeCampaignsCount = campaignCount?.count || 0;
+    } catch {
+      activeCampaignsCount = 0;
+    }
 
     for (const p of allProspects) {
       const pp = p as any;
@@ -126,11 +138,11 @@ export default async function HomePage({
     }
   }
 
-  // Exchange rates for total USD display
   const EUR_TO_USD = 1.08;
   const MAD_TO_USD = 0.10;
   const totalInUSD = revenueByCurrency.eur * EUR_TO_USD + revenueByCurrency.usd + revenueByCurrency.mad * MAD_TO_USD;
   const revenueDisplay = totalInUSD > 0 ? formatPrice(Math.round(totalInUSD), "USD") : "$0.00";
+  const avgDealSize = totalPaidCount > 0 ? formatPrice(Math.round(totalInUSD / totalPaidCount), "USD") : "$0.00";
 
   const breakdown: { label: string; value: string | number }[] = [];
   if (revenueByCurrency.usd > 0) breakdown.push({ label: "$", value: formatPrice(revenueByCurrency.usd, "USD") });
@@ -143,12 +155,12 @@ export default async function HomePage({
   const campaignId = sp.campaignId ? Number(sp.campaignId) : undefined;
   let campaign: { id: number; name: string; sector: string | null; location: string | null } | null = null;
   if (campaignId) {
-    const { campaigns } = await import("@/db/schema");
-    const { eq } = await import("drizzle-orm");
+    const { campaigns: campSchema } = await import("@/db/schema");
+    const { eq: eqOp } = await import("drizzle-orm");
     const [c] = await db
       .select()
-      .from(campaigns)
-      .where(eq(campaigns.id, campaignId))
+      .from(campSchema)
+      .where(eqOp(campSchema.id, campaignId))
       .limit(1)
       .catch(() => []);
     campaign = c || null;
@@ -178,39 +190,37 @@ export default async function HomePage({
             <div className="h-[2px] w-6 rounded bg-[#d9ff4d]" />
             <span className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#d9ff4d]">Dashboard</span>
           </div>
-          <div className="flex items-center gap-4 mb-8">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d9ff4d]/10 text-[#d9ff4d]">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
-              </svg>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d9ff4d]/10 text-[#d9ff4d]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-3xl font-extrabold text-[#e8efe8] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Importez · Vibecodez · Vendez</h1>
+                <p className="mt-1 text-sm text-[#67766a]">Importez vos prospects · Workflow WhatsApp automatisé</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-extrabold text-[#e8efe8] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>Importez · Vibecodez · Vendez</h1>
-              <p className="mt-1 text-sm text-[#67766a]">Importez vos prospects · Workflow WhatsApp automatisé</p>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3 mb-8">
-            <KPICard label="Prospects créés" value={totalProspectsCount} icon="🎯" tone="blue" />
-            <KPICard label="Ventes conclues" value={totalPaidCount} icon="✅" tone="green" subtitle={`${conversionRate}% conversion`} />
-            <KPICard label="CA généré" value={revenueDisplay} icon="💰" tone="lime" subtitle={`${totalPaidCount} vente${totalPaidCount > 1 ? "s" : ""}`} breakdown={breakdown} />
-          </div>
-        </header>
-
-        <section className="relative overflow-hidden rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6 sm:p-8">
-          <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #d9ff4d, #4ade80)" }} />
-          <div className="text-center">
-            <p className="text-sm text-[#67766a] mb-4">Créez une campagne pour lancer votre prospection</p>
             <Link
               href="/campaigns"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-6 py-3 text-sm font-bold text-[#0a0d0b] transition hover:bg-[#4ade80]"
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-5 py-2.5 text-sm font-bold text-[#0a0d0b] transition hover:bg-[#4ade80]"
             >
               + Nouvelle campagne
             </Link>
           </div>
-        </section>
 
-        <HomeClient />
+          <div className="grid gap-4 sm:grid-cols-3 mb-4">
+            <KPICard label="Prospects créés" value={totalProspectsCount} icon="🎯" tone="blue" />
+            <KPICard label="Ventes conclues" value={totalPaidCount} icon="✅" tone="green" subtitle={`${conversionRate}% conversion`} />
+            <KPICard label="CA généré" value={revenueDisplay} icon="💰" tone="lime" subtitle={`${totalPaidCount} vente${totalPaidCount > 1 ? "s" : ""}`} breakdown={breakdown} />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <KPICard label="Campagnes actives" value={activeCampaignsCount} icon="📋" tone="violet" subtitle="en cours" />
+            <KPICard label="En pipeline" value={pipelineCount} icon="🔄" tone="amber" subtitle="non convertis" />
+            <KPICard label="Panier moyen" value={avgDealSize} icon="💎" tone="emerald" subtitle="par vente" />
+          </div>
+        </header>
       </div>
   );
 }
