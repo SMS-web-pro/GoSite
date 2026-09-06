@@ -24,10 +24,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="noise relative flex min-h-screen overflow-hidden" style={{ background: "#0a0d0b" }}>
-      <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(circle,rgba(74,222,128,.04) 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
+    <div className="relative flex min-h-screen">
       <SidebarWrapper />
-      <main className="relative z-10 flex-1 min-w-0">{children}</main>
+      <main className="flex-1 min-w-0">{children}</main>
     </div>
   );
 }
