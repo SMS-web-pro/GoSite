@@ -51,34 +51,34 @@ export default async function CampaignsPage() {
           <div>
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+              className="inline-flex items-center gap-2 text-sm text-[#67766a] hover:text-[#e8efe8]"
             >
               <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth={2}>
                 <path d="M19 12H5" /><path d="m12 19-7-7 7-7" />
               </svg>
               Accueil
             </Link>
-            <h1 className="mt-2 text-3xl font-bold text-slate-900">📋 Campagnes de prospection</h1>
-            <p className="text-sm text-slate-600">
+            <h1 className="mt-2 text-3xl font-bold text-[#e8efe8]">📋 Campagnes de prospection</h1>
+            <p className="text-sm text-[#67766a]">
               {totalCampaigns} campagne{totalCampaigns > 1 ? "s" : ""} · {totalProspectsCount} prospect{totalProspectsCount !== 1 ? "s" : ""} au total
             </p>
           </div>
           <div className="flex gap-2">
             <Link
               href="/settings"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-4 py-2 text-sm font-semibold text-[#9fb3a4] hover:border-[rgba(236,255,220,0.18)]"
             >
               ⚙️ Paramètres
             </Link>
             <Link
               href="/analytics"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-4 py-2 text-sm font-semibold text-[#9fb3a4] hover:border-[rgba(236,255,220,0.18)]"
             >
               📊 Analytics
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              className="rounded-xl bg-[#d9ff4d] px-4 py-2 text-sm font-semibold text-[#0a0d0b] hover:bg-[#4ade80]"
             >
               + Nouvelle recherche
             </Link>

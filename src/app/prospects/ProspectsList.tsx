@@ -26,19 +26,19 @@ type Campaign = {
 };
 
 const STAGE_INFO: Record<string, { label: string; color: string; icon: string }> = {
-  discovered: { label: "Découvert", color: "bg-slate-100 text-slate-700", icon: "🔍" },
-  contacted: { label: "Contacté", color: "bg-blue-100 text-blue-700", icon: "💬" },
-  demo_sent: { label: "Démo envoyée", color: "bg-violet-100 text-violet-700", icon: "🎨" },
-  quoted: { label: "Devis envoyé", color: "bg-amber-100 text-amber-700", icon: "💰" },
-  paid: { label: "Payé", color: "bg-emerald-100 text-emerald-700", icon: "✅" },
-  delivered: { label: "Livré", color: "bg-emerald-100 text-emerald-700", icon: "🚀" },
-  completed: { label: "Terminé", color: "bg-emerald-100 text-emerald-700", icon: "🎉" },
+  discovered: { label: "Découvert", color: "bg-[#151b13] text-[#9fb3a4]", icon: "🔍" },
+  contacted: { label: "Contacté", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "💬" },
+  demo_sent: { label: "Démo envoyée", color: "bg-[rgba(167,139,250,.12)] text-[#a78bfa]", icon: "🎨" },
+  quoted: { label: "Devis envoyé", color: "bg-[rgba(251,191,36,.12)] text-[#fbbf24]", icon: "💰" },
+  paid: { label: "Payé", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "✅" },
+  delivered: { label: "Livré", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "🚀" },
+  completed: { label: "Terminé", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "🎉" },
 };
 
 const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
-  bing_maps: { label: "Bing Maps", color: "bg-sky-50 text-sky-700 border-sky-200" },
-  openstreetmap: { label: "OpenStreetMap", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  photon: { label: "Photon (OSM)", color: "bg-violet-50 text-violet-700 border-violet-200" },
+  bing_maps: { label: "Bing Maps", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80] border-[rgba(74,222,128,.2)]" },
+  openstreetmap: { label: "OpenStreetMap", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80] border-[rgba(74,222,128,.2)]" },
+  photon: { label: "Photon (OSM)", color: "bg-[rgba(167,139,250,.12)] text-[#a78bfa] border-[rgba(167,139,250,.2)]" },
 };
 
 function safeJson(s: string): Record<string, unknown> | null {
@@ -48,7 +48,7 @@ function safeJson(s: string): Record<string, unknown> | null {
 function Section({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={className}>
-      <h4 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">{title}</h4>
+      <h4 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#67766a]">{title}</h4>
       {children}
     </div>
   );
@@ -57,7 +57,7 @@ function Section({ title, children, className = "" }: { title: string; children:
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</p>
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-[#67766a]">{label}</p>
       <div className="mt-0.5">{value}</div>
     </div>
   );
@@ -66,10 +66,10 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
 function InfoIcon({ icon, label, value }: { icon: string; label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-start gap-1.5">
-      <span className="text-slate-400">{icon}</span>
+      <span className="text-[#67766a]">{icon}</span>
       <div className="min-w-0 flex-1">
-        <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400">{label}</p>
-        <div className="text-xs text-slate-700">{value}</div>
+        <p className="text-[9px] font-medium uppercase tracking-wider text-[#67766a]">{label}</p>
+        <div className="text-xs text-[#e8efe8]">{value}</div>
       </div>
     </div>
   );
@@ -77,12 +77,12 @@ function InfoIcon({ icon, label, value }: { icon: string; label: string; value: 
 
 function Badge({ children, tone = "slate" }: { children: React.ReactNode; tone?: "slate" | "blue" | "amber" | "green" | "violet" | "purple" }) {
   const tones: Record<string, string> = {
-    slate: "bg-slate-100 text-slate-700 border-slate-200",
-    blue: "bg-blue-50 text-blue-700 border-blue-200",
-    amber: "bg-amber-50 text-amber-700 border-amber-200",
-    green: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    violet: "bg-violet-50 text-violet-700 border-violet-200",
-    purple: "bg-violet-50 text-violet-700 border-violet-200",
+    slate: "bg-[#151b13] text-[#9fb3a4] border-[rgba(236,255,220,0.09)]",
+    blue: "bg-[rgba(74,222,128,.12)] text-[#4ade80] border-[rgba(74,222,128,.2)]",
+    amber: "bg-[rgba(251,191,36,.12)] text-[#fbbf24] border-[rgba(251,191,36,.2)]",
+    green: "bg-[rgba(74,222,128,.12)] text-[#4ade80] border-[rgba(74,222,128,.2)]",
+    violet: "bg-[rgba(167,139,250,.12)] text-[#a78bfa] border-[rgba(167,139,250,.2)]",
+    purple: "bg-[rgba(167,139,250,.12)] text-[#a78bfa] border-[rgba(167,139,250,.2)]",
   };
   return (
     <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium ${tones[tone]}`}>{children}</span>
@@ -91,7 +91,7 @@ function Badge({ children, tone = "slate" }: { children: React.ReactNode; tone?:
 
 function SocialLink({ href, icon, label }: { href: string; icon: string; label: string }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700">
+    <a href={href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-2 py-1 text-xs font-medium text-[#9fb3a4] transition hover:border-[rgba(236,255,220,0.18)]">
       <span>{icon}</span> {label}
     </a>
   );
@@ -102,7 +102,7 @@ function EquipLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center gap-1.5 text-xs">
       <span>{label}</span>
-      <span className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-medium ${yes ? "bg-emerald-100 text-emerald-700" : value === "no" ? "bg-slate-100 text-slate-500" : "bg-amber-100 text-amber-700"}`}>
+      <span className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-medium ${yes ? "bg-[rgba(74,222,128,.12)] text-[#4ade80] border border-[rgba(74,222,128,.2)]" : value === "no" ? "bg-[#151b13] text-[#9fb3a4] border border-[rgba(236,255,220,0.09)]" : "bg-[rgba(251,191,36,.12)] text-[#fbbf24] border border-[rgba(251,191,36,.2)]"}`}>
         {value}
       </span>
     </div>
@@ -234,12 +234,12 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
 
   if (filteredItems.length === 0) {
     return (
-      <div className="rounded-3xl border-2 border-dashed border-slate-300 bg-white/60 p-12 text-center">
+      <div className="rounded-3xl border-2 border-dashed border-[rgba(236,255,220,0.15)] bg-transparent p-12 text-center">
         <p className="text-2xl">🎯</p>
-        <h2 className="mt-3 text-lg font-semibold text-slate-900">
+        <h2 className="mt-3 text-lg font-semibold text-[#e8efe8]">
           {items.length === 0 ? "Aucun prospect pour l'instant" : "Aucun résultat pour ces filtres"}
         </h2>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-[#9fb3a4]">
           {items.length === 0
             ? "Allez sur la page d'accueil, faites une recherche et cliquez sur \"🎯 Prospecter\" sur un business."
             : "Essayez de modifier les filtres ou réinitialisez-les."}
@@ -247,14 +247,14 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
         {items.length === 0 ? (
           <Link
             href="/dashboard"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-4 py-2 text-sm font-semibold text-[#0a0d0b] hover:bg-[#4ade80]"
           >
             Démarrer une recherche
           </Link>
         ) : (
           <button
             onClick={() => { setFilterWhatsapp("all"); setFilterWebsite("all"); }}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-4 py-2 text-sm font-semibold text-[#0a0d0b] hover:bg-[#4ade80]"
           >
             Réinitialiser les filtres
           </button>
@@ -275,9 +275,9 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
   return (
     <div className="space-y-4">
       {selected.size > 0 && (
-        <div className="sticky top-16 z-30 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-blue-400 bg-blue-50 p-3 shadow-lg">
-          <div className="flex items-center gap-3 text-sm text-blue-900">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-blue-600 font-bold text-white">
+        <div className="sticky top-16 z-30 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-[rgba(74,222,128,.3)] bg-[rgba(74,222,128,.08)] p-3 shadow-lg">
+          <div className="flex items-center gap-3 text-sm text-[#4ade80]">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-[#4ade80] font-bold text-[#0a0d0b]">
               {selected.size}
             </span>
             <span className="font-semibold">
@@ -285,7 +285,7 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
             </span>
             <button
               onClick={clearSelection}
-              className="text-xs text-blue-700 hover:underline"
+              className="text-xs text-[#4ade80] hover:underline"
             >
               Tout désélectionner
             </button>
@@ -310,7 +310,7 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                 </button>
                 <button
                   onClick={() => setConfirmingBulk(false)}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm"
+                  className="rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-3 py-1.5 text-sm"
                 >
                   Annuler
                 </button>
@@ -320,8 +320,8 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
         </div>
       )}
 
-      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2">
-        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
+      <div className="flex items-center gap-3 rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-4 py-2">
+        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-[#9fb3a4]">
           <input
             type="checkbox"
             checked={allSelected}
@@ -339,11 +339,11 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                 : `Tout sélectionner (${filteredItems.length})`}
           </span>
           {filteredItems.length !== items.length && (
-            <span className="text-xs text-slate-400">({items.length} total)</span>
+            <span className="text-xs text-[#67766a]">({items.length} total)</span>
           )}
         </label>
         {checkingWhatsapp && (
-          <span className="ml-auto text-xs text-blue-500">⏳ Vérification WhatsApp...</span>
+          <span className="ml-auto text-xs text-[#4ade80]">⏳ Vérification WhatsApp...</span>
         )}
         {!checkingWhatsapp && waError && (
           <span className="ml-auto text-xs text-red-500">⚠ {waError}</span>
@@ -351,7 +351,7 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
         {!checkingWhatsapp && !waError && whatsappStatus.size > 0 && (
           <span className="ml-auto text-xs">
             <span className="font-semibold text-green-600">{Array.from(whatsappStatus.values()).filter(Boolean).length} WA ✓</span>
-            <span className="text-slate-400 mx-1">·</span>
+            <span className="text-[#67766a] mx-1">·</span>
             <span className="font-semibold text-red-500">{Array.from(whatsappStatus.values()).filter((v) => !v).length} WA ✗</span>
           </span>
         )}
@@ -359,12 +359,12 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
 
       {/* Filter bar */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-slate-500">Filtrer :</span>
+        <span className="text-xs font-medium text-[#67766a]">Filtrer :</span>
         {campaigns.length > 0 && (
           <select
             value={filterCampaign}
             onChange={(e) => setFilterCampaign(e.target.value === "all" ? "all" : Number(e.target.value))}
-            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 transition hover:border-blue-300 focus:border-blue-500 focus:outline-none"
+            className="rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-2 py-1 text-xs font-medium text-[#9fb3a4] transition hover:border-[rgba(236,255,220,0.18)] focus:border-[#4ade80] focus:outline-none"
           >
             <option value="all">📋 Toutes les campagnes</option>
             {campaigns.map((c) => (
@@ -372,38 +372,38 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
             ))}
           </select>
         )}
-        <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-0.5">
+        <div className="flex items-center gap-1 rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] p-0.5">
           <button
             onClick={() => setFilterWhatsapp("all")}
-            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWhatsapp === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWhatsapp === "all" ? "bg-[#d9ff4d] text-[#0a0d0b]" : "text-[#67766a] hover:bg-[#151b13]"}`}
           >WA: Tous</button>
           <button
             onClick={() => setFilterWhatsapp("yes")}
-            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWhatsapp === "yes" ? "bg-green-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWhatsapp === "yes" ? "bg-[#4ade80] text-[#0a0d0b]" : "text-[#67766a] hover:bg-[#151b13]"}`}
           >WA ✓</button>
           <button
             onClick={() => setFilterWhatsapp("no")}
-            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWhatsapp === "no" ? "bg-red-500 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWhatsapp === "no" ? "bg-[#ef4444] text-white" : "text-[#67766a] hover:bg-[#151b13]"}`}
           >WA ✗</button>
         </div>
-        <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-0.5">
+        <div className="flex items-center gap-1 rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] p-0.5">
           <button
             onClick={() => setFilterWebsite("all")}
-            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "all" ? "bg-[#d9ff4d] text-[#0a0d0b]" : "text-[#67766a] hover:bg-[#151b13]"}`}
           >Web: Tous</button>
           <button
             onClick={() => setFilterWebsite("yes")}
-            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "yes" ? "bg-green-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "yes" ? "bg-[#4ade80] text-[#0a0d0b]" : "text-[#67766a] hover:bg-[#151b13]"}`}
           >🌐 Oui</button>
           <button
             onClick={() => setFilterWebsite("no")}
-            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "no" ? "bg-red-500 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-md px-2 py-1 text-xs font-medium transition ${filterWebsite === "no" ? "bg-[#ef4444] text-white" : "text-[#67766a] hover:bg-[#151b13]"}`}
           >🌐 Non</button>
         </div>
         {(filterCampaign !== "all" || filterWhatsapp !== "all" || filterWebsite !== "all") && (
           <button
             onClick={() => { setFilterCampaign("all"); setFilterWhatsapp("all"); setFilterWebsite("all"); }}
-            className="text-xs text-blue-600 hover:underline"
+            className="text-xs text-[#4ade80] hover:underline"
           >Réinitialiser</button>
         )}
       </div>
@@ -411,9 +411,9 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
       {stageOrder.filter((s) => byStage[s]).map((stage) => {
         const info = STAGE_INFO[stage] || STAGE_INFO.discovered;
         return (
-          <div key={stage} className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div key={stage} className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-sm font-bold text-slate-900">
+              <h3 className="flex items-center gap-2 text-sm font-bold text-[#e8efe8]">
                 <span className="text-lg">{info.icon}</span>
                 {info.label}
                 <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${info.color}`}>
@@ -428,17 +428,17 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                 const isExpanded = expandedId === item.prospect.id;
                 const initials = b.name.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase() || "").join("");
                 const popularity = b.popularity || 0;
-                const popColor = popularity >= 70 ? "text-emerald-700 bg-emerald-100" : popularity >= 40 ? "text-amber-700 bg-amber-100" : "text-slate-600 bg-slate-100";
+                const popColor = popularity >= 70 ? "text-[#4ade80] bg-[rgba(74,222,128,.12)]" : popularity >= 40 ? "text-[#fbbf24] bg-[rgba(251,191,36,.12)]" : "text-[#67766a] bg-[#151b13]";
                 const waValid = b.phone ? whatsappStatus.get(b.phone) : undefined;
-                const sourceMeta = SOURCE_LABELS[b.source] || { label: b.source, color: "bg-slate-50 text-slate-700 border-slate-200" };
+                const sourceMeta = SOURCE_LABELS[b.source] || { label: b.source, color: "bg-[#151b13] text-[#9fb3a4] border-[rgba(236,255,220,0.09)]" };
 
                 return (
                   <li
                     key={item.prospect.id}
-                    className={`group rounded-2xl border border-slate-200/80 bg-white shadow-sm transition ${
+                    className={`group rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] shadow-sm transition ${
                       isSelected
-                        ? "border-blue-400 ring-2 ring-blue-200"
-                        : "hover:border-blue-300 hover:shadow-md"
+                        ? "border-[rgba(74,222,128,.3)] ring-2 ring-[rgba(74,222,128,0.3)]"
+                        : "hover:border-[rgba(236,255,220,0.18)] hover:shadow-md"
                     }`}
                   >
                     <div className="flex flex-col gap-3 p-4 sm:flex-row">
@@ -448,9 +448,9 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                           checked={isSelected}
                           onChange={() => toggleOne(item.prospect.id)}
                           onClick={(e) => e.stopPropagation()}
-                          className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                          className="mt-1 h-4 w-4 shrink-0 rounded border-[rgba(236,255,220,0.09)] text-[#4ade80] focus:ring-[rgba(74,222,128,0.3)]"
                         />
-                        <div className="relative grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white">
+                        <div className="relative grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#4ade80] to-[#d9ff4d] text-sm font-bold text-[#0a0d0b]">
                           {initials || "B"}
                           {waValid !== undefined && (
                             <span className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-white ${waValid ? "bg-green-500" : "bg-red-400"}`} title={waValid ? "Numéro WhatsApp valide" : "Numéro non WhatsApp"} />
@@ -458,23 +458,23 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start gap-2">
-                            <h3 className="truncate text-base font-semibold text-slate-900 flex-1" title={b.name}>{b.name}</h3>
+                            <h3 className="truncate text-base font-semibold text-[#e8efe8] flex-1" title={b.name}>{b.name}</h3>
                             {b.rating ? (
-                              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-amber-50 px-1.5 py-0.5 text-xs font-bold text-amber-700">
+                              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-[rgba(251,191,36,.12)] px-1.5 py-0.5 text-xs font-bold text-[#fbbf24]">
                                 ★ {b.rating}
-                                {b.reviewsCount ? <span className="font-normal text-amber-600">({b.reviewsCount})</span> : null}
+                                {b.reviewsCount ? <span className="font-normal text-[#fbbf24]">({b.reviewsCount})</span> : null}
                               </span>
                             ) : null}
                           </div>
                           <div className="mt-1 flex flex-wrap items-center gap-1">
                             {b.subcategory ? (
-                              <span className="rounded-md bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-blue-700">{b.subcategory}</span>
+                              <span className="rounded-md bg-[rgba(74,222,128,.12)] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[#4ade80]">{b.subcategory}</span>
                             ) : null}
                             {b.cuisine ? (
-                              <span className="rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700" title="Type de cuisine">🍽️ {b.cuisine}</span>
+                              <span className="rounded-md bg-[rgba(251,191,36,.12)] px-1.5 py-0.5 text-[10px] font-medium text-[#fbbf24]" title="Type de cuisine">🍽️ {b.cuisine}</span>
                             ) : null}
                             {b.stars ? (
-                              <span className="rounded-md bg-yellow-50 px-1.5 py-0.5 text-[10px] font-medium text-yellow-700">{"★".repeat(parseInt(b.stars) || 1)}</span>
+                              <span className="rounded-md bg-[rgba(251,191,36,.12)] px-1.5 py-0.5 text-[10px] font-medium text-[#fbbf24]">{"★".repeat(parseInt(b.stars) || 1)}</span>
                             ) : null}
                             <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${popColor}`} title={`Score de popularité basé sur ${b.detailCount} champs remplis`}>
                               ⚡ {popularity}
@@ -484,7 +484,7 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                             ) : null}
                           </div>
                           {b.description ? (
-                            <p className="mt-1.5 line-clamp-2 text-xs text-slate-600" title={b.description}>
+                            <p className="mt-1.5 line-clamp-2 text-xs text-[#9fb3a4]" title={b.description}>
                               {b.description}
                             </p>
                           ) : null}
@@ -502,7 +502,7 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                         {b.phone ? (
                           <InfoIcon icon="📞" label="Téléphone" value={
                             <span className="flex items-center gap-1.5">
-                              <a href={`tel:${b.phone}`} className="font-medium text-blue-700 hover:underline">{b.phone}</a>
+                              <a href={`tel:${b.phone}`} className="font-medium text-[#4ade80] hover:underline">{b.phone}</a>
                               {waValid === true && <span className="text-[10px] font-bold text-green-600">WA ✓</span>}
                               {waValid === false && <span className="text-[10px] font-bold text-red-500">WA ✗</span>}
                             </span>
@@ -510,7 +510,7 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                         ) : null}
                         {b.website ? (
                           <InfoIcon icon="🌐" label="Site web" value={
-                            <a href={b.website} target="_blank" rel="noreferrer" className="truncate font-medium text-blue-700 hover:underline" title={b.website}>
+                            <a href={b.website} target="_blank" rel="noreferrer" className="truncate font-medium text-[#4ade80] hover:underline" title={b.website}>
                               {(() => { try { return new URL(b.website).hostname.replace("www.", ""); } catch { return b.website; } })()}
                             </a>
                           } />
@@ -522,13 +522,13 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
                         ) : null}
                         {b.email ? (
                           <InfoIcon icon="✉️" label="Email" value={
-                            <a href={`mailto:${b.email}`} className="truncate font-medium text-blue-700 hover:underline">{b.email}</a>
+                            <a href={`mailto:${b.email}`} className="truncate font-medium text-[#4ade80] hover:underline">{b.email}</a>
                           } />
                         ) : null}
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-1.5 border-t border-slate-100 bg-slate-50/40 px-4 py-2">
+                    <div className="flex flex-wrap items-center gap-1.5 border-t border-[rgba(236,255,220,0.09)] bg-[#151b13] px-4 py-2">
                       {b.wheelchair === "yes" && <Badge tone="blue">♿ Accessible</Badge>}
                       {b.wheelchair === "limited" && <Badge tone="amber">♿ Partiel</Badge>}
                       {b.wifi === "yes" && <Badge tone="blue">📶 Wi-Fi</Badge>}
@@ -547,24 +547,24 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
 
                       <div className="ml-auto flex items-center gap-1.5">
                         {b.googleMapsUrl && (
-                          <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-amber-600 px-2 py-1 text-[10px] font-semibold text-white transition hover:bg-amber-700">
+                          <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-[rgba(251,191,36,.12)] px-2 py-1 text-[10px] font-semibold text-[#fbbf24] transition hover:bg-[rgba(251,191,36,.2)]">
                             ⭐ Fiche Google
                           </a>
                         )}
                         {b.bingUrl && (
-                          <a href={b.bingUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-sky-600 px-2 py-1 text-[10px] font-semibold text-white transition hover:bg-sky-700">
+                          <a href={b.bingUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-[rgba(74,222,128,.12)] px-2 py-1 text-[10px] font-semibold text-[#4ade80] transition hover:bg-[rgba(74,222,128,.2)]">
                             📍 Bing
                           </a>
                         )}
                         <Link
                           href={`/prospects/${item.prospect.id}`}
-                          className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 text-[10px] font-semibold text-white transition hover:from-amber-600 hover:to-orange-600"
+                          className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] px-2 py-1 text-[10px] font-semibold text-[#0a0d0b] transition hover:from-[#fbbf24] hover:to-[#f59e0b]"
                         >
                           🎯 Prospecter
                         </Link>
                         <button
                           onClick={() => setExpandedId(isExpanded ? null : item.prospect.id)}
-                          className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
+                          className="inline-flex items-center gap-1 rounded-md border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-2 py-1 text-[10px] font-semibold text-[#9fb3a4] transition hover:border-[rgba(236,255,220,0.18)] hover:text-[#4ade80]"
                         >
                           {isExpanded ? "Réduire" : "Détails"}
                           <svg viewBox="0 0 24 24" fill="none" className={`h-3 w-3 transition ${isExpanded ? "rotate-180" : ""}`} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -607,14 +607,14 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
     : [];
 
   return (
-    <div className="border-t border-slate-200 bg-slate-50/60 p-4">
+    <div className="border-t border-[rgba(236,255,220,0.09)] bg-[#151b13] p-4">
       {/* Photos */}
       {photos && photos.length > 0 && (
         <Section title={`Photos (${photos.length})`} className="mb-4">
           <div className="flex gap-2 overflow-x-auto pb-2">
             {photos.slice(0, 6).map((url, i) => (
               <a key={i} href={url} target="_blank" rel="noreferrer" className="shrink-0">
-                <img src={url} alt={`${b.name} ${i + 1}`} className="h-24 w-24 rounded-lg object-cover border border-slate-200" />
+                <img src={url} alt={`${b.name} ${i + 1}`} className="h-24 w-24 rounded-lg object-cover border border-[rgba(236,255,220,0.09)]" />
               </a>
             ))}
           </div>
@@ -627,10 +627,10 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
           <Section title="Note Google">
             <div className="flex items-center gap-2">
               {b.rating && (
-                <span className="text-2xl font-bold text-amber-600">★ {b.rating}</span>
+                <span className="text-2xl font-bold text-[#fbbf24]">★ {b.rating}</span>
               )}
               {b.reviewsCount != null && (
-                <span className="text-sm text-slate-500">({b.reviewsCount} avis)</span>
+                <span className="text-sm text-[#9fb3a4]">({b.reviewsCount} avis)</span>
               )}
             </div>
           </Section>
@@ -639,7 +639,7 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
         {/* Description */}
         {b.description && (
           <Section title="Description">
-            <p className="text-sm text-slate-700">{b.description}</p>
+            <p className="text-sm text-[#e8efe8]">{b.description}</p>
           </Section>
         )}
 
@@ -647,16 +647,16 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
         {(b.category || b.subcategory) && (
           <Section title="Catégorie">
             <div className="flex flex-wrap gap-1.5">
-              {b.category && <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">{b.category}</span>}
-              {b.subcategory && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">{b.subcategory}</span>}
-              {b.cuisine && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">🍽️ {b.cuisine}</span>}
+              {b.category && <span className="rounded-full bg-[rgba(74,222,128,.12)] px-2 py-0.5 text-xs font-medium text-[#4ade80]">{b.category}</span>}
+              {b.subcategory && <span className="rounded-full bg-[rgba(167,139,250,.12)] px-2 py-0.5 text-xs font-medium text-[#a78bfa]">{b.subcategory}</span>}
+              {b.cuisine && <span className="rounded-full bg-[rgba(251,191,36,.12)] px-2 py-0.5 text-xs font-medium text-[#fbbf24]">🍽️ {b.cuisine}</span>}
             </div>
           </Section>
         )}
 
         {/* Adresse complète */}
         <Section title="Adresse complète">
-          <div className="text-sm text-slate-700">
+          <div className="text-sm text-[#e8efe8]">
             {b.housenumber || b.street ? <div>{b.housenumber} {b.street}</div> : null}
             {b.neighbourhood ? <div>{b.neighbourhood}</div> : null}
             {b.suburb ? <div>{b.suburb}</div> : null}
@@ -670,10 +670,10 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
         {(b.phone || b.mobile || b.email || b.website) && (
           <Section title="Contact">
             <div className="space-y-1 text-sm">
-              {b.phone && <div><span className="text-slate-500">Tél :</span> <a href={`tel:${b.phone}`} className="font-medium text-blue-700 hover:underline">{b.phone}</a></div>}
-              {b.mobile && <div><span className="text-slate-500">Mobile :</span> <a href={`tel:${b.mobile}`} className="font-medium text-blue-700 hover:underline">{b.mobile}</a></div>}
-              {b.email && <div><span className="text-slate-500">Email :</span> <a href={`mailto:${b.email}`} className="font-medium text-blue-700 hover:underline">{b.email}</a></div>}
-              {b.website && <div><span className="text-slate-500">Web :</span> <a href={b.website} target="_blank" rel="noreferrer" className="break-all font-medium text-blue-700 hover:underline">{b.website}</a></div>}
+              {b.phone && <div><span className="text-[#67766a]">Tél :</span> <a href={`tel:${b.phone}`} className="font-medium text-[#4ade80] hover:underline">{b.phone}</a></div>}
+              {b.mobile && <div><span className="text-[#67766a]">Mobile :</span> <a href={`tel:${b.mobile}`} className="font-medium text-[#4ade80] hover:underline">{b.mobile}</a></div>}
+              {b.email && <div><span className="text-[#67766a]">Email :</span> <a href={`mailto:${b.email}`} className="font-medium text-[#4ade80] hover:underline">{b.email}</a></div>}
+              {b.website && <div><span className="text-[#67766a]">Web :</span> <a href={b.website} target="_blank" rel="noreferrer" className="break-all font-medium text-[#4ade80] hover:underline">{b.website}</a></div>}
             </div>
           </Section>
         )}
@@ -681,18 +681,18 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
         {/* Horaires d'ouverture */}
         <Section title="🕐 Horaires d'ouverture">
           {b.openingHours ? (
-            <p className="text-sm text-slate-700">{b.openingHours}</p>
+            <p className="text-sm text-[#e8efe8]">{b.openingHours}</p>
           ) : (
-            <p className="text-sm text-slate-400 italic">Non renseigné</p>
+            <p className="text-sm text-[#67766a] italic">Non renseigné</p>
           )}
         </Section>
 
         {/* Services proposés */}
         <Section title="🔧 Services proposés">
           {services ? (
-            <p className="text-sm text-slate-700">{services}</p>
+            <p className="text-sm text-[#e8efe8]">{services}</p>
           ) : (
-            <p className="text-sm text-slate-400 italic">Non renseigné</p>
+            <p className="text-sm text-[#67766a] italic">Non renseigné</p>
           )}
         </Section>
 
@@ -700,20 +700,20 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
         <Section title="📍 Coordonnées GPS">
           {b.latitude && b.longitude ? (
             <>
-              <code className="block font-mono text-xs text-slate-600">{parseFloat(b.latitude).toFixed(6)}, {parseFloat(b.longitude).toFixed(6)}</code>
-              <a href={`https://www.google.com/maps?q=${b.latitude},${b.longitude}`} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] text-blue-600 hover:underline">
+              <code className="block font-mono text-xs text-[#9fb3a4]">{parseFloat(b.latitude).toFixed(6)}, {parseFloat(b.longitude).toFixed(6)}</code>
+              <a href={`https://www.google.com/maps?q=${b.latitude},${b.longitude}`} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] text-[#4ade80] hover:underline">
                 Ouvrir dans Google Maps
               </a>
             </>
           ) : (
-            <p className="text-sm text-slate-400 italic">Non renseigné</p>
+            <p className="text-sm text-[#67766a] italic">Non renseigné</p>
           )}
         </Section>
 
         {/* Lien Google Maps */}
         {b.googleMapsUrl && (
           <Section title="Google Maps">
-            <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-amber-700 hover:underline">
+            <a href={b.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-[#fbbf24] hover:underline">
               ⭐ Voir sur Google Maps
             </a>
           </Section>
@@ -753,18 +753,18 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
           {reviews && reviews.length > 0 ? (
             <div className="space-y-3">
               {reviews.slice(0, 6).map((r, i) => (
-                <div key={i} className="rounded-lg border border-slate-200 bg-white p-3">
+                <div key={i} className="rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-slate-900">{r.author}</span>
-                    <span className="text-xs text-amber-600">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                    <span className="text-sm font-medium text-[#e8efe8]">{r.author}</span>
+                    <span className="text-xs text-[#fbbf24]">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-600">{r.text}</p>
-                  {r.time && <p className="mt-1 text-[10px] text-slate-400">{r.time}</p>}
+                  <p className="mt-1 text-sm text-[#9fb3a4]">{r.text}</p>
+                  {r.time && <p className="mt-1 text-[10px] text-[#67766a]">{r.time}</p>}
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-sm text-slate-400 italic">Aucun avis pour le moment</p>
+            <p className="text-sm text-[#67766a] italic">Aucun avis pour le moment</p>
           )}
         </Section>
 
@@ -773,9 +773,9 @@ function ExpandedDetails({ b }: { b: Item["business"] }) {
           <Section title={`Autres tags (${otherTags.length})`} className="sm:col-span-2 lg:col-span-3">
             <div className="grid grid-cols-1 gap-x-4 gap-y-0.5 sm:grid-cols-2 lg:grid-cols-3">
               {otherTags.slice(0, 30).map(([k, v]) => (
-                <div key={k} className="text-xs text-slate-600">
-                  <span className="font-medium text-slate-500">{k}:</span>{" "}
-                  <span className="text-slate-700">{String(v)}</span>
+                <div key={k} className="text-xs text-[#9fb3a4]">
+                  <span className="font-medium text-[#9fb3a4]">{k}:</span>{" "}
+                  <span className="text-[#e8efe8]">{String(v)}</span>
                 </div>
               ))}
             </div>

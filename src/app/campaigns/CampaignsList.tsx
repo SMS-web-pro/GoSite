@@ -114,42 +114,42 @@ export default function CampaignsList({ items }: { items: Item[] }) {
     <div className="space-y-4">
       <button
         onClick={() => setShowNew(true)}
-        className="w-full rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 p-6 text-sm font-medium text-slate-500 transition hover:border-blue-400 hover:bg-blue-50/30 hover:text-blue-700"
+        className="w-full rounded-2xl border-2 border-dashed border-[rgba(236,255,220,0.15)] bg-transparent p-6 text-sm font-medium text-[#67766a] transition hover:border-[rgba(74,222,128,.3)]"
       >
         + Créer une nouvelle campagne
       </button>
 
       {showNew && (
-        <div className="rounded-2xl border border-blue-300 bg-blue-50/50 p-6 shadow-sm">
-          <h3 className="text-sm font-bold text-blue-900">Nouvelle campagne</h3>
+        <div className="rounded-2xl border border-[rgba(74,222,128,.2)] bg-[rgba(74,222,128,.05)] p-6 shadow-sm">
+          <h3 className="text-sm font-bold text-[#4ade80]">Nouvelle campagne</h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nom de la campagne (ex. Restaurants Paris Q1)"
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
             />
             <input
               value={sector}
               onChange={(e) => setSector(e.target.value)}
               placeholder="Secteur (ex. restaurant)"
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
             />
             <input
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Localisation (ex. Paris, France)"
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
             />
             <input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description (optionnel)"
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
             />
           </div>
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-xs text-slate-500">Langue :</span>
+            <span className="text-xs text-[#67766a]">Langue :</span>
             {(["fr", "en", "ar"] as const).map((lang) => (
               <button
                 key={lang}
@@ -157,14 +157,14 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                 onClick={() => setLanguage(lang)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                   language === lang
-                    ? "bg-blue-600 text-white"
-                    : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                    ? "bg-[#d9ff4d] text-[#0a0d0b]"
+                    : "border border-[rgba(236,255,220,0.09)] bg-[#0e120f] text-[#9fb3a4] hover:border-[rgba(236,255,220,0.18)]"
                 }`}
               >
                 {lang === "fr" ? "🇫🇷 FR" : lang === "en" ? "🇬🇧 EN" : "🇸🇦 AR"}
               </button>
             ))}
-            <span className="ml-2 rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-600">
+            <span className="ml-2 rounded-lg bg-[rgba(251,191,36,.12)] px-2 py-1 text-[10px] font-bold text-[#fbbf24]">
               Devise : {currencySymbol[currency]} ({currency})
             </span>
           </div>
@@ -172,13 +172,13 @@ export default function CampaignsList({ items }: { items: Item[] }) {
             <button
               onClick={create}
               disabled={creating || !name.trim()}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-xl bg-[#d9ff4d] px-4 py-2 text-sm font-semibold text-[#0a0d0b] hover:bg-[#4ade80] disabled:opacity-50"
             >
               {creating ? "Création..." : "Créer et lancer une recherche"}
             </button>
             <button
               onClick={() => setShowNew(false)}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-4 py-2 text-sm font-medium text-[#9fb3a4] hover:border-[rgba(236,255,220,0.18)]"
             >
               Annuler
             </button>
@@ -187,16 +187,16 @@ export default function CampaignsList({ items }: { items: Item[] }) {
       )}
 
       {items.length === 0 && !showNew ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
+        <div className="rounded-2xl border border-dashed border-[rgba(236,255,220,0.15)] bg-transparent p-10 text-center text-sm text-[#67766a]">
           Aucune campagne. Créez-en une pour organiser votre prospection par secteur / zone.
         </div>
       ) : (
         <div className="space-y-3">
           {/* Sticky action bar when items are selected */}
           {selected.size > 0 && (
-            <div className="sticky top-16 z-30 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-blue-400 bg-blue-50 p-3 shadow-lg">
-              <div className="flex items-center gap-3 text-sm text-blue-900">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-blue-600 font-bold text-white">
+            <div className="sticky top-16 z-30 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[rgba(74,222,128,.3)] bg-[rgba(74,222,128,.08)] p-3 shadow-lg">
+              <div className="flex items-center gap-3 text-sm text-[#4ade80]">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-[#d9ff4d] font-bold text-[#0a0d0b]">
                   {selected.size}
                 </span>
                 <span className="font-semibold">
@@ -204,18 +204,18 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                 </span>
                 <button
                   onClick={() => setSelected(new Set())}
-                  className="text-xs text-blue-700 hover:underline"
+                  className="text-xs text-[#d9ff4d] hover:underline"
                 >
                   Tout désélectionner
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <label className="flex cursor-pointer items-center gap-1 text-xs text-blue-900">
+                <label className="flex cursor-pointer items-center gap-1 text-xs text-[#4ade80]">
                   <input
                     type="checkbox"
                     checked={keepProspectsOnBulk}
                     onChange={(e) => setKeepProspectsOnBulk(e.target.checked)}
-                    className="h-3.5 w-3.5 rounded"
+                    className="h-3.5 w-3.5 rounded text-[#4ade80] border-[rgba(236,255,220,0.18)]"
                   />
                   <span>Garder les prospects</span>
                 </label>
@@ -228,7 +228,7 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                   </button>
                 ) : (
                   <>
-                    <span className="text-xs text-red-900">Confirmer ?</span>
+                    <span className="text-xs text-red-400">Confirmer ?</span>
                     <button
                       onClick={bulkDelete}
                       disabled={bulkDeleting}
@@ -238,7 +238,7 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                     </button>
                     <button
                       onClick={() => setConfirmingBulk(false)}
-                      className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm"
+                      className="rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-3 py-1.5 text-sm text-[#9fb3a4]"
                     >
                       Annuler
                     </button>
@@ -249,8 +249,8 @@ export default function CampaignsList({ items }: { items: Item[] }) {
           )}
 
           {/* Select-all bar */}
-          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2">
-            <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
+          <div className="flex items-center gap-3 rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-4 py-2">
+            <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-[#9fb3a4]">
               <input
                 type="checkbox"
                 checked={items.length > 0 && items.every((i) => selected.has(i.campaign.id))}
@@ -261,7 +261,7 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                   }
                 }}
                 onChange={toggleAll}
-                className="h-4 w-4 rounded"
+                className="h-4 w-4 rounded text-[#4ade80] border-[rgba(236,255,220,0.18)]"
               />
               <span>
                 {items.every((i) => selected.has(i.campaign.id)) && selected.size > 0
@@ -281,8 +281,8 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                   key={campaign.id}
                   className={`rounded-2xl border p-5 shadow-sm transition ${
                     isSelected
-                      ? "border-blue-400 bg-blue-50/50 ring-2 ring-blue-200"
-                      : "border-slate-200 bg-white hover:border-blue-300"
+                      ? "border-[rgba(74,222,128,.3)] bg-[rgba(74,222,128,.05)]"
+                      : "border-[rgba(236,255,220,0.09)] bg-[#0e120f] hover:border-[rgba(74,222,128,.3)]"
                   }`}
                 >
                   <div className="flex items-start gap-2">
@@ -291,43 +291,43 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                       checked={isSelected}
                       onChange={() => toggleOne(campaign.id)}
                       onClick={(e) => e.stopPropagation()}
-                      className="mt-1 h-4 w-4 shrink-0 rounded"
+                      className="mt-1 h-4 w-4 shrink-0 rounded text-[#4ade80] border-[rgba(236,255,220,0.18)]"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
-                        <h3 className="truncate text-base font-bold text-slate-900">
+                        <h3 className="truncate text-base font-bold text-[#e8efe8]">
                           {campaign.name}
                         </h3>
                       </div>
                       {campaign.description ? (
-                        <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                        <p className="mt-1 line-clamp-2 text-xs text-[#67766a]">
                           {campaign.description}
                         </p>
                       ) : null}
                       <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
                         {campaign.sector && (
-                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-blue-700">
+                          <span className="rounded-full bg-[rgba(74,222,128,.12)] px-2 py-0.5 text-[#4ade80]">
                             {campaign.sector}
                           </span>
                         )}
                         {campaign.location && (
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-700">
+                          <span className="rounded-full bg-[#151b13] px-2 py-0.5 text-[#9fb3a4]">
                             📍 {campaign.location}
                           </span>
                         )}
-                        <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-700">
+                        <span className="rounded-full bg-[rgba(167,139,250,.12)] px-2 py-0.5 text-[#a78bfa]">
                           {campaign.language === "en" ? "🇬🇧 EN" : campaign.language === "ar" ? "🇸🇦 AR" : "🇫🇷 FR"}
                         </span>
                         {campaign.currency && (
-                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+                          <span className="rounded-full bg-[rgba(251,191,36,.12)] px-2 py-0.5 text-[#fbbf24]">
                             {campaign.currency === "USD" ? "💵 USD" : campaign.currency === "MAD" ? "💰 MAD" : "💶 EUR"}
                           </span>
                         )}
                         <span
                           className={`rounded-full px-2 py-0.5 ${
                             campaign.status === "active"
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-slate-500"
+                              ? "bg-[rgba(74,222,128,.12)] text-[#4ade80]"
+                              : "bg-[#151b13] text-[#67766a]"
                           }`}
                         >
                           {campaign.status === "active" ? "🟢 Active" : campaign.status}
@@ -335,22 +335,22 @@ export default function CampaignsList({ items }: { items: Item[] }) {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
-                    <span className="text-xs text-slate-500">
+                  <div className="mt-3 flex items-center justify-between border-t border-[rgba(236,255,220,0.09)] pt-3">
+                    <span className="text-xs text-[#67766a]">
                       {prospectCount} prospect{prospectCount !== 1 ? "s" : ""}
                     </span>
                     <div className="flex items-center gap-3">
                       {campaign.sector && campaign.location ? (
                         <Link
                           href={`/search?sector=${encodeURIComponent(campaign.sector)}&location=${encodeURIComponent(campaign.location)}&campaignId=${campaign.id}`}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:underline"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[#4ade80] hover:underline"
                         >
                           🔍 Prospecter
                         </Link>
                       ) : null}
                       <Link
                         href={`/campaigns/${campaign.id}`}
-                        className="text-xs font-semibold text-blue-600 hover:underline"
+                        className="text-xs font-semibold text-[#4ade80] hover:underline"
                       >
                         Voir détails →
                       </Link>
@@ -409,8 +409,8 @@ function DeleteCampaignButtonSmall({ campaignId, campaignName }: { campaignId: n
   }
 
   return (
-    <span className="inline-flex items-center gap-1 rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-[10px]" onClick={(e) => e.stopPropagation()}>
-      <span className="text-red-700">Supprimer "{campaignName.slice(0, 18)}{campaignName.length > 18 ? "..." : ""}" (et ses prospects) ?</span>
+    <span className="inline-flex items-center gap-1 rounded border border-[rgba(239,68,68,.3)] bg-[rgba(239,68,68,.08)] px-1.5 py-0.5 text-[10px]" onClick={(e) => e.stopPropagation()}>
+      <span className="text-red-400">Supprimer "{campaignName.slice(0, 18)}{campaignName.length > 18 ? "..." : ""}" (et ses prospects) ?</span>
       <button
         onClick={del}
         disabled={deleting}
@@ -420,7 +420,7 @@ function DeleteCampaignButtonSmall({ campaignId, campaignName }: { campaignId: n
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); setConfirming(false); }}
-        className="rounded bg-white px-1.5 py-0.5 text-slate-700"
+        className="rounded bg-[#0e120f] px-1.5 py-0.5 text-[#9fb3a4]"
       >
         Non
       </button>

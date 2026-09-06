@@ -12,15 +12,15 @@ export default async function SettingsPage() {
           <div>
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+              className="inline-flex items-center gap-2 text-sm text-[#67766a] hover:text-[#e8efe8]"
             >
               <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth={2}>
                 <path d="M19 12H5" /><path d="m12 19-7-7 7-7" />
               </svg>
               Accueil
             </Link>
-            <h1 className="mt-2 text-3xl font-bold text-slate-900">⚙️ Paramètres de l'agence</h1>
-            <p className="text-sm text-slate-600">
+            <h1 className="mt-2 text-3xl font-bold text-[#e8efe8]">⚙️ Paramètres de l'agence</h1>
+            <p className="text-sm text-[#67766a]">
               Configurez votre identité, vos tarifs et le lien de paiement envoyé aux prospects
             </p>
           </div>

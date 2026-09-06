@@ -147,26 +147,26 @@ export default async function AnalyticsPage() {
           <div>
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+              className="inline-flex items-center gap-2 text-sm text-[#67766a] hover:text-[#e8efe8]"
             >
               <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth={2}>
                 <path d="M19 12H5" /><path d="m12 19-7-7 7-7" />
               </svg>
               Accueil
             </Link>
-            <h1 className="mt-2 text-3xl font-bold text-slate-900">📊 Analytics</h1>
-            <p className="text-sm text-slate-600">Suivez vos messages envoyés, vos conversions et votre CA</p>
+            <h1 className="mt-2 text-3xl font-bold text-[#e8efe8]">📊 Analytics</h1>
+            <p className="text-sm text-[#9fb3a4]">Suivez vos messages envoyés, vos conversions et votre CA</p>
           </div>
           <div className="flex gap-2">
             <Link
               href="/campaigns"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-4 py-2 text-sm font-semibold text-[#9fb3a4] hover:border-[rgba(236,255,220,0.18)] hover:text-[#e8efe8]"
             >
               📋 Campagnes
             </Link>
             <Link
               href="/settings"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] px-4 py-2 text-sm font-semibold text-[#9fb3a4] hover:border-[rgba(236,255,220,0.18)] hover:text-[#e8efe8]"
             >
               ⚙️ Paramètres
             </Link>

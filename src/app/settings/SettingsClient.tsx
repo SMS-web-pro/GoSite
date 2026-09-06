@@ -177,7 +177,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-2xl border border-slate-200 bg-white p-1">
+      <div className="flex gap-1 rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-1">
         {([
           ["agency", "🏢 Mon agence"],
           ["whatsapp", "📱 WhatsApp"],
@@ -189,8 +189,8 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
             onClick={() => setActiveTab(id)}
             className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${
               activeTab === id
-                ? "bg-blue-600 text-white shadow"
-                : "text-slate-600 hover:bg-slate-50"
+                ? "bg-[#d9ff4d] text-[#0a0d0b] shadow"
+                : "text-[#67766a] hover:bg-[#151b13]"
             }`}
           >
             {label}
@@ -199,9 +199,9 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
       </div>
 
       {activeTab === "agency" && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-           <h2 className="text-sm font-semibold text-slate-900">🏢 Identité de l'agence</h2>
-           <p className="text-xs text-slate-500">Ces informations apparaîtront dans vos messages WhatsApp et votre signature.</p>
+        <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6">
+           <h2 className="text-sm font-semibold text-[#e8efe8]">🏢 Identité de l'agence</h2>
+           <p className="text-xs text-[#67766a]">Ces informations apparaîtront dans vos messages WhatsApp et votre signature.</p>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label="Nom de l'agence" value={agencyName} onChange={setAgencyName} placeholder="Vibecoder Studio" required />
@@ -238,166 +238,166 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
       )}
 
       {activeTab === "pricing" && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+        <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6">
           <div className="mb-4">
-            <h2 className="text-sm font-semibold text-slate-900">💰 Prix par marché — 2 paiements</h2>
-            <p className="text-xs text-slate-500">
+            <h2 className="text-sm font-semibold text-[#e8efe8]">💰 Prix par marché — 2 paiements</h2>
+            <p className="text-xs text-[#67766a]">
               Définissez le <strong>deposit</strong> (acompte) + <strong>final</strong> (solde) par marché. Le total est calculé automatiquement. Les montants et liens seront injectés selon la langue du prospect (fr→EUR, en→USD, ar→MAD).
             </p>
           </div>
 
           <div className="space-y-6">
             {/* EUR */}
-            <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
-              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-900">
-                <span className="rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold">EUR</span>
+            <div className="rounded-xl border border-[rgba(74,222,128,.2)] bg-[rgba(74,222,128,.05)] p-4">
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#4ade80]">
+                <span className="rounded-md bg-[rgba(74,222,128,.1)] px-2 py-0.5 text-xs font-bold text-[#4ade80]">EUR</span>
                 Marché francophone — Total {depositPriceEUR + finalPriceEUR}€
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit (€)</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Deposit (€)</label>
                   <input
                     type="number"
                     value={depositPriceEUR}
                     onChange={(e) => setDepositPriceEUR(parseFloat(e.target.value) || 0)}
                     step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(depositPriceEUR * 100)} centimes</p>
+                  <p className="mt-1 text-[10px] text-[#67766a]">{Math.round(depositPriceEUR * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien deposit EUR</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Lien deposit EUR</label>
                   <input
                     value={depositPaymentLinkEUR}
                     onChange={(e) => setDepositPaymentLinkEUR(e.target.value)}
                     placeholder="https://buy.stripe.com/... (acompte)"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-2 mt-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Final (€)</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Final (€)</label>
                   <input
                     type="number"
                     value={finalPriceEUR}
                     onChange={(e) => setFinalPriceEUR(parseFloat(e.target.value) || 0)}
                     step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(finalPriceEUR * 100)} centimes</p>
+                  <p className="mt-1 text-[10px] text-[#67766a]">{Math.round(finalPriceEUR * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien final EUR</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Lien final EUR</label>
                   <input
                     value={finalPaymentLinkEUR}
                     onChange={(e) => setFinalPaymentLinkEUR(e.target.value)}
                     placeholder="https://buy.stripe.com/... (solde)"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
                 </div>
               </div>
             </div>
 
             {/* USD */}
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
-              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-900">
-                <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-bold">USD</span>
+            <div className="rounded-xl border border-[rgba(74,222,128,.2)] bg-[rgba(74,222,128,.05)] p-4">
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#4ade80]">
+                <span className="rounded-md bg-[rgba(74,222,128,.1)] px-2 py-0.5 text-xs font-bold text-[#4ade80]">USD</span>
                 Marché anglophone — Total ${depositPriceUSD + finalPriceUSD}
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit ($)</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Deposit ($)</label>
                   <input
                     type="number"
                     value={depositPriceUSD}
                     onChange={(e) => setDepositPriceUSD(parseFloat(e.target.value) || 0)}
                     step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(depositPriceUSD * 100)} centimes</p>
+                  <p className="mt-1 text-[10px] text-[#67766a]">{Math.round(depositPriceUSD * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien deposit USD</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Lien deposit USD</label>
                   <input
                     value={depositPaymentLinkUSD}
                     onChange={(e) => setDepositPaymentLinkUSD(e.target.value)}
                     placeholder="https://buy.stripe.com/... (deposit)"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-2 mt-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Final ($)</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Final ($)</label>
                   <input
                     type="number"
                     value={finalPriceUSD}
                     onChange={(e) => setFinalPriceUSD(parseFloat(e.target.value) || 0)}
                     step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(finalPriceUSD * 100)} centimes</p>
+                  <p className="mt-1 text-[10px] text-[#67766a]">{Math.round(finalPriceUSD * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien final USD</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Lien final USD</label>
                   <input
                     value={finalPaymentLinkUSD}
                     onChange={(e) => setFinalPaymentLinkUSD(e.target.value)}
                     placeholder="https://buy.stripe.com/... (final)"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
                 </div>
               </div>
             </div>
 
             {/* MAD */}
-            <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4">
-              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-amber-900">
-                <span className="rounded-md bg-amber-100 px-2 py-0.5 text-xs font-bold">MAD</span>
+            <div className="rounded-xl border border-[rgba(251,191,36,.2)] bg-[rgba(251,191,36,.05)] p-4">
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#fbbf24]">
+                <span className="rounded-md bg-[rgba(251,191,36,.1)] px-2 py-0.5 text-xs font-bold text-[#fbbf24]">MAD</span>
                 Marché arabophone — Total {depositPriceMAD + finalPriceMAD} DH
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Deposit (DH)</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Deposit (DH)</label>
                   <input
                     type="number"
                     value={depositPriceMAD}
                     onChange={(e) => setDepositPriceMAD(parseFloat(e.target.value) || 0)}
                     step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(depositPriceMAD * 100)} centimes</p>
+                  <p className="mt-1 text-[10px] text-[#67766a]">{Math.round(depositPriceMAD * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien deposit MAD</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Lien deposit MAD</label>
                   <input
                     value={depositPaymentLinkMAD}
                     onChange={(e) => setDepositPaymentLinkMAD(e.target.value)}
                     placeholder="https://buy.stripe.com/... (عربون)"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-2 mt-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Final (DH)</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Final (DH)</label>
                   <input
                     type="number"
                     value={finalPriceMAD}
                     onChange={(e) => setFinalPriceMAD(parseFloat(e.target.value) || 0)}
                     step="1"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
-                  <p className="mt-1 text-[10px] text-slate-400">{Math.round(finalPriceMAD * 100)} centimes</p>
+                  <p className="mt-1 text-[10px] text-[#67766a]">{Math.round(finalPriceMAD * 100)} centimes</p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">Lien final MAD</label>
+                  <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">Lien final MAD</label>
                   <input
                     value={finalPaymentLinkMAD}
                     onChange={(e) => setFinalPaymentLinkMAD(e.target.value)}
                     placeholder="https://buy.stripe.com/... (نهائي)"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8]"
                   />
                 </div>
               </div>
@@ -407,19 +407,19 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
       )}
 
       {activeTab === "messages" && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+        <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6">
           <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">💬 Templates de messages WhatsApp</h2>
-              <p className="text-xs text-slate-500">
-                Variables : <code className="rounded bg-slate-100 px-1">{"{{firstName}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{name}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{sector}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{city}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{phone}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{rating}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{demo_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_site_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{total_price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{deposit_price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_price}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{deposit_payment_url}}"}</code> <code className="rounded bg-slate-100 px-1">{"{{final_payment_url}}"}</code>
+              <h2 className="text-sm font-semibold text-[#e8efe8]">💬 Templates de messages WhatsApp</h2>
+              <p className="text-xs text-[#67766a]">
+                Variables : <code className="rounded bg-[#0a0d0b] px-1">{"{{firstName}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{name}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{sector}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{city}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{phone}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{rating}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{demo_url}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{payment_url}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{final_site_url}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{price}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{total_price}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{deposit_price}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{final_price}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{deposit_payment_url}}"}</code> <code className="rounded bg-[#0a0d0b] px-1">{"{{final_payment_url}}"}</code>
               </p>
-              <p className="mt-1 text-xs text-slate-500">
-                Conditionnels : <code className="rounded bg-slate-100 px-1">{"{{#if rating}}"}...{"{{/if}}"}</code>
+              <p className="mt-1 text-xs text-[#67766a]">
+                Conditionnels : <code className="rounded bg-[#0a0d0b] px-1">{"{{#if rating}}"}...{"{{/if}}"}</code>
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500">Langue :</span>
+              <span className="text-xs text-[#67766a]">Langue :</span>
               {(["fr", "en", "ar"] as const).map((lang) => (
                 <button
                   key={lang}
@@ -427,8 +427,8 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
                   onClick={() => setEditLang(lang)}
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                     editLang === lang
-                      ? "bg-blue-600 text-white"
-                      : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                      ? "bg-[#d9ff4d] text-[#0a0d0b]"
+                      : "border border-[rgba(236,255,220,0.09)] bg-[#0e120f] text-[#9fb3a4] hover:bg-[#151b13]"
                   }`}
                 >
                   {lang === "fr" ? "🇫🇷 FR" : lang === "en" ? "🇬🇧 EN" : "🇸🇦 AR"}
@@ -439,7 +439,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
           <div className="mt-4 space-y-4">
             {(["intro", "demo", "quote", "deposit_received", "final_payment_request", "final_payment_received", "delivery", "thanks"] as const).map((stage) => (
               <div key={stage}>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-[#9fb3a4] mb-1">
                   {stage === "intro" ? "Message 1 — Premier contact" :
                    stage === "demo" ? "Message 2 — Envoi de la démo" :
                    stage === "quote" ? "Message 3 — Devis et lien de paiement (Total + Deposit)" :
@@ -448,7 +448,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
                    stage === "final_payment_received" ? "Message 6 — Solde reçu" :
                    stage === "delivery" ? "Message 7 — Livraison du site" :
                    "Message 8 — Remerciement & fidélisation"}
-                  <span className="ml-2 text-[10px] text-slate-400 font-normal">
+                  <span className="ml-2 text-[10px] text-[#67766a] font-normal">
                     ({editLang === "fr" ? "🇫🇷 Français" : editLang === "en" ? "🇬🇧 English" : "🇸🇦 العربية"})
                   </span>
                 </label>
@@ -461,7 +461,7 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
                     });
                   }}
                   rows={8}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs outline-none focus:border-blue-500"
+                  className="w-full rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 font-mono text-xs text-[#e8efe8] outline-none focus:border-[rgba(217,255,77,0.6)]"
                 />
               </div>
             ))}
@@ -469,16 +469,16 @@ export default function SettingsClient({ initialSettings }: { initialSettings: S
         </div>
       )}
 
-      <div className="sticky bottom-4 z-10 flex items-center justify-between rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur">
+      <div className="sticky bottom-4 z-10 flex items-center justify-between rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f]/95 p-4 shadow-lg backdrop-blur">
         <div>
-          {error ? <p className="text-sm text-red-600">{error}</p> :
-           saved ? <p className="text-sm text-emerald-600">✓ Paramètres enregistrés</p> :
-           <p className="text-xs text-slate-500">Les modifications sont sauvegardées en base</p>}
+          {error ? <p className="text-sm text-[#ef4444]">{error}</p> :
+           saved ? <p className="text-sm text-[#4ade80]">✓ Paramètres enregistrés</p> :
+           <p className="text-xs text-[#67766a]">Les modifications sont sauvegardées en base</p>}
         </div>
         <button
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-5 py-2.5 text-sm font-semibold text-[#0a0d0b] shadow hover:bg-[#4ade80] disabled:opacity-60"
         >
           {saving ? "Enregistrement..." : "💾 Sauvegarder"}
         </button>
@@ -504,15 +504,15 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-slate-700">
-        {label} {required ? <span className="text-red-500">*</span> : null}
+      <label className="mb-1 block text-xs font-medium text-[#9fb3a4]">
+        {label} {required ? <span className="text-[#ef4444]">*</span> : null}
       </label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:bg-white"
+        className="w-full rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8] outline-none focus:border-[rgba(217,255,77,0.6)] focus:bg-[#151b13]"
       />
     </div>
   );
@@ -690,21 +690,21 @@ function WhatsAppTab({
   }, []);
 
   const statusBadge = {
-    disconnected: { label: "Non connecté", tone: "bg-slate-100 text-slate-600 border-slate-200" },
-    connecting: { label: "Connexion…", tone: "bg-amber-50 text-amber-700 border-amber-200" },
-    qr_ready: { label: "Scannez le QR", tone: "bg-violet-50 text-violet-700 border-violet-200" },
-    connected: { label: "Connecté", tone: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    failed: { label: "Échec", tone: "bg-red-50 text-red-700 border-red-200" },
+    disconnected: { label: "Non connecté", tone: "bg-[rgba(236,255,220,0.05)] text-[#67766a] border-[rgba(236,255,220,0.09)]" },
+    connecting: { label: "Connexion…", tone: "bg-[rgba(251,191,36,.08)] text-[#fbbf24] border-[rgba(251,191,36,.3)]" },
+    qr_ready: { label: "Scannez le QR", tone: "bg-[rgba(167,139,250,.08)] text-[#a78bfa] border-[rgba(167,139,250,.3)]" },
+    connected: { label: "Connecté", tone: "bg-[rgba(74,222,128,.08)] text-[#4ade80] border-[rgba(74,222,128,.3)]" },
+    failed: { label: "Échec", tone: "bg-[rgba(239,68,68,.08)] text-[#ef4444] border-[rgba(239,68,68,.3)]" },
   }[status];
 
   return (
     <div className="space-y-4">
       {/* Real Baileys session */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6">
         <div className="flex items-center justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-sm font-bold text-slate-900">📱 Liaison WhatsApp (Baileys)</h2>
-            <p className="text-xs text-slate-500">
+            <h2 className="text-sm font-bold text-[#e8efe8]">📱 Liaison WhatsApp (Baileys)</h2>
+            <p className="text-xs text-[#67766a]">
               Connexion directe via le WebSocket WhatsApp — comme web.whatsapp.com.
             </p>
           </div>
@@ -714,22 +714,22 @@ function WhatsAppTab({
         </div>
 
         {sessionError && (
-          <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <div className="mb-3 rounded-lg border border-[rgba(239,68,68,.3)] bg-[rgba(239,68,68,.08)] p-3 text-sm text-[#ef4444]">
             {sessionError}
           </div>
         )}
 
         {status === "disconnected" && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5 text-center">
+          <div className="rounded-xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] p-5 text-center">
             <p className="text-3xl">📲</p>
-            <p className="mt-2 text-sm font-medium text-slate-900">Aucune session WhatsApp active</p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-2 text-sm font-medium text-[#e8efe8]">Aucune session WhatsApp active</p>
+            <p className="mt-1 text-xs text-[#67766a]">
               Lancez une nouvelle connexion pour obtenir un QR code à scanner depuis votre téléphone.
             </p>
             <button
               onClick={connect}
               disabled={loading}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-blue-700 disabled:opacity-50"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-5 py-2.5 text-sm font-bold text-[#0a0d0b] shadow hover:bg-[#4ade80] disabled:opacity-50"
             >
               {loading ? "Connexion…" : "📱 Connecter WhatsApp"}
             </button>
@@ -737,15 +737,15 @@ function WhatsAppTab({
         )}
 
         {(status === "connecting" || status === "qr_ready") && (
-          <div className="rounded-xl border-2 border-violet-300 bg-violet-50 p-5">
+          <div className="rounded-xl border-2 border-[rgba(167,139,250,.3)] bg-[rgba(167,139,250,.08)] p-5">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <h3 className="mb-2 text-sm font-bold text-violet-900">📷 Scannez ce QR code</h3>
-                <p className="text-xs text-violet-800 mb-2">
+                <h3 className="mb-2 text-sm font-bold text-[#a78bfa]">📷 Scannez ce QR code</h3>
+                <p className="text-xs text-[#a78bfa] mb-2">
                   Ouvrez WhatsApp sur votre téléphone → Menu déroulant → <strong>Appareils liés</strong> → <strong>Lier un appareil</strong>, puis pointez la caméra vers ce code.
                 </p>
                 {qrCode ? (
-                  <div className="flex justify-center rounded-xl border-4 border-white bg-white p-3 shadow-md">
+                  <div className="flex justify-center rounded-xl border-4 border-[rgba(236,255,220,0.09)] bg-[#151b13] p-3 shadow-md">
                     <img
                       src={qrCode}
                       alt="QR Code de liaison WhatsApp"
@@ -755,44 +755,44 @@ function WhatsAppTab({
                     />
                   </div>
                 ) : (
-                  <div className="flex h-64 items-center justify-center rounded-xl border-4 border-dashed border-violet-300 bg-white/60">
+                  <div className="flex h-64 items-center justify-center rounded-xl border-4 border-dashed border-[rgba(167,139,250,.3)] bg-[rgba(167,139,250,.05)]">
                     <div className="text-center">
-                      <svg className="mx-auto h-8 w-8 animate-spin text-violet-500" viewBox="0 0 24 24" fill="none">
+                      <svg className="mx-auto h-8 w-8 animate-spin text-[#a78bfa]" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="4" />
                         <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
                       </svg>
-                      <p className="mt-2 text-xs text-violet-600">Génération du QR code…</p>
+                      <p className="mt-2 text-xs text-[#a78bfa]">Génération du QR code…</p>
                     </div>
                   </div>
                 )}
-                <p className="mt-2 text-center text-[10px] text-violet-700">
+                <p className="mt-2 text-center text-[10px] text-[#a78bfa]">
                   ⏳ Le code expire dans ~30 secondes. Actualisez si besoin.
                 </p>
                 <div className="mt-2 flex items-center justify-center gap-2">
                   <button
                     onClick={connect}
                     disabled={loading}
-                    className="rounded-md border border-violet-300 bg-white px-3 py-1.5 text-[11px] font-medium text-violet-700 hover:bg-violet-100 disabled:opacity-50"
+                    className="rounded-md border border-[rgba(167,139,250,.3)] bg-[#151b13] px-3 py-1.5 text-[11px] font-medium text-[#a78bfa] hover:bg-[rgba(167,139,250,.1)] disabled:opacity-50"
                   >
                     🔄 Régénérer
                   </button>
                   <button
                     onClick={copyPayload}
-                    className="rounded-md border border-violet-300 bg-white px-3 py-1.5 text-[11px] font-medium text-violet-700 hover:bg-violet-100"
+                    className="rounded-md border border-[rgba(167,139,250,.3)] bg-[#151b13] px-3 py-1.5 text-[11px] font-medium text-[#a78bfa] hover:bg-[rgba(167,139,250,.1)]"
                   >
                     {copiedPayload ? "✓ Copié" : "📋 Copier le code"}
                   </button>
                 </div>
               </div>
               <div>
-                <h3 className="mb-2 text-sm font-bold text-violet-900">🎯 Instructions détaillées</h3>
-                <ol className="space-y-2 text-sm text-violet-800">
+                <h3 className="mb-2 text-sm font-bold text-[#a78bfa]">🎯 Instructions détaillées</h3>
+                <ol className="space-y-2 text-sm text-[#a78bfa]">
                   <li className="flex gap-2">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-violet-600 text-[10px] font-bold text-white">1</span>
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#a78bfa] text-[10px] font-bold text-white">1</span>
                     <span>Sur votre téléphone, ouvrez <strong>WhatsApp</strong></span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-violet-600 text-[10px] font-bold text-white">2</span>
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#a78bfa] text-[10px] font-bold text-white">2</span>
                     <span>
                       Android : <strong>⋮ Menu → Appareils liés</strong>
                       <br />
@@ -800,39 +800,39 @@ function WhatsAppTab({
                     </span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-violet-600 text-[10px] font-bold text-white">3</span>
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#a78bfa] text-[10px] font-bold text-white">3</span>
                     <span>Appuyez sur <strong>"Lier un appareil"</strong> (bouton vert)</span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-violet-600 text-[10px] font-bold text-white">4</span>
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#a78bfa] text-[10px] font-bold text-white">4</span>
                     <span>Pointez la caméra vers le <strong>QR code</strong> à gauche</span>
                   </li>
                 </ol>
-                <div className="mt-3 rounded-lg border border-violet-300 bg-white p-3 text-xs text-violet-800">
+                <div className="mt-3 rounded-lg border border-[rgba(167,139,250,.3)] bg-[#151b13] p-3 text-xs text-[#a78bfa]">
                   <p className="font-bold">⏰ Astuce</p>
                   <p className="mt-1">
                     Si le code expire avant le scan, cliquez sur <strong>🔄 Régénérer</strong>.
                     Le statut passe automatiquement à "Connecté" dès que la liaison est faite.
                   </p>
                 </div>
-                <div className="mt-2 rounded-lg border-2 border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                <div className="mt-2 rounded-lg border-2 border-[rgba(251,191,36,.3)] bg-[rgba(251,191,36,.08)] p-3 text-xs text-[#fbbf24]">
                   <p>💡 <strong>Important :</strong> Le QR code est généré en temps réel par notre serveur via Baileys — c'est le même protocole que celui qu'utilise WhatsApp Web officiellement. Vous restez le seul propriétaire de votre compte.</p>
                 </div>
               </div>
             </div>
-            <div className="mt-3 flex flex-col items-center gap-2 border-t border-violet-200 pt-3 text-xs">
+            <div className="mt-3 flex flex-col items-center gap-2 border-t border-[rgba(167,139,250,.2)] pt-3 text-xs">
               <button
                 onClick={disconnect}
                 disabled={loading}
-                className="text-red-600 hover:underline disabled:opacity-50"
+                className="text-[#ef4444] hover:underline disabled:opacity-50"
               >
                 Annuler la connexion
               </button>
-              <div className="rounded-lg border border-amber-300 bg-amber-50 p-2 text-[10px] text-amber-900">
+              <div className="rounded-lg border border-[rgba(251,191,36,.3)] bg-[rgba(251,191,36,.08)] p-2 text-[10px] text-[#fbbf24]">
                 <p className="font-bold">⚠️ Ça reste bloqué sur "Logging in…" ?</p>
-                <p className="mt-1 text-amber-800">
+                <p className="mt-1 text-[#fbbf24]">
                   Vérifiez le <strong>log de debug</strong> ci-dessous. Si vous voyez
-                  <code className="mx-1 rounded bg-amber-100 px-1">connection.update: connection=open</code>
+                  <code className="mx-1 rounded bg-[rgba(251,191,36,.1)] px-1">connection.update: connection=open</code>
                   c'est connecté. Sinon, le WebSocket Baileys est probablement bloqué par votre
                   environnement réseau (sandbox, firewall, etc.). Dans ce cas, utilisez le
                   mode manuel (onglet "📱 Mode manuel") pour envoyer via wa.me.
@@ -840,16 +840,16 @@ function WhatsAppTab({
               </div>
             </div>
             {/* Debug log — visible to help debug "logging in..." issues */}
-            <details className="mt-2 text-[10px] text-violet-700">
-              <summary className="cursor-pointer text-violet-600 hover:underline">
+            <details className="mt-2 text-[10px] text-[#a78bfa]">
+              <summary className="cursor-pointer text-[#a78bfa] hover:underline">
                 🔧 Voir le log de connexion (debug)
               </summary>
-              <div className="mt-1 max-h-32 overflow-y-auto rounded border border-violet-200 bg-white p-2 font-mono text-[9px] text-slate-700">
+              <div className="mt-1 max-h-32 overflow-y-auto rounded border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-2 font-mono text-[9px] text-[#9fb3a4]">
                 {log.length === 0 ? (
-                  <span className="text-slate-400">Aucun log pour l'instant…</span>
+                  <span className="text-[#67766a]">Aucun log pour l'instant…</span>
                 ) : (
                   log.map((line, i) => (
-                    <div key={i} className="text-slate-600">{line}</div>
+                    <div key={i} className="text-[#9fb3a4]">{line}</div>
                   ))
                 )}
               </div>
@@ -858,25 +858,25 @@ function WhatsAppTab({
         )}
 
         {status === "connected" && (
-          <div className="rounded-xl border-2 border-emerald-300 bg-emerald-50 p-5">
+          <div className="rounded-xl border-2 border-[rgba(74,222,128,.3)] bg-[rgba(74,222,128,.08)] p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-sm font-bold text-emerald-900">✅ WhatsApp connecté</h3>
-                <p className="mt-1 text-sm text-emerald-800">
+                <h3 className="text-sm font-bold text-[#4ade80]">✅ WhatsApp connecté</h3>
+                <p className="mt-1 text-sm text-[#4ade80]">
                   <strong>{profileName || "Votre compte"}</strong>
                   {phoneNumber && <> · <span className="font-mono">+{phoneNumber}</span></>}
                 </p>
-                <p className="mt-1 text-xs text-emerald-700">
+                <p className="mt-1 text-xs text-[#4ade80]">
                   Connecté via Baileys (protocole WebSocket WhatsApp officiel).
                 </p>
-                <p className="mt-2 text-xs text-emerald-700">
+                <p className="mt-2 text-xs text-[#4ade80]">
                   💡 Vous pouvez maintenant envoyer des messages depuis la page prospect avec le bouton "🚀 Envoyer (auto)".
                 </p>
               </div>
               <button
                 onClick={disconnect}
                 disabled={loading}
-                className="rounded-md border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+                className="rounded-md border border-[rgba(239,68,68,.3)] bg-[#0e120f] px-3 py-1.5 text-xs font-medium text-[#ef4444] hover:bg-[rgba(239,68,68,.08)] disabled:opacity-50"
               >
                 Déconnecter
               </button>
@@ -885,15 +885,15 @@ function WhatsAppTab({
         )}
 
         {status === "failed" && (
-          <div className="rounded-xl border-2 border-red-300 bg-red-50 p-5">
-            <h3 className="text-sm font-bold text-red-900">❌ Connexion échouée</h3>
-            <p className="mt-1 text-sm text-red-800">
+          <div className="rounded-xl border-2 border-[rgba(239,68,68,.3)] bg-[rgba(239,68,68,.08)] p-5">
+            <h3 className="text-sm font-bold text-[#ef4444]">❌ Connexion échouée</h3>
+            <p className="mt-1 text-sm text-[#ef4444]">
               {sessionError || "Le serveur WhatsApp n'a pas répondu. Réessayez."}
             </p>
             <button
               onClick={connect}
               disabled={loading}
-              className="mt-3 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              className="mt-3 rounded-md bg-[#ef4444] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#dc2626] disabled:opacity-50"
             >
               Réessayer
             </button>
@@ -975,9 +975,9 @@ function TestPanel({
 
   if (status !== "connected") {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-        <h3 className="text-sm font-semibold text-slate-700">🧪 Test d'envoi WhatsApp</h3>
-        <p className="mt-1 text-xs text-slate-500">
+      <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#151b13] p-5">
+        <h3 className="text-sm font-semibold text-[#9fb3a4]">🧪 Test d'envoi WhatsApp</h3>
+        <p className="mt-1 text-xs text-[#67766a]">
           Connectez d'abord WhatsApp pour pouvoir tester l'envoi.
         </p>
       </div>
@@ -985,15 +985,15 @@ function TestPanel({
   }
 
   return (
-    <div className="rounded-2xl border-2 border-blue-200 bg-blue-50 p-6">
+    <div className="rounded-2xl border-2 border-[rgba(74,222,128,.2)] bg-[rgba(74,222,128,.05)] p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-bold text-blue-900">🧪 Test d'envoi WhatsApp</h3>
-          <p className="mt-1 text-xs text-blue-700">
+          <h3 className="text-sm font-bold text-[#4ade80]">🧪 Test d'envoi WhatsApp</h3>
+          <p className="mt-1 text-xs text-[#4ade80]">
             Envoyez un message de test à n'importe quel numéro pour vérifier que la connexion fonctionne.
           </p>
           {phoneNumber && (
-            <p className="mt-1 text-[10px] text-blue-600">
+            <p className="mt-1 text-[10px] text-[#4ade80]">
               Connecté en tant que <span className="font-mono font-bold">{phoneNumber}</span>
               {profileName && <> · {profileName}</>}
             </p>
@@ -1003,7 +1003,7 @@ function TestPanel({
 
       <div className="mt-4 space-y-3">
         <div>
-          <label className="mb-1 block text-xs font-medium text-blue-900">
+          <label className="mb-1 block text-xs font-medium text-[#4ade80]">
             Numéro du destinataire (format international, ex: +33 6 12 34 56 78)
           </label>
           <input
@@ -1011,11 +1011,11 @@ function TestPanel({
             value={testPhone}
             onChange={(e) => setTestPhone(e.target.value)}
             placeholder="+33 6 12 34 56 78"
-            className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            className="w-full rounded-lg border border-[rgba(74,222,128,.2)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8] focus:border-[rgba(217,255,77,0.6)] focus:ring-2 focus:ring-[rgba(217,255,77,0.2)]"
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-blue-900">
+          <label className="mb-1 block text-xs font-medium text-[#4ade80]">
             Message personnalisé (optionnel)
           </label>
           <textarea
@@ -1023,13 +1023,13 @@ function TestPanel({
             onChange={(e) => setTestMessage(e.target.value)}
             placeholder="Laissez vide pour un message par défaut"
             rows={3}
-            className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            className="w-full rounded-lg border border-[rgba(74,222,128,.2)] bg-[#151b13] px-3 py-2 text-sm text-[#e8efe8] focus:border-[rgba(217,255,77,0.6)] focus:ring-2 focus:ring-[rgba(217,255,77,0.2)]"
           />
         </div>
         <button
           onClick={sendTest}
           disabled={sending || !testPhone.trim()}
-          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-[#d9ff4d] px-4 py-2.5 text-sm font-bold text-[#0a0d0b] shadow hover:bg-[#4ade80] disabled:opacity-50"
         >
           {sending ? "Envoi en cours..." : "📤 Envoyer le message de test"}
         </button>
@@ -1039,8 +1039,8 @@ function TestPanel({
         <div
           className={`mt-3 rounded-lg border-2 p-3 text-sm ${
             result.ok
-              ? "border-emerald-300 bg-emerald-50 text-emerald-900"
-              : "border-red-300 bg-red-50 text-red-900"
+              ? "border-[rgba(74,222,128,.3)] bg-[rgba(74,222,128,.08)] text-[#4ade80]"
+              : "border-[rgba(239,68,68,.3)] bg-[rgba(239,68,68,.08)] text-[#ef4444]"}
           }`}
         >
           {result.ok ? (
@@ -1062,12 +1062,12 @@ function TestPanel({
                 {result.messageId && (
                   <p>
                     <span className="font-semibold">ID :</span>{" "}
-                    <code className="rounded bg-emerald-100 px-1 text-[10px]">
+                    <code className="rounded bg-[rgba(74,222,128,.1)] px-1 text-[10px]">
                       {result.messageId}
                     </code>
                   </p>
                 )}
-                <p className="mt-2 rounded bg-emerald-100 p-2 text-[11px]">
+                <p className="mt-2 rounded bg-[rgba(74,222,128,.1)] p-2 text-[11px]">
                   💡 Vérifiez le téléphone destinataire pour confirmer la réception.
                 </p>
               </div>

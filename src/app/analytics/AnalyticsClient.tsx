@@ -26,18 +26,18 @@ type Recent = {
 };
 
 const STAGE_INFO: Record<string, { label: string; color: string; icon: string }> = {
-  discovered: { label: "Découvert", color: "bg-slate-100 text-slate-700", icon: "🔍" },
-  contacted: { label: "Contacté", color: "bg-blue-100 text-blue-700", icon: "💬" },
-  demo_sent: { label: "Démo envoyée", color: "bg-violet-100 text-violet-700", icon: "🎨" },
-  quoted: { label: "Devis envoyé", color: "bg-amber-100 text-amber-700", icon: "💰" },
-  paid: { label: "Payé", color: "bg-emerald-100 text-emerald-700", icon: "✅" },
-  delivered: { label: "Livré", color: "bg-emerald-100 text-emerald-700", icon: "🚀" },
-  completed: { label: "Terminé", color: "bg-emerald-100 text-emerald-700", icon: "🎉" },
-  intro: { label: "Premier contact", color: "bg-blue-100 text-blue-700", icon: "💬" },
-  demo: { label: "Démo", color: "bg-violet-100 text-violet-700", icon: "🎨" },
-  quote: { label: "Devis", color: "bg-amber-100 text-amber-700", icon: "💰" },
-  delivery: { label: "Livraison", color: "bg-emerald-100 text-emerald-700", icon: "🚀" },
-  thanks: { label: "Remerciement", color: "bg-emerald-100 text-emerald-700", icon: "🙏" },
+  discovered: { label: "Découvert", color: "bg-[#151b13] text-[#9fb3a4]", icon: "🔍" },
+  contacted: { label: "Contacté", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "💬" },
+  demo_sent: { label: "Démo envoyée", color: "bg-[rgba(167,139,250,.12)] text-[#a78bfa]", icon: "🎨" },
+  quoted: { label: "Devis envoyé", color: "bg-[rgba(251,191,36,.12)] text-[#fbbf24]", icon: "💰" },
+  paid: { label: "Payé", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "✅" },
+  delivered: { label: "Livré", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "🚀" },
+  completed: { label: "Terminé", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "🎉" },
+  intro: { label: "Premier contact", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "💬" },
+  demo: { label: "Démo", color: "bg-[rgba(167,139,250,.12)] text-[#a78bfa]", icon: "🎨" },
+  quote: { label: "Devis", color: "bg-[rgba(251,191,36,.12)] text-[#fbbf24]", icon: "💰" },
+  delivery: { label: "Livraison", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "🚀" },
+  thanks: { label: "Remerciement", color: "bg-[rgba(74,222,128,.12)] text-[#4ade80]", icon: "🙏" },
 };
 
 export default function AnalyticsClient({
@@ -89,12 +89,12 @@ export default function AnalyticsClient({
       </section>
 
       {/* Funnel of prospection */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-base font-bold text-slate-900">📊 Funnel de prospection</h3>
-        <p className="mb-4 text-xs text-slate-500">Progression des prospects à travers les étapes du workflow</p>
+      <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6 shadow-sm">
+        <h3 className="mb-1 text-base font-bold text-[#e8efe8]">📊 Funnel de prospection</h3>
+        <p className="mb-4 text-xs text-[#9fb3a4]">Progression des prospects à travers les étapes du workflow</p>
         <div className="space-y-2.5">
           {stageDistribution.length === 0 ? (
-            <p className="text-sm text-slate-500">Aucun prospect pour l'instant.</p>
+            <p className="text-sm text-[#67766a]">Aucun prospect pour l'instant.</p>
           ) : (
             (() => {
               const sortedStages = ["discovered", "contacted", "demo_sent", "quoted", "paid", "delivered", "completed"];
@@ -110,15 +110,15 @@ export default function AnalyticsClient({
                 return (
                   <div key={s.stage}>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="flex items-center gap-1.5 font-medium text-slate-700">
+                      <span className="flex items-center gap-1.5 font-medium text-[#e8efe8]">
                         <span className="text-lg">{info.icon}</span>
                         {info.label}
                       </span>
-                      <span className="font-semibold text-slate-900">
-                        {s.count} <span className="text-slate-400">({pct}%)</span>
+                      <span className="font-semibold text-[#e8efe8]">
+                        {s.count} <span className="text-[#67766a]">({pct}%)</span>
                       </span>
                     </div>
-                    <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#151b13]">
                       <div className={`h-full ${info.color}`} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
@@ -130,26 +130,26 @@ export default function AnalyticsClient({
       </div>
 
       {/* WhatsApp messages tracking */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-base font-bold text-slate-900">💬 Messages WhatsApp envoyés</h3>
-        <p className="mb-4 text-xs text-slate-500">Suivi en temps réel par étape et statut</p>
+      <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6 shadow-sm">
+        <h3 className="mb-1 text-base font-bold text-[#e8efe8]">💬 Messages WhatsApp envoyés</h3>
+        <p className="mb-4 text-xs text-[#9fb3a4]">Suivi en temps réel par étape et statut</p>
         <div className="grid gap-4 lg:grid-cols-2">
           {/* By stage */}
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Par étape</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#67766a]">Par étape</p>
             {messageStageDist.length === 0 ? (
-              <p className="text-sm text-slate-500">Aucun message envoyé.</p>
+              <p className="text-sm text-[#67766a]">Aucun message envoyé.</p>
             ) : (
               <div className="space-y-1.5">
                 {messageStageDist.map((m) => {
-                  const info = STAGE_INFO[m.stage] || { label: m.stage, icon: "💬", color: "bg-slate-100" };
+                  const info = STAGE_INFO[m.stage] || { label: m.stage, icon: "💬", color: "bg-[#151b13] text-[#9fb3a4]" };
                   return (
-                    <div key={m.stage} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                    <div key={m.stage} className="flex items-center justify-between rounded-lg bg-[#151b13] px-3 py-2">
                       <span className="flex items-center gap-2 text-sm">
                         <span>{info.icon}</span>
-                        <span className="font-medium text-slate-700">{info.label}</span>
+                        <span className="font-medium text-[#e8efe8]">{info.label}</span>
                       </span>
-                      <span className="rounded-full bg-white px-2 py-0.5 text-xs font-bold text-slate-900">{m.count}</span>
+                      <span className="rounded-full bg-[#0e120f] px-2 py-0.5 text-xs font-bold text-[#e8efe8]">{m.count}</span>
                     </div>
                   );
                 })}
@@ -158,7 +158,7 @@ export default function AnalyticsClient({
           </div>
           {/* By status */}
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Par statut</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#67766a]">Par statut</p>
             <div className="space-y-2">
               <StatusBar label="✅ Envoyés" count={sentCount} total={totalMessages} color="emerald" />
               <StatusBar label="⏳ En attente" count={pendingCount} total={totalMessages} color="amber" />
@@ -169,24 +169,24 @@ export default function AnalyticsClient({
       </div>
 
       {/* Recent campaigns */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-base font-bold text-slate-900">📋 Campagnes récentes</h3>
-        <p className="mb-4 text-xs text-slate-500">5 dernières campagnes avec leur nombre de prospects</p>
+      <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6 shadow-sm">
+        <h3 className="mb-1 text-base font-bold text-[#e8efe8]">📋 Campagnes récentes</h3>
+        <p className="mb-4 text-xs text-[#9fb3a4]">5 dernières campagnes avec leur nombre de prospects</p>
         {recentCampaigns.length === 0 ? (
-          <p className="text-sm text-slate-500">Aucune campagne.</p>
+          <p className="text-sm text-[#67766a]">Aucune campagne.</p>
         ) : (
           <ul className="space-y-2">
             {recentCampaigns.map((c) => (
               <li key={c.id}>
                 <Link
                   href={`/campaigns/${c.id}`}
-                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 hover:bg-slate-100"
+                  className="flex items-center justify-between rounded-lg bg-[#151b13] px-3 py-2 hover:bg-[#1b2218]"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{c.name}</p>
-                    <p className="text-xs text-slate-500">{c.sector} {c.location ? `· ${c.location}` : ""}</p>
+                    <p className="text-sm font-medium text-[#e8efe8]">{c.name}</p>
+                    <p className="text-xs text-[#67766a]">{c.sector} {c.location ? `· ${c.location}` : ""}</p>
                   </div>
-                  <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                  <span className="rounded-full bg-[rgba(74,222,128,.12)] px-2.5 py-0.5 text-xs font-bold text-[#4ade80]">
                     {c.prospectCount} prospect{c.prospectCount !== 1 ? "s" : ""}
                   </span>
                 </Link>
@@ -197,16 +197,16 @@ export default function AnalyticsClient({
       </div>
 
       {/* Recent activity */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-base font-bold text-slate-900">🕐 Activité récente</h3>
-        <p className="mb-4 text-xs text-slate-500">Les 50 derniers messages envoyés</p>
+      <div className="rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-6 shadow-sm">
+        <h3 className="mb-1 text-base font-bold text-[#e8efe8]">🕐 Activité récente</h3>
+        <p className="mb-4 text-xs text-[#9fb3a4]">Les 50 derniers messages envoyés</p>
         {recent.length === 0 ? (
-          <p className="text-sm text-slate-500">Aucune activité pour l'instant.</p>
+          <p className="text-sm text-[#67766a]">Aucune activité pour l'instant.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs font-medium text-slate-500">
+                <tr className="text-left text-xs font-medium text-[#67766a]">
                   <th className="pb-2">Date</th>
                   <th className="pb-2">Prospect</th>
                   <th className="pb-2">Étape</th>
@@ -218,30 +218,30 @@ export default function AnalyticsClient({
               <tbody>
                 {recent.map((r) => {
                   const msgInfo = r.log.messageStage
-                    ? STAGE_INFO[r.log.messageStage] || { label: r.log.messageStage, icon: "💬", color: "bg-slate-100" }
-                    : { label: "—", icon: "—", color: "bg-slate-100" };
-                  const wsInfo = r.prospect ? STAGE_INFO[r.prospect.workflowStage] || { label: r.prospect.workflowStage, icon: "•", color: "bg-slate-100" } : { label: "—", icon: "•", color: "bg-slate-100" };
+                    ? STAGE_INFO[r.log.messageStage] || { label: r.log.messageStage, icon: "💬", color: "bg-[#151b13] text-[#9fb3a4]" }
+                    : { label: "—", icon: "—", color: "bg-[#151b13] text-[#9fb3a4]" };
+                  const wsInfo = r.prospect ? STAGE_INFO[r.prospect.workflowStage] || { label: r.prospect.workflowStage, icon: "•", color: "bg-[#151b13] text-[#9fb3a4]" } : { label: "—", icon: "•", color: "bg-[#151b13] text-[#9fb3a4]" };
                   const statusInfo = r.log.status === "sent"
-                    ? { label: "✅ envoyé", cls: "bg-emerald-50 text-emerald-700" }
+                    ? { label: "✅ envoyé", cls: "bg-[rgba(74,222,128,.12)] text-[#4ade80]" }
                     : r.log.status === "failed"
-                    ? { label: "❌ échoué", cls: "bg-red-50 text-red-700" }
+                    ? { label: "❌ échoué", cls: "bg-[rgba(239,68,68,.12)] text-[#ef4444]" }
                     : r.log.status === "delivered"
-                    ? { label: "📬 livré", cls: "bg-blue-50 text-blue-700" }
+                    ? { label: "📬 livré", cls: "bg-[rgba(74,222,128,.12)] text-[#4ade80]" }
                     : r.log.status === "read"
-                    ? { label: "👁️ lu", cls: "bg-violet-50 text-violet-700" }
-                    : { label: "⏳ " + (r.log.status || "?"), cls: "bg-amber-50 text-amber-700" };
+                    ? { label: "👁️ lu", cls: "bg-[rgba(167,139,250,.12)] text-[#a78bfa]" }
+                    : { label: "⏳ " + (r.log.status || "?"), cls: "bg-[rgba(251,191,36,.12)] text-[#fbbf24]" };
                   return (
-                    <tr key={r.log.id} className="border-t border-slate-100">
-                      <td className="py-2 text-xs text-slate-500">
+                    <tr key={r.log.id} className="border-t border-[rgba(236,255,220,0.09)]">
+                      <td className="py-2 text-xs text-[#67766a]">
                         {r.log.sentAt ? new Date(r.log.sentAt).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"}
                       </td>
                       <td className="py-2">
                         {r.prospect ? (
-                          <Link href={`/prospects/${r.prospect.id}`} className="font-medium text-slate-900 hover:underline">
+                          <Link href={`/prospects/${r.prospect.id}`} className="font-medium text-[#e8efe8] hover:underline">
                             {r.business?.name || "Prospect supprimé"}
                           </Link>
                         ) : (
-                          <span className="font-medium text-slate-500">{r.business?.name || `Prospect #${r.log.prospectId}`}</span>
+                          <span className="font-medium text-[#67766a]">{r.business?.name || `Prospect #${r.log.prospectId}`}</span>
                         )}
                       </td>
                       <td className="py-2">
@@ -254,7 +254,7 @@ export default function AnalyticsClient({
                           {statusInfo.label}
                         </span>
                       </td>
-                      <td className="py-2 text-xs text-slate-600">
+                      <td className="py-2 text-xs text-[#9fb3a4]">
                         {r.log.phone || "—"}
                       </td>
                       <td className="py-2 text-right">
@@ -276,13 +276,13 @@ export default function AnalyticsClient({
 
 function StatusBar({ label, count, total, color }: { label: string; count: number; total: number; color: "emerald" | "amber" | "red" }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-  const bg = color === "emerald" ? "bg-emerald-100" : color === "amber" ? "bg-amber-100" : "bg-red-100";
-  const fill = color === "emerald" ? "bg-emerald-500" : color === "amber" ? "bg-amber-500" : "bg-red-500";
-  const text = color === "emerald" ? "text-emerald-700" : color === "amber" ? "text-amber-700" : "text-red-700";
+  const bg = color === "emerald" ? "bg-[rgba(74,222,128,.12)]" : color === "amber" ? "bg-[rgba(251,191,36,.12)]" : "bg-[rgba(239,68,68,.12)]";
+  const fill = color === "emerald" ? "bg-[#4ade80]" : color === "amber" ? "bg-[#fbbf24]" : "bg-[#ef4444]";
+  const text = color === "emerald" ? "text-[#4ade80]" : color === "amber" ? "text-[#fbbf24]" : "text-[#ef4444]";
   return (
     <div>
       <div className="flex items-center justify-between text-xs">
-        <span className="font-medium text-slate-700">{label}</span>
+        <span className="font-medium text-[#9fb3a4]">{label}</span>
         <span className={`font-semibold ${text}`}>{count} ({pct}%)</span>
       </div>
       <div className={`mt-1 h-2 overflow-hidden rounded-full ${bg}`}>

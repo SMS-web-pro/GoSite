@@ -34,21 +34,21 @@ export default async function ProspectsPage() {
           <div>
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+              className="inline-flex items-center gap-2 text-sm text-[#67766a] hover:text-[#e8efe8]"
             >
               <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth={2}>
                 <path d="M19 12H5" /><path d="m12 19-7-7 7-7" />
               </svg>
               Accueil
             </Link>
-            <h1 className="mt-2 text-3xl font-bold text-slate-900">🎯 Mes prospects</h1>
-            <p className="text-sm text-slate-600">
+            <h1 className="mt-2 text-3xl font-bold text-[#e8efe8]">🎯 Mes prospects</h1>
+            <p className="text-sm text-[#9fb3a4]">
               {rows.length} business locaux transformés en opportunité de vente
             </p>
           </div>
           <Link
             href="/dashboard"
-            className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            className="rounded-xl bg-[#d9ff4d] px-4 py-2 text-sm font-semibold text-[#0a0d0b] hover:bg-[#4ade80]"
           >
             + Nouvelle recherche
           </Link>
