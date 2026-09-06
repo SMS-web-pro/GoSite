@@ -36,7 +36,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           overflow: "hidden",
         }}
       >
-        <RadarCanvas intensity={0.35} grid={true} />
+        <RadarCanvas intensity={0.35} grid={true} fullRadar={false} />
       </div>
       {/* Noise texture overlay */}
       <div

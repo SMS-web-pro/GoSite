@@ -11,9 +11,11 @@ interface Props {
   className?: string;
   intensity?: number;
   grid?: boolean;
+  /** false = grid only (dashboard), true = full radar with circles/sweep/blips (/radar) */
+  fullRadar?: boolean;
 }
 
-export default function RadarCanvas({ className, intensity = 0.4, grid = true }: Props) {
+export default function RadarCanvas({ className, intensity = 0.4, grid = true, fullRadar = true }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
   const intensityRef = useRef(intensity);
   intensityRef.current = intensity;
@@ -85,70 +87,73 @@ export default function RadarCanvas({ className, intensity = 0.4, grid = true }:
         ctx.stroke();
       }
 
-      ctx.strokeStyle = `rgba(74,222,128,${0.09 * k})`;
-      ctx.lineWidth = 1;
-      [0.34, 0.67, 1].forEach((f) => {
-        ctx.beginPath();
-        ctx.arc(cx, cy, R * f, 0, TAU);
-        ctx.stroke();
-      });
-      ctx.beginPath();
-      ctx.moveTo(cx - R, cy);
-      ctx.lineTo(cx + R, cy);
-      ctx.moveTo(cx, cy - R);
-      ctx.lineTo(cx, cy + R);
-      ctx.strokeStyle = `rgba(74,222,128,${0.06 * k})`;
-      ctx.stroke();
-
-      const sx = cx + Math.cos(angle) * R;
-      const sy = cy + Math.sin(angle) * R;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(sx, sy);
-      ctx.strokeStyle = `rgba(74,222,128,${0.9 * k})`;
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + Math.cos(angle - 0.09) * R, cy + Math.sin(angle - 0.09) * R);
-      ctx.strokeStyle = `rgba(74,222,128,${0.22 * k})`;
-      ctx.lineWidth = 5;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(sx, sy, 2.4, 0, TAU);
-      ctx.fillStyle = `rgba(217,255,77,${0.9 * k})`;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, 3, 0, TAU);
-      ctx.fillStyle = `rgba(74,222,128,${0.85 * k})`;
-      ctx.fill();
-
-      for (const b of blips) {
-        let diff = (angle - b.a) % TAU;
-        if (diff < 0) diff += TAU;
-        if (diff < 0.05) b.age = 0;
-        else b.age += 1;
-
-        if (b.age < 110) {
-          const alpha = (1 - b.age / 110) * 0.95 * k;
-          const bx = cx + Math.cos(b.a) * b.r * R;
-          const by = cy + Math.sin(b.a) * b.r * R;
+      if (fullRadar) {
+        ctx.strokeStyle = `rgba(74,222,128,${0.09 * k})`;
+        ctx.lineWidth = 1;
+        [0.34, 0.67, 1].forEach((f) => {
           ctx.beginPath();
-          ctx.arc(bx, by, b.size, 0, TAU);
-          ctx.fillStyle = `rgba(217,255,77,${alpha})`;
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(bx, by, b.size + 4 + b.age * 0.08, 0, TAU);
-          ctx.strokeStyle = `rgba(217,255,77,${alpha * 0.4})`;
-          ctx.lineWidth = 1;
+          ctx.arc(cx, cy, R * f, 0, TAU);
           ctx.stroke();
+        });
+        ctx.beginPath();
+        ctx.moveTo(cx - R, cy);
+        ctx.lineTo(cx + R, cy);
+        ctx.moveTo(cx, cy - R);
+        ctx.lineTo(cx, cy + R);
+        ctx.strokeStyle = `rgba(74,222,128,${0.06 * k})`;
+        ctx.stroke();
+
+        const sx = cx + Math.cos(angle) * R;
+        const sy = cy + Math.sin(angle) * R;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(sx, sy);
+        ctx.strokeStyle = `rgba(74,222,128,${0.9 * k})`;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(angle - 0.09) * R, cy + Math.sin(angle - 0.09) * R);
+        ctx.strokeStyle = `rgba(74,222,128,${0.22 * k})`;
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(sx, sy, 2.4, 0, TAU);
+        ctx.fillStyle = `rgba(217,255,77,${0.9 * k})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, TAU);
+        ctx.fillStyle = `rgba(74,222,128,${0.85 * k})`;
+        ctx.fill();
+
+        for (const b of blips) {
+          let diff = (angle - b.a) % TAU;
+          if (diff < 0) diff += TAU;
+          if (diff < 0.05) b.age = 0;
+          else b.age += 1;
+
+          if (b.age < 110) {
+            const alpha = (1 - b.age / 110) * 0.95 * k;
+            const bx = cx + Math.cos(b.a) * b.r * R;
+            const by = cy + Math.sin(b.a) * b.r * R;
+            ctx.beginPath();
+            ctx.arc(bx, by, b.size, 0, TAU);
+            ctx.fillStyle = `rgba(217,255,77,${alpha})`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(bx, by, b.size + 4 + b.age * 0.08, 0, TAU);
+            ctx.strokeStyle = `rgba(217,255,77,${alpha * 0.4})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
         }
+
+        angle += 0.0075;
       }
 
-      angle += 0.0075;
       raf = requestAnimationFrame(frame);
     };
 
@@ -157,7 +162,7 @@ export default function RadarCanvas({ className, intensity = 0.4, grid = true }:
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [grid]);
+  }, [grid, fullRadar]);
 
   return (
     <canvas
