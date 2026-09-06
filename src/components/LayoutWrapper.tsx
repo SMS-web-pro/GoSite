@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import SidebarWrapper from "./SidebarWrapper";
+import RadarCanvas from "./RadarCanvas";
 
 const PUBLIC_PATHS = ["/", "/portfolio"];
 
@@ -25,19 +26,19 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   return (
     <>
-      {/* Dot grid background — matches RADAR */}
+      {/* Radar canvas background — animated grid, circles, sweep, blips */}
       <div
-        aria-hidden="true"
         style={{
           position: "fixed",
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          backgroundImage: "radial-gradient(circle, rgba(74,222,128,.045) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
+          overflow: "hidden",
         }}
-      />
-      {/* Noise texture — matches RADAR */}
+      >
+        <RadarCanvas intensity={0.35} grid={true} />
+      </div>
+      {/* Noise texture overlay */}
       <div
         aria-hidden="true"
         style={{
