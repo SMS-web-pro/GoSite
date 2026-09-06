@@ -29,31 +29,37 @@ export default async function ProspectsPage() {
   } catch {}
 
   return (
-      <div className="mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm text-[#67766a] hover:text-[#e8efe8]"
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth={2}>
-                <path d="M19 12H5" /><path d="m12 19-7-7 7-7" />
+    <div className="mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="mb-6 flex items-center gap-2">
+          <div className="h-[2px] w-6 rounded bg-[#d9ff4d]" />
+          <span className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#d9ff4d]">Prospects</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d9ff4d]/10 text-[#d9ff4d]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
               </svg>
-              Accueil
-            </Link>
-            <h1 className="mt-2 text-3xl font-bold text-[#e8efe8]">🎯 Mes prospects</h1>
-            <p className="text-sm text-[#9fb3a4]">
-              {rows.length} business locaux transformés en opportunité de vente
-            </p>
+            </div>
+            <div>
+              <h1 className="text-3xl font-extrabold text-[#e8efe8] sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1.5, lineHeight: 1.1 }}>
+                Mes prospects
+              </h1>
+              <p className="mt-1 text-sm text-[#67766a]">{rows.length} business locaux · opportunités de vente</p>
+            </div>
           </div>
           <Link
             href="/dashboard"
-            className="rounded-xl bg-[#d9ff4d] px-4 py-2 text-sm font-semibold text-[#0a0d0b] hover:bg-[#4ade80]"
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[#d9ff4d] px-5 py-2.5 text-sm font-bold text-[#0a0d0b] transition hover:bg-[#4ade80]"
           >
             + Nouvelle recherche
           </Link>
         </div>
-        <ProspectsList items={rows} campaigns={campaignList} />
       </div>
+
+      <ProspectsList items={rows} campaigns={campaignList} />
+    </div>
   );
 }
