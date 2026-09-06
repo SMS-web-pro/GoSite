@@ -239,4 +239,11 @@ export const localStore = {
     const data = ensureStore();
     return (data.messageLogs || []).filter((l: any) => l.campaignId === campaignId);
   },
+
+  clearMessageLogs() {
+    const data = ensureStore();
+    data.messageLogs = [];
+    saveStore(data);
+    return true;
+  },
 };
