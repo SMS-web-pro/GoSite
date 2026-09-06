@@ -155,9 +155,7 @@ export default async function HomePage({
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#0a0d0b", position: "relative", overflow: "hidden" }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle,rgba(74,222,128,.03) 1px,transparent 1px)", backgroundSize: "30px 30px" }} />
-      <div className="relative z-10 mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
+    <div className="relative z-10 mx-auto max-w-[1380px] px-6 py-10 lg:px-8">
         {campaign && (
           <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-[rgba(236,255,220,0.09)] bg-[#0e120f] p-4" style={{ boxShadow: "0 2px 7px rgba(0,0,0,.2)" }}>
             <div className="flex items-center gap-2 text-sm">
@@ -214,6 +212,5 @@ export default async function HomePage({
 
         <HomeClient />
       </div>
-    </div>
   );
 }
