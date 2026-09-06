@@ -53,13 +53,6 @@ export type AppSettings = {
   updatedAt: Date;
 };
 
-export type WhatsAppSession = {
-  id: string;
-  phone: string;
-  name: string;
-  connectedAt: Date;
-};
-
 const DEFAULT_SETTINGS: Omit<AppSettings, "id" | "updatedAt"> = {
   agencyName: "Mon Agence",
   contactName: "Votre Nom",

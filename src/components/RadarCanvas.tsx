@@ -31,6 +31,7 @@ export default function RadarCanvas({ className, intensity = 0.4, grid = true, f
     let h = 0;
     let raf = 0;
     let angle = Math.random() * Math.PI * 2;
+    let isRunning = true;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
 
     const blips = Array.from({ length: 12 }, () => ({
@@ -62,6 +63,7 @@ export default function RadarCanvas({ className, intensity = 0.4, grid = true, f
     const TAU = Math.PI * 2;
 
     const frame = () => {
+      if (!isRunning) return;
       const k = intensityRef.current;
 
       ctx.fillStyle = "rgba(10,13,11,0.14)";
@@ -158,9 +160,23 @@ export default function RadarCanvas({ className, intensity = 0.4, grid = true, f
     };
 
     raf = requestAnimationFrame(frame);
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        isRunning = false;
+        cancelAnimationFrame(raf);
+      } else {
+        isRunning = true;
+        raf = requestAnimationFrame(frame);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
     return () => {
+      isRunning = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [grid, fullRadar]);
 

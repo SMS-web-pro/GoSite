@@ -233,10 +233,6 @@ const STEPS_DATA = [
   { en: "Reporting", fr: "Reporting", ar: "التقارير", desc_en: "Real-time dashboard + weekly reports", desc_fr: "Dashboard temps réel + rapports hebdo", desc_ar: "لوحة فورية + تقارير أسبوعية" },
 ];
 
-const C = ({ className, color }: { className?: string; color: string }) => (
-  <div className={className} style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
-);
-
 function ServiceIcon({ type, color }: { type: string; color: string }) {
   const svgProps = { width: 26, height: 26, viewBox: "0 0 24 24", fill: "none", stroke: color, strokeWidth: 2 } as const;
   switch (type) {

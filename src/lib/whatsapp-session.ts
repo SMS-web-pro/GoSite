@@ -108,7 +108,7 @@ function logEvent(state: SessionState, msg: string) {
   state.lastEventLog.push(`[${ts}] ${msg}`);
   if (state.lastEventLog.length > 50) state.lastEventLog.shift();
   // eslint-disable-next-line no-console
-  console.log(`[wa] [${ts}] ${msg}`);
+  console.debug(`[wa] [${ts}] ${msg}`);
 }
 
 /**

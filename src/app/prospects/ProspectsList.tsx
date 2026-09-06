@@ -61,10 +61,12 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
         country: item.business.country || undefined,
       })));
     }
+    let cancelled = false;
     (async () => {
       const newMap = new Map<string, boolean>();
       let errorMsg: string | null = null;
       for (const chunk of chunks) {
+        if (cancelled) return;
         try {
           const res = await fetch("/api/whatsapp/check-numbers", {
             method: "POST",
@@ -78,10 +80,13 @@ export default function ProspectsList({ items, campaigns = [] }: { items: Item[]
           }
         } catch { errorMsg = "Erreur réseau"; }
       }
-      setWhatsappStatus(newMap);
-      setWaError(errorMsg);
-      setCheckingWhatsapp(false);
+      if (!cancelled) {
+        setWhatsappStatus(newMap);
+        setWaError(errorMsg);
+        setCheckingWhatsapp(false);
+      }
     })();
+    return () => { cancelled = true; };
   }, [items]);
 
   const filteredItems = useMemo(() => {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: <ChartIcon /> },
@@ -22,15 +22,18 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
   const [stats, setStats] = useState<{ prospects: number; campaigns: number } | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchWhatsApp = () => {
       fetch("/api/whatsapp/session")
         .then((r) => r.json())
         .then((d) => {
+          if (cancelled) return;
           setWaConnected(d.connected === true || d.status === "connected");
           setWaPhone(d.phoneNumber || d.phone || null);
           setWaProfileName(d.profileName || null);
         })
         .catch(() => {
+          if (cancelled) return;
           setWaConnected(false);
           setWaPhone(null);
           setWaProfileName(null);
@@ -41,12 +44,16 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
       fetch("/api/stats")
         .then((r) => r.json())
         .then((d) => {
+          if (cancelled) return;
           setStats({
             prospects: d.prospects || 0,
             campaigns: d.campaigns || 0,
           });
         })
-        .catch(() => setStats({ prospects: 0, campaigns: 0 }));
+        .catch(() => {
+          if (cancelled) return;
+          setStats({ prospects: 0, campaigns: 0 });
+        });
     };
 
     fetchWhatsApp();
@@ -55,6 +62,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
     const statsInterval = setInterval(fetchStats, 30000);
 
     return () => {
+      cancelled = true;
       clearInterval(waInterval);
       clearInterval(statsInterval);
     };

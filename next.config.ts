@@ -1,12 +1,22 @@
 import type { NextConfig } from "next";
 
+const securityHeaders = [
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-XSS-Protection", value: "1; mode=block" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig: NextConfig = {
-  // Baileys has dynamic requires that don't fit Next.js's static analysis.
-  // Mark it as a server-only external so it's loaded from node_modules at runtime.
   serverExternalPackages: ["@whiskeysockets/baileys", "qrcode"],
-  // Turso/WebSocket libs also need this in some versions
-  experimental: {
-    // allowBaileys dynamic modules
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+    ];
   },
   async rewrites() {
     return [

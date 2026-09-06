@@ -65,7 +65,7 @@ export default async function HomePage({
             ? (settings as any).finalPriceEUR ?? 15000
             : curr === "USD"
               ? (settings as any).finalPriceUSD ?? 15000
-              : (settings as any).finalPaymentMAD ?? 150000;
+              : (settings as any).finalPriceMAD ?? 150000;
         revenue += p.finalAmount ?? fallbackFinal;
       }
       if (revenue === 0 && (p.paymentStatus === "paid" || saleStages.includes(p.workflowStage) || p.workflowStage === "deposit_paid")) {

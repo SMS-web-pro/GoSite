@@ -71,8 +71,6 @@ export async function POST(req: Request) {
     );
   }
 
-  console.log(`[Send] Phone: "${phone}" → normalized: "${phoneClean}" (prospectId: ${prospectId})`);
-
   let result: { ok: boolean; messageId?: string; error?: string; sentFrom?: string; sentFromName?: string; sentTo?: string };
 
   if (isExternalServerConfigured()) {

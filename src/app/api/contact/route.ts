@@ -34,6 +34,10 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+    }
+
     if (!SMTP_PASS) {
       return NextResponse.json(
         { error: "Email not configured. Set SMTP_PASS env var." },
@@ -41,6 +45,9 @@ export async function POST(req: Request) {
       );
     }
 
+    function esc(s: string) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: #0A1628; padding: 20px; border-radius: 10px 10px 0 0;">
@@ -48,15 +55,15 @@ export async function POST(req: Request) {
         </div>
         <div style="background: #f8fafc; padding: 24px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
           <table style="width: 100%; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: #64748b; font-weight: 600; width: 120px;">Name</td><td style="padding: 8px 0; color: #1e293b;">${name}</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Email</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #2563EB;">${email}</a></td></tr>
-            ${phone ? `<tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Phone</td><td style="padding: 8px 0; color: #1e293b;">${phone}</td></tr>` : ""}
-            ${service ? `<tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Service</td><td style="padding: 8px 0; color: #1e293b;">${service}</td></tr>` : ""}
-            ${budget ? `<tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Budget</td><td style="padding: 8px 0; color: #1e293b;">${budget}</td></tr>` : ""}
+            <tr><td style="padding: 8px 0; color: #64748b; font-weight: 600; width: 120px;">Name</td><td style="padding: 8px 0; color: #1e293b;">${esc(name)}</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Email</td><td style="padding: 8px 0;"><a href="mailto:${esc(email)}" style="color: #2563EB;">${esc(email)}</a></td></tr>
+            ${phone ? `<tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Phone</td><td style="padding: 8px 0; color: #1e293b;">${esc(phone)}</td></tr>` : ""}
+            ${service ? `<tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Service</td><td style="padding: 8px 0; color: #1e293b;">${esc(service)}</td></tr>` : ""}
+            ${budget ? `<tr><td style="padding: 8px 0; color: #64748b; font-weight: 600;">Budget</td><td style="padding: 8px 0; color: #1e293b;">${esc(budget)}</td></tr>` : ""}
           </table>
           <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
             <p style="margin: 0 0 8px 0; color: #64748b; font-weight: 600; font-size: 12px;">MESSAGE</p>
-            <p style="margin: 0; color: #1e293b; white-space: pre-wrap;">${message}</p>
+            <p style="margin: 0; color: #1e293b; white-space: pre-wrap;">${esc(message)}</p>
           </div>
           <p style="margin-top: 16px; font-size: 11px; color: #94a3b8;">Sent from GoSite contact form</p>
         </div>

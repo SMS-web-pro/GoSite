@@ -29,8 +29,6 @@ export async function POST(req: Request) {
     );
   }
 
-  console.log(`[Test] Phone: "${phone}" → normalized: "${phoneClean}"`);
-
   const message =
     customMessage ||
     `✅ Test GoSite\n\nBonjour ! Ceci est un message de test envoyé depuis la plateforme GoSite à ${new Date().toLocaleString("fr-FR")}.\n\nSi vous voyez ce message, la connexion WhatsApp fonctionne correctement ! 🎉`;
