@@ -6,6 +6,7 @@ import { localStore } from "@/lib/local-store";
 import { getSettings } from "@/lib/settings";
 import { detectProspectCurrency, formatPrice } from "@/lib/prompt-generator";
 import { KPICard } from "@/components/KPICard";
+import DashboardCharts from "./DashboardCharts";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export default async function HomePage({
   let pipelineCount = 0;
   let activeCampaignsCount = 0;
   let revenueByCurrency = { eur: 0, usd: 0, mad: 0 };
+  let allProspectRows: any[] = [];
 
   try {
     await db.execute("select 1" as never);
@@ -33,7 +35,7 @@ export default async function HomePage({
     const [prospectCount] = await db.select({ count: sql<number>`count(*)::int` }).from(prospects);
     const [campaignCount] = await db.select({ count: sql<number>`count(*)::int` }).from(campaigns).where(eq(campaigns.status, "active"));
 
-    const allProspectRows = await db
+    allProspectRows = await db
       .select({ prospect: prospects, business: businesses })
       .from(prospects)
       .innerJoin(businesses, eq(prospects.businessId, businesses.id));
@@ -151,6 +153,55 @@ export default async function HomePage({
 
   const conversionRate = totalProspectsCount > 0 ? ((totalPaidCount / totalProspectsCount) * 100).toFixed(1) : "0";
 
+  // Chart data: prospects by workflow stage
+  const stageLabels: Record<string, string> = {
+    discovered: "Découverts",
+    contacted: "Contactés",
+    demo_sent: "Démo envoyée",
+    quoted: "Devis envoyé",
+    deposit_paid: "Acompte reçu",
+    paid: "Payé",
+    delivered: "Livré",
+    completed: "Terminé",
+    lost: "Perdu",
+  };
+  const stageCounts: Record<string, number> = {};
+  for (const row of allProspectRows) {
+    const stage = (row as any).prospect?.workflowStage || "discovered";
+    stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+  }
+  const stageData = Object.entries(stageCounts)
+    .map(([stage, count]) => ({ stage: stageLabels[stage] || stage, count, key: stage }))
+    .sort((a, b) => b.count - a.count);
+
+  // Chart data: revenue by currency
+  const currencyData = [
+    revenueByCurrency.eur > 0 && { name: "EUR", value: revenueByCurrency.eur, color: "#d9ff4d" },
+    revenueByCurrency.usd > 0 && { name: "USD", value: revenueByCurrency.usd, color: "#4ade80" },
+    revenueByCurrency.mad > 0 && { name: "MAD", value: revenueByCurrency.mad, color: "#a78bfa" },
+  ].filter(Boolean) as { name: string; value: number; color: string }[];
+
+  // Chart data: prospects over time (last 6 months)
+  const now = new Date();
+  const monthlyData: { month: string; count: number }[] = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthLabel = d.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
+    const yearMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    let count = 0;
+    for (const row of allProspectRows) {
+      const created = (row as any).prospect?.createdAt;
+      if (created) {
+        const dt = new Date(created);
+        const ym = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+        if (ym === yearMonth) count++;
+      }
+    }
+    monthlyData.push({ month: monthLabel, count });
+  }
+
+  const chartData = { stageData, currencyData, monthlyData };
+
   const sp = await searchParams;
   const campaignId = sp.campaignId ? Number(sp.campaignId) : undefined;
   let campaign: { id: number; name: string; sector: string | null; location: string | null } | null = null;
@@ -221,6 +272,8 @@ export default async function HomePage({
             <KPICard label="Panier moyen" value={avgDealSize} icon="💎" tone="emerald" subtitle="par vente" />
           </div>
         </header>
+
+        <DashboardCharts data={chartData} revenueTotal={revenueDisplay} />
       </div>
   );
 }
