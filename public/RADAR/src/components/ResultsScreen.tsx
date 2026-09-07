@@ -14,6 +14,7 @@ import {
   ListChecks,
   MessageCircle,
   Radar,
+  Rocket,
   RotateCcw,
   Search,
   SearchX,
@@ -27,6 +28,7 @@ import { buildQuery } from "../lib/api";
 import { reasonLabelFor } from "../lib/evaluate";
 import { buildCsv, buildFiche, buildRow, copyText, downloadCsv, slugify } from "../lib/csv";
 import BusinessCard from "./BusinessCard";
+import CreateCampaignModal from "./CreateCampaignModal";
 
 interface Props {
   brief: Brief;
@@ -70,6 +72,7 @@ export default function ResultsScreen({
   const [rejectSearch, setRejectSearch] = useState("");
   const [zoneFilter, setZoneFilter] = useState<string>("ALL");
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [campaignOpen, setCampaignOpen] = useState(false);
 
   const togglePick = (id: string) =>
     setPicked((p) => {
@@ -202,12 +205,14 @@ export default function ResultsScreen({
               </span>
               <div>
                 <h2 className="font-display text-[15px] font-semibold text-zinc-100">
-                  Livraison finale — CSV prêt à l'emploi
+                  Livraison finale — CSV & Campagne
                 </h2>
                 <p className="mt-0.5 max-w-lg text-[12px] leading-relaxed text-fog">
                   15 colonnes (dont la fiche complète copiable). Conformément à votre règle :{" "}
                   <strong className="text-mist">seules les fiches WhatsApp = OUI</strong> sont
                   exportées. Encodage UTF-8, séparateur « ; » — s'ouvre directement dans Excel.
+                  <strong className="ml-1 text-lime">Créez aussi une campagne GoSite</strong> pour
+                  démarrer le workflow WhatsApp automatique.
                 </p>
               </div>
             </div>
@@ -227,6 +232,14 @@ export default function ResultsScreen({
               >
                 <FileDown className="h-4 w-4" />
                 Exporter CSV ({waOui.length} WhatsApp vérifiés)
+              </button>
+              <button
+                onClick={() => setCampaignOpen(true)}
+                disabled={waOui.length === 0}
+                className="flex items-center gap-2 rounded-xl border border-lime/40 bg-lime/10 px-5 py-3 font-display text-[13px] font-semibold text-lime transition-colors hover:bg-lime/20 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <Rocket className="h-4 w-4" />
+                Créer la campagne ({waOui.length})
               </button>
             </div>
           </div>
@@ -537,6 +550,14 @@ export default function ResultsScreen({
           <span>Aucune donnée fictive · aucun serveur intermédiaire</span>
         </footer>
       </main>
+
+      <CreateCampaignModal
+        open={campaignOpen}
+        onClose={() => setCampaignOpen(false)}
+        brief={brief}
+        prospects={waOui}
+        waMap={waMap}
+      />
     </div>
   );
 }
